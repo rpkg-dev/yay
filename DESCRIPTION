@@ -1,0 +1,46 @@
+Package: yay
+Title: Delightful Convenience Functions
+Version: 0.0.9000
+Authors@R: 
+    person(given = "Salim",
+           family = "Brüggemann",
+           role = c("aut", "cre"),
+           email = "salim-b@pm.me",
+           comment = c(ORCID = "0000-0002-5329-5987"))
+Description: A delightful mix of convenience functions designed to put a
+    smile on your face during typical R workflows.
+License: AGPL (>= 3)
+URL: https://gitlab.com/salim_b/r/pkgs/yay
+BugReports: https://gitlab.com/salim_b/r/pkgs/yay/issues
+Imports: 
+    checkmate (>= 2.0.0),
+    dplyr (>= 1.0.5),
+    fs (>= 1.5.0),
+    glue (>= 1.4.2),
+    magrittr (>= 2.0.1),
+    pal (>= 0.0.9051),
+    purrr (>= 0.3.4),
+    rlang (>= 0.4.10),
+    stringr (>= 1.4.0),
+    tibble (>= 3.1.0)
+Suggests: 
+    brio (>= 1.1.1),
+    cli (>= 2.3.1),
+    daff (>= 0.3.5),
+    gert (>= 1.2.0),
+    pkgdown (>= 1.6.1.9000),
+    pkgsnip (>= 0.0.9019),
+    readr (>= 1.4.0),
+    roxygen2 (>= 7.1.1),
+    withr (>= 2.4.1),
+    writexl (>= 1.3.1),
+    xopen (>= 1.0.0),
+    yesno (>= 0.1.2)
+Remotes:
+    gitlab::salim_b/r/pkgs/pal,
+    gitlab::salim_b/r/pkgs/pkgsnip
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1.9001

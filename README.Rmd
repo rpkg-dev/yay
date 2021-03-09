@@ -1,0 +1,30 @@
+---
+output: pal::gitlab_document
+---
+
+# `r paste0(pal::desc_value("Package"), ": ", pal::desc_value("Title"))`
+
+`r pal::desc_value("Description")`
+
+This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) package.
+
+## Installation
+
+```{r, install-snippet-dev, child = pkgsnip::snip_path("installation-notice_dev-version_gitlab.Rmd")}
+```
+
+## Development
+
+### R Markdown format
+
+```{r, rmd-pkg-snippet, child = pkgsnip::snip_path("rmd-package-notice.Rmd")}
+```
+
+### Coding style
+
+```{r, coding-style-snippet, child = pkgsnip::snip_path("coding-style-notice.Rmd")}
+```
+
+## See also
+
+-   ...

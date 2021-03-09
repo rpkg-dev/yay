@@ -1,0 +1,15 @@
+development:
+  mode: auto
+template:
+  opengraph:
+    twitter:
+      card: summary
+      creator: "@2BSalim"
+  params:
+    analytics:
+      goatcounter:
+        endpoint: "https://rpkg-dev.goatcounter.com/count"
+    bootswatch: yeti
+    mathjax: false
+    selfhost_assets: true
+url: https://rpkg.dev/yay
