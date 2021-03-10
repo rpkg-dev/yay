@@ -24,7 +24,3 @@ This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(comp
 
 ```{r, coding-style-snippet, child = pkgsnip::snip_path("coding-style-notice.Rmd")}
 ```
-
-## See also
-
--   ...

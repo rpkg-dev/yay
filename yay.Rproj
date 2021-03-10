@@ -27,3 +27,5 @@ MarkdownWrap: Column
 MarkdownWrapAtColumn: 160
 MarkdownReferences: Section
 MarkdownCanonical: Yes
+
+SpellingDictionary: en_US

@@ -81,10 +81,6 @@ formatting issues:
 pkgpurl::lint_rmd()
 ```
 
-## See also
-
--   ...
-
 [^1]: This naming convention as well as the very idea to leverage the R
     Markdown format to author R packages was originally proposed by
     Yihui Xie. See his excellent [blog post](https://yihui.name/rlp/)
