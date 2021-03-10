@@ -6,7 +6,8 @@ utils::globalVariables(names = c(".",
                                  "i_pattern",
                                  "minus",
                                  "plus",
-                                 "start"))
+                                 "start",
+                                 "status"))
 
 unicode_ellipsis <- "\u2026"
 
@@ -329,6 +330,8 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   checkmate::assert_path_for_output(to_path,
                                     overwrite = TRUE)
   
+  repo <- to_path %>% gert::git_find()
+  
   # create pkg website subfolder if necessary (only leaf directory will be created because of the checkmate assertion above)
   if (!fs::dir_exists(to_path)) fs::dir_create(path = to_path)
   
@@ -343,6 +346,15 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                  fun = fs::file_delete,
                  all = TRUE,
                  type = "file")
+    
+    gert::git_status(repo = repo,
+                     staged = FALSE) %>%
+      dplyr::filter(status == "deleted"
+                    & fs::path_has_parent(path = file,
+                                          parent = fs::path_rel(path = to_path ,
+                                                                start = repo))) %$%
+      file %>%
+      gert::git_add(repo = repo)
   }
   
   # copy files/dirs
@@ -370,8 +382,6 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   paths <- c(dirs, files)
   
   # commit and push files
-  repo <- to_path %>% gert::git_find()
-  
   staged <-
     paths %>%
     fs::path_rel(start = config$dst_path) %>%
