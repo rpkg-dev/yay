@@ -16,8 +16,8 @@ deploy_pkgdown_site(
 \arguments{
 \item{pkg_path}{Path to the \R package of which the pkgdown website files are to be deployed.}
 
-\item{to_path}{Path to the Git (sub)folder to which the pkgdown website files are to be deployed. If \code{NULL}, the path is looked up in the \R option
-\code{yay.local_pkgdown_deploy_paths}, which must be a named character vector of the form \code{c(pkg_name = "/path/to/local_git_repo")}.}
+\item{to_path}{Path to the Git (sub)folder to which the pkgdown website files are to be deployed. If \code{NULL}, the \R options \code{yay.local_pkgdown_deploy_paths}
+and \code{yay.default_local_pkgdown_deploy_parent_path} will be respected. See section \emph{Setting \code{to_path} via R options} for details.}
 
 \item{use_dev_build}{Whether to deploy the development build of the pkgdown website files. If \code{NULL},
 \href{https://pkgdown.r-lib.org/reference/build_site.html#development-mode}{\code{development.mode}} set in the pkgdown YAML configuration file from \code{pkg_path} will
@@ -37,14 +37,22 @@ Copies the static \link[pkgdown:pkgdown-package]{pkgdown} website files to anoth
 
 Use this function with \strong{caution} since by default it \strong{completely wipes the \code{to_path} directory}!
 }
-\details{
-Instead of directly providing a valid \code{to_path} argument, you can also set \code{to_path = NULL} and provide the path in the \R option
-\code{yay.local_pkgdown_deploy_paths}. The value of this option must be a named character vector whereas the names correspond to the package names and the values
-to the filesystem paths. As an example:\if{html}{\out{<div class="r">}}\preformatted{options(pal.local_pkgdown_deploy_paths = c(some_pkg    = "/path/to/common_pkgdown_repo/some_pkg",
+\section{Setting \code{to_path} via \R options}{
+Instead of directly providing a valid \code{to_path} argument, you can also set \code{to_path = NULL} and provide
+\itemize{
+\item the desired deploy paths for each package in the \R option \code{yay.local_pkgdown_deploy_paths}. The value of this option must be a named character vector
+whereas the names correspond to the package names and the values to the filesystem paths. As an example:\if{html}{\out{<div class="r">}}\preformatted{options(yay.local_pkgdown_deploy_paths = c(some_pkg    = "/path/to/common_pkgdown_repo/some_pkg",
                                            another_pkg = "/path/to/common_pkgdown_repo/another_pkg",
                                            foo_pkg     = "/path/to/dedicated_foo_pkgdown_repo"))
 }\if{html}{\out{</div>}}
+\item a default parent path in the \R option \code{yay.default_local_pkgdown_deploy_parent_path} that will be used as the deployment parent directory for all packages
+that are not explicitly listed in \code{yay.local_pkgdown_deploy_paths}. For example you could set\if{html}{\out{<div class="r">}}\preformatted{options(yay.default_local_pkgdown_deploy_parent_path = "/path/to/common_pkgdown_repo")
+}\if{html}{\out{</div>}}
 
-A suitable place to define the above option is the \href{https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf}{\code{.Rprofile} file}
+which would result in deploying the pkgdown website files of a hypothetical package named \emph{bar_pkg} to \verb{/path/to/common_pkgdown_repo/bar_pkg}.
+}
+
+A suitable place to define the above options is the \href{https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf}{\code{.Rprofile} file}
 in the user's home directory.
 }
+

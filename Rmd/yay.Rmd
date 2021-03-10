@@ -317,24 +317,35 @@ These functions are likely to be proposed upstream, and if accepted, will be rem
 #'
 #' Use this function with **caution** since by default it **completely wipes the `to_path` directory**!
 #'
-#' @details
-#' Instead of directly providing a valid `to_path` argument, you can also set `to_path = NULL` and provide the path in the \R option
-#' `yay.local_pkgdown_deploy_paths`. The value of this option must be a named character vector whereas the names correspond to the package names and the values
-#' to the filesystem paths. As an example:
-#' 
-#' ```r
-#' options(pal.local_pkgdown_deploy_paths = c(some_pkg    = "/path/to/common_pkgdown_repo/some_pkg",
-#'                                            another_pkg = "/path/to/common_pkgdown_repo/another_pkg",
-#'                                            foo_pkg     = "/path/to/dedicated_foo_pkgdown_repo"))
-#' ```
+#' # Setting `to_path` via \R options
 #'
-#' A suitable place to define the above option is the [`.Rprofile`
+#' Instead of directly providing a valid `to_path` argument, you can also set `to_path = NULL` and provide
+#'
+#' - the desired deploy paths for each package in the \R option `yay.local_pkgdown_deploy_paths`. The value of this option must be a named character vector
+#'   whereas the names correspond to the package names and the values to the filesystem paths. As an example:
+#' 
+#'   ```r
+#'   options(yay.local_pkgdown_deploy_paths = c(some_pkg    = "/path/to/common_pkgdown_repo/some_pkg",
+#'                                              another_pkg = "/path/to/common_pkgdown_repo/another_pkg",
+#'                                              foo_pkg     = "/path/to/dedicated_foo_pkgdown_repo"))
+#'   ```
+#'
+#' - a default parent path in the \R option `yay.default_local_pkgdown_deploy_parent_path` that will be used as the deployment parent directory for all packages
+#'   that are not explicitly listed in `yay.local_pkgdown_deploy_paths`. For example you could set
+#' 
+#'   ```r
+#'   options(yay.default_local_pkgdown_deploy_parent_path = "/path/to/common_pkgdown_repo")
+#'   ```
+#'   
+#'   which would result in deploying the pkgdown website files of a hypothetical package named _bar_pkg_ to `/path/to/common_pkgdown_repo/bar_pkg`.
+#'
+#' A suitable place to define the above options is the [`.Rprofile`
 #' file](https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf)
 #' in the user's home directory.
 #'
 #' @param pkg_path Path to the \R package of which the pkgdown website files are to be deployed.
-#' @param to_path Path to the Git (sub)folder to which the pkgdown website files are to be deployed. If `NULL`, the path is looked up in the \R option
-#'   `yay.local_pkgdown_deploy_paths`, which must be a named character vector of the form `c(pkg_name = "/path/to/local_git_repo")`.
+#' @param to_path Path to the Git (sub)folder to which the pkgdown website files are to be deployed. If `NULL`, the \R options `yay.local_pkgdown_deploy_paths`
+#'   and `yay.default_local_pkgdown_deploy_parent_path` will be respected. See section _Setting `to_path` via R options_ for details.
 #' @param use_dev_build Whether to deploy the development build of the pkgdown website files. If `NULL`,
 #'   [`development.mode`](https://pkgdown.r-lib.org/reference/build_site.html#development-mode) set in the pkgdown YAML configuration file from `pkg_path` will
 #'   be respected.
@@ -351,6 +362,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                                 commit_msg = paste0("auto-deploy pkgdown site for ",
                                                     desc::desc_get_field(file = pkg_path,
                                                                          key = "Package"))) {
+  pal::assert_pkg("desc")
   pal::assert_pkg("gert")
   pal::assert_pkg("pkgdown")
   checkmate::assert_flag(use_dev_build,
@@ -377,18 +389,33 @@ deploy_pkgdown_site <- function(pkg_path = ".",
     to_path <- getOption("yay.local_pkgdown_deploy_paths")[config$package]
     
     if (is.null(to_path) || is.na(to_path)) {
-      rlang::abort(glue::glue("Set `to_path` either directly to a valid filesystem path or provide the path in the R option `yay.local_pkgdown_deploy_paths` ",
-                              "as a named character vector of the form `c({config$package} = \"/path/to/local_git_repo\")`"))
+      
+      to_path_parent <- getOption("yay.default_local_pkgdown_deploy_parent_path")
+      
+      if (is.null(to_path_parent)) {
+        rlang::abort(glue::glue("Either set `to_path` directly to a valid filesystem path or provide the path in the R option `yay.local_pkgdown_deploy_paths`",
+                                " as a named character vector of the form `c({config$package} = \"/path/to/local_git_repo\")`. Another alternative is to set a",
+                                " default parent path in the R option `yay.default_local_pkgdown_deploy_parent_path`. See `?yay::deploy_pkgdown_site` for",
+                                " details."))
+        
+      } else if (!checkmate::test_directory(to_path_parent,
+                                            access = "w")) {
+        rlang::abort(glue::glue("The R option `yay.default_local_pkgdown_deploy_parent_path` is set, but not to valid filesystem path with write access.",
+                     " Current option value: {to_path_parent}"))
+        
+      } else {
+        to_path <- fs::path(to_path_parent, config$package)
+      }
     }
   }
   
   checkmate::assert_path_for_output(to_path,
                                     overwrite = TRUE)
   
-  repo <- to_path %>% gert::git_find()
-  
   # create pkg website subfolder if necessary (only leaf directory will be created because of the checkmate assertion above)
   if (!fs::dir_exists(to_path)) fs::dir_create(path = to_path)
+  
+  repo <- to_path %>% gert::git_find()
   
   # clean destination path if requested
   if (clean_to_path) {
