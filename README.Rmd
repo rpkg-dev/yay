@@ -8,6 +8,12 @@ output: pal::gitlab_document
 
 This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) package.
 
+```{r, pkgdown, eval = !isTRUE(getOption("pal.build_readme.is_pkgdown")), results = "asis", echo = FALSE}
+pkgsnip::md_snip(name = "pkgdown_notice") %>%
+  paste0("## Documentation\n\n", .) %>%
+  pal::cat_lines()
+```
+
 ## Installation
 
 ```{r, install-snippet-dev, child = pkgsnip::snip_path("installation-notice_dev-version_gitlab.Rmd")}

@@ -4,6 +4,10 @@ A delightful mix of convenience functions designed to put a smile on your face d
 
 This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) package.
 
+## Documentation
+
+The documentation of this package is found [here](https://rpkg.dev/yay).
+
 ## Installation
 
 To install the latest development version of yay, run the following in R:
