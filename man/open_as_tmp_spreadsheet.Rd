@@ -27,11 +27,11 @@ spreadsheet in the system's default application using \code{\link[xopen:xopen]{x
 }
 \examples{
 \dontrun{
-open_as_tmp_spreadsheet(mtcars,
-                        format = "xslx")}
+yay::open_as_tmp_spreadsheet(mtcars,
+                             format = "xslx")}
 }
 \seealso{
-Other tibble: 
+Other data frame / tibble functions:
 \code{\link{show_diff}()}
 }
 \concept{tibble}

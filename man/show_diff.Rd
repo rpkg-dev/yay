@@ -77,10 +77,10 @@ therein won't be displayed:
 mtcars \%>\%
   dplyr::mutate(dplyr::across(c(cyl, gear),
                               ~ dplyr::if_else(. > 4, . * 2, .))) \%>\%
-  show_diff(mtcars)}
+  yay::show_diff(mtcars)}
 }
 \seealso{
-Other tibble: 
+Other data frame / tibble functions:
 \code{\link{open_as_tmp_spreadsheet}()}
 }
 \concept{tibble}

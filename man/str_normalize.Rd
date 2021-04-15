@@ -6,7 +6,7 @@
 \usage{
 str_normalize(
   path,
-  rules = salim::regex_text_normalization,
+  rules = yay::regex_text_normalization,
   run_dry = TRUE,
   process_line_by_line = FALSE,
   n_context_chrs = 20L,
@@ -57,3 +57,4 @@ Other string functions:
 \code{\link{str_replace_file}()},
 \code{\link{str_replace_verbose}()}
 }
+\concept{string}

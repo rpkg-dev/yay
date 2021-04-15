@@ -15,7 +15,7 @@ Regular expression patterns and replacements for file normalization
 }
 \examples{
 # unnest the pattern column
-tidyr::unnest_longer(data = regex_file_normalization,
+tidyr::unnest_longer(data = yay::regex_file_normalization,
                      col = pattern)
 }
 \seealso{

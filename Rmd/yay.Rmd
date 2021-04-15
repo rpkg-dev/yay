@@ -168,7 +168,7 @@ usethis::use_data(regex_text_normalization,
 #'
 #' @examples
 #' # unnest the pattern column
-#' tidyr::unnest_longer(data = regex_text_normalization,
+#' tidyr::unnest_longer(data = yay::regex_text_normalization,
 #'                      col = pattern)
 "regex_text_normalization"
 
@@ -179,7 +179,7 @@ usethis::use_data(regex_text_normalization,
 #'
 #' @examples
 #' # unnest the pattern column
-#' tidyr::unnest_longer(data = regex_file_normalization,
+#' tidyr::unnest_longer(data = yay::regex_file_normalization,
 #'                      col = pattern)
 "regex_file_normalization"
 ```
@@ -232,7 +232,7 @@ usethis::use_data(regex_text_normalization,
 #' mtcars %>%
 #'   dplyr::mutate(dplyr::across(c(cyl, gear),
 #'                               ~ dplyr::if_else(. > 4, . * 2, .))) %>%
-#'   show_diff(mtcars)}
+#'   yay::show_diff(mtcars)}
 show_diff <- function(x,
                       y,
                       ignore_order = FALSE,
@@ -389,8 +389,8 @@ show_diff <- function(x,
 #'
 #' @examples
 #' \dontrun{
-#' open_as_tmp_spreadsheet(mtcars,
-#'                         format = "xslx")}
+#' yay::open_as_tmp_spreadsheet(mtcars,
+#'                              format = "xslx")}
 open_as_tmp_spreadsheet <- function(x,
                                     format = c("csv", "xlsx"),
                                     quiet = TRUE) {
@@ -673,14 +673,14 @@ TODO:
 #'              "^But.*" = "So... flower power?",
 #'              "(^-).*Naval.*" = "\\1\U0001F92A")
 #'
-#' str_replace_verbose(string = input,
-#'                     pattern = pattern,
-#'                     n_context_chrs = 5L) %>%
+#' yay::str_replace_verbose(string = input,
+#'                          pattern = pattern,
+#'                          n_context_chrs = 5L) %>%
 #'   pal::cat_lines()
 #'
-#' str_replace_verbose(string = input,
-#'                     pattern = pattern,
-#'                     n_context_chrs = 0L) %>%
+#' yay::str_replace_verbose(string = input,
+#'                          pattern = pattern,
+#'                          n_context_chrs = 0L) %>%
 #'   pal::cat_lines()
 str_replace_verbose <- function(string,
                                 pattern,

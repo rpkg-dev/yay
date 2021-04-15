@@ -55,18 +55,19 @@ pattern <- c("not" = "extremely",
              "^But.*" = "So... flower power?",
              "(^-).*Naval.*" = "\\\\1\U0001F92A")
 
-str_replace_verbose(string = input,
-                    pattern = pattern,
-                    n_context_chrs = 5L) \%>\%
+yay::str_replace_verbose(string = input,
+                         pattern = pattern,
+                         n_context_chrs = 5L) \%>\%
   pal::cat_lines()
 
-str_replace_verbose(string = input,
-                    pattern = pattern,
-                    n_context_chrs = 0L) \%>\%
+yay::str_replace_verbose(string = input,
+                         pattern = pattern,
+                         n_context_chrs = 0L) \%>\%
   pal::cat_lines()
 }
 \seealso{
-Other string: 
+Other string functions:
+\code{\link{str_normalize}()},
 \code{\link{str_replace_file}()}
 }
 \concept{string}

@@ -61,7 +61,8 @@ Windows) seems like a really bad idea with regard to cross-system collaboration 
 The text files are assumed to be in \href{https://en.wikipedia.org/wiki/UTF-8}{UTF-8 character encoding}, other encodings are not supported.
 }
 \seealso{
-Other string: 
+Other string functions:
+\code{\link{str_normalize}()},
 \code{\link{str_replace_verbose}()}
 }
 \concept{string}
