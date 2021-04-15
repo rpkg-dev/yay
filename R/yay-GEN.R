@@ -733,10 +733,22 @@ str_replace_file <- function(path,
 #' @inheritParams str_replace_file
 #'
 #' @inherit str_replace_file return
-#' @seealso [`regex_text_normalization`]
+#' @family string
+#' @seealso [`regex_text_normalization`] [`regex_file_normalization`]
 #' @export
+#'
+#' @examples
+#' # Use POSIX-related file normalization rule(s) included in this package
+#' temp_file <- tempfile()
+#' download.file(url = paste0("https://raw.githubusercontent.com/RcppCore/Rcpp/72f0652b93f196d",
+#'                            "64faab6b108cd02a197510a7b/inst/include/Rcpp/utils/tinyformat.h"),
+#'               destfile = temp_file)
+#'
+#' regex_file_normalization %>%
+#'   dplyr::filter(category == "posix") %>%
+#'   yay::str_normalize(path = temp_file)
 str_normalize <- function(path,
-                          rules = salim::regex_text_normalization,
+                          rules = yay::regex_text_normalization,
                           run_dry = TRUE,
                           process_line_by_line = FALSE,
                           n_context_chrs = 20L,

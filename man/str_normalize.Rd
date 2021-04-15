@@ -39,6 +39,21 @@ more performant, you probably want the former if you're using \code{"^"} or \cod
 Applies a set of regular-expression-based text normalization rules to one or more files given in \code{path}. By default, changes are shown on the console only,
 without actually modifying any files. Set \code{run_dry = FALSE} to apply the changes.
 }
+\examples{
+# Use POSIX-related file normalization rule(s) included in this package
+temp_file <- tempfile()
+download.file(url = paste0("https://raw.githubusercontent.com/RcppCore/Rcpp/72f0652b93f196d",
+                           "64faab6b108cd02a197510a7b/inst/include/Rcpp/utils/tinyformat.h"),
+              destfile = temp_file)
+
+regex_file_normalization \%>\%
+  dplyr::filter(category == "posix") \%>\%
+  yay::str_normalize(path = temp_file)
+}
 \seealso{
-\code{\link{regex_text_normalization}}
+\code{\link{regex_text_normalization}} \code{\link{regex_file_normalization}}
+
+Other string functions:
+\code{\link{str_replace_file}()},
+\code{\link{str_replace_verbose}()}
 }
