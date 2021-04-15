@@ -13,7 +13,16 @@
     <loc>https://rpkg.dev/yay/reference/reexports.html</loc>
   </url>
   <url>
+    <loc>https://rpkg.dev/yay/reference/regex_file_normalization.html</loc>
+  </url>
+  <url>
+    <loc>https://rpkg.dev/yay/reference/regex_text_normalization.html</loc>
+  </url>
+  <url>
     <loc>https://rpkg.dev/yay/reference/show_diff.html</loc>
+  </url>
+  <url>
+    <loc>https://rpkg.dev/yay/reference/str_normalize.html</loc>
   </url>
   <url>
     <loc>https://rpkg.dev/yay/reference/str_replace_file.html</loc>

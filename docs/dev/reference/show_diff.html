@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9001</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9002</span>
       </span>
     </div>
 
@@ -218,7 +218,7 @@ therein won't be displayed:</p><ul>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other tibble: 
+    <div class='dont-index'><p>Other data frame / tibble functions:
 <code><a href='open_as_tmp_spreadsheet.html'>open_as_tmp_spreadsheet</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -226,7 +226,7 @@ therein won't be displayed:</p><ul>
 <span class='va'>mtcars</span> <span class='op'>%&gt;%</span>
   <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span><span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/across.html'>across</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>cyl</span>, <span class='va'>gear</span><span class='op'>)</span>,
                               <span class='op'>~</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>.</span> <span class='op'>&gt;</span> <span class='fl'>4</span>, <span class='va'>.</span> <span class='op'>*</span> <span class='fl'>2</span>, <span class='va'>.</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>show_diff</span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span><span class='op'>}</span>
+  <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>show_diff</span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span><span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

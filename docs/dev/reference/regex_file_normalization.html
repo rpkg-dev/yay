@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Open as temporary spreadsheet — open_as_tmp_spreadsheet • yay</title>
+<title>Regular expression patterns and replacements for file normalization — regex_file_normalization • yay</title>
 
 
 
@@ -42,9 +42,9 @@
 <script src="../pkgdown.js"></script>
 
 
-<meta property="og:title" content="Open as temporary spreadsheet — open_as_tmp_spreadsheet" />
-<meta name="description" content="Writes an R object -- usually tabular data like a dataframe or tibble -- to a temporary spreadsheet and subsequently opens that spreadsheet in the system's default application using xopen::xopen(). The latter is usually equivalent to double-clicking on the file in a file browser.">
-<meta property="og:description" content="Writes an R object -- usually tabular data like a dataframe or tibble -- to a temporary spreadsheet and subsequently opens that spreadsheet in the system's default application using xopen::xopen(). The latter is usually equivalent to double-clicking on the file in a file browser." />
+<meta property="og:title" content="Regular expression patterns and replacements for file normalization — regex_file_normalization" />
+<meta name="description" content="Regular expression patterns and replacements for file normalization">
+<meta property="og:description" content="Regular expression patterns and replacements for file normalization" />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@2BSalim" />
 <meta name="twitter:site" content="@2BSalim" />
@@ -113,52 +113,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Open as temporary spreadsheet</h1>
+    <h1>Regular expression patterns and replacements for file normalization</h1>
     <small class="dont-index">Source: <a href='https://gitlab.com/salim_b/r/pkgs/yay/blob/master/R/yay-GEN.R'><code>R/yay-GEN.R</code></a></small>
-    <div class="hidden name"><code>open_as_tmp_spreadsheet.Rd</code></div>
+    <div class="hidden name"><code>regex_file_normalization.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Writes an <span style="R">R</span> object -- usually tabular data like a dataframe or <a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a> -- to a temporary spreadsheet and subsequently opens that
-spreadsheet in the system's default application using <code><a href='https://rdrr.io/pkg/xopen/man/xopen.html'>xopen::xopen()</a></code>. The latter is usually equivalent to double-clicking on the file in a file browser.</p>
+    <p>Regular expression patterns and replacements for file normalization</p>
     </div>
 
-    <pre class="usage"><span class='fu'>open_as_tmp_spreadsheet</span><span class='op'>(</span><span class='va'>x</span>, format <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"csv"</span>, <span class='st'>"xlsx"</span><span class='op'>)</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='va'>regex_file_normalization</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A dataframe or <a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a>, or something coercible to.</p></td>
-    </tr>
-    <tr>
-      <th>format</th>
-      <td><p>The spreadsheet format to use. One of</p><ul>
-<li><p><code>"csv"</code> for a <a href='https://en.wikipedia.org/wiki/Comma-separated_values'>comma-separated values</a> file written using <code><a href='https://readr.tidyverse.org/reference/write_delim.html'>readr::write_csv()</a></code>. The default.</p></li>
-<li><p><code>"xlsx"</code> for an <a href='https://en.wikipedia.org/wiki/Office_Open_XML'>Office Open XML</a> file commonly used by Microsoft Excel 2007+, written using
-<code><a href='https://docs.ropensci.org/writexl/reference/write_xlsx.html'>writexl::write_xlsx()</a></code>.</p></li>
-</ul></td>
-    </tr>
-    <tr>
-      <th>quiet</th>
-      <td><p>Whether or not to echo the command to open the temporary spreadsheet on the console before running it.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p><code>x</code> invisibly.</p>
+    <p>A <a href='https://tibble.tidyverse.org/reference/tbl_df-class.html'>tibble</a>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other data frame / tibble functions:
-<code><a href='show_diff.html'>show_diff</a>()</code></p></div>
+    <div class='dont-index'><p><code><a href='regex_text_normalization.html'>regex_text_normalization</a></code> <code><a href='str_normalize.html'>str_normalize()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>open_as_tmp_spreadsheet</span><span class='op'>(</span><span class='va'>mtcars</span>,
-                             format <span class='op'>=</span> <span class='st'>"xslx"</span><span class='op'>)</span><span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='co'># unnest the pattern column</span>
+<span class='fu'>tidyr</span><span class='fu'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/hoist.html'>unnest_longer</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'>yay</span><span class='fu'>::</span><span class='va'>regex_file_normalization</span>,
+                     col <span class='op'>=</span> <span class='va'>pattern</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 x 5</span><span>
+#&gt;   id              category  purpose                     pattern      replacement
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> terminating_ne… posix     </span><span style='color: #949494;'>"</span><span>ensure file ends with the… </span><span style='color: #949494;'>"</span><span>(.)(?!\\n)… </span><span style='color: #949494;'>"</span><span>\\1\n</span><span style='color: #949494;'>"</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> go_template_op… go_templ… </span><span style='color: #949494;'>"</span><span>ensure there's a space af… </span><span style='color: #949494;'>"</span><span>\\{\\{(?!(… </span><span style='color: #949494;'>"</span><span>{{ </span><span style='color: #949494;'>"</span><span>      
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> go_template_cl… go_templ… </span><span style='color: #949494;'>"</span><span>ensure there's a space be… </span><span style='color: #949494;'>"</span><span>([^-%&gt;/ ]|… </span><span style='color: #949494;'>"</span><span>\\1 }}</span><span style='color: #949494;'>"</span><span>   </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
