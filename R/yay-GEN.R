@@ -5,7 +5,9 @@ utils::globalVariables(names = c(".",
                                  "end",
                                  "i_pattern",
                                  "minus",
+                                 "pattern",
                                  "plus",
+                                 "replacement",
                                  "start",
                                  "status"))
 
@@ -20,6 +22,8 @@ bg_green_dark <- cli::make_ansi_style("#003300",
                                       bg = TRUE,
                                       colors = 2L^24L)
 
+pkg <- utils::packageName()
+
 as_line_feed_chr <- function(eol = c("LF", "CRLF", "CR", "LFCR")) {
   
   switch(EXPR = rlang::arg_match(eol),
@@ -28,6 +32,34 @@ as_line_feed_chr <- function(eol = c("LF", "CRLF", "CR", "LFCR")) {
          CR = "\r",
          LFCR = "\n\r")
 }
+
+
+
+
+
+
+
+#' Regular expression patterns and replacements for text normalization
+#'
+#' @format `r pkgsnip::return_label("data")`
+#' @seealso [`regex_file_normalization`] [str_normalize()]
+#'
+#' @examples
+#' # unnest the pattern column
+#' tidyr::unnest_longer(data = regex_text_normalization,
+#'                      col = pattern)
+"regex_text_normalization"
+
+#' Regular expression patterns and replacements for file normalization
+#'
+#' @format `r pkgsnip::return_label("data")`
+#' @seealso [`regex_text_normalization`] [str_normalize()]
+#'
+#' @examples
+#' # unnest the pattern column
+#' tidyr::unnest_longer(data = regex_file_normalization,
+#'                      col = pattern)
+"regex_file_normalization"
 
 #' Determine the differences between two data frames/tibbles in tabular diff format
 #'
@@ -686,4 +718,36 @@ str_replace_file <- function(path,
               })
   
   invisible(path)
+}
+
+#' Apply regular-expression-based text normalization to files
+#'
+#' Applies a set of regular-expression-based text normalization rules to one or more files given in `path`. By default, changes are shown on the console only,
+#' without actually modifying any files. Set `run_dry = FALSE` to apply the changes.
+#'
+#' @param rules A [tibble][tibble::tibble()] of regular expression patterns and replacements. It must have the columns `pattern` and `replacement`. `pattern`
+#'   can optionally be a list column condensing multiple patterns to the same replacement rule. Patterns are interpreted as regular expressions as described
+#'   in [stringi::stringi-search-regex()]. Replacements are interpreted as-is, except that references of the form `\1`, `\2`, etc. will be replaced with the
+#'   contents of the respective matched group (created in patterns using `()`). Pattern-replacement pairs are processed in the order given, meaning that first
+#'   listed pairs are applied before later listed ones.
+#' @inheritParams str_replace_file
+#'
+#' @inherit str_replace_file return
+#' @seealso [`regex_text_normalization`]
+#' @export
+str_normalize <- function(path,
+                          rules = salim::regex_text_normalization,
+                          run_dry = TRUE,
+                          process_line_by_line = FALSE,
+                          n_context_chrs = 20L,
+                          verbose = TRUE) {
+  rules %>%
+    tidyr::unnest_longer(col = pattern) %$%
+    magrittr::set_names(x = replacement,
+                        value = pattern) %>%
+    str_replace_file(path = path,
+                     n_context_chrs = n_context_chrs,
+                     process_line_by_line = process_line_by_line,
+                     verbose = verbose,
+                     run_dry = run_dry)
 }

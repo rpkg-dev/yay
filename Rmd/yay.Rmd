@@ -14,7 +14,9 @@ utils::globalVariables(names = c(".",
                                  "end",
                                  "i_pattern",
                                  "minus",
+                                 "pattern",
                                  "plus",
+                                 "replacement",
                                  "start",
                                  "status"))
 ```
@@ -42,6 +44,12 @@ bg_green_dark <- cli::make_ansi_style("#003300",
                                       colors = 2L^24L)
 ```
 
+### Other
+
+```{r}
+pkg <- utils::packageName()
+```
+
 ## Functions
 
 ### Convert control character name sequence to actual character sequence
@@ -55,6 +63,125 @@ as_line_feed_chr <- function(eol = c("LF", "CRLF", "CR", "LFCR")) {
          CR = "\r",
          LFCR = "\n\r")
 }
+```
+
+# DATA
+
+Note that although the datasets defined below are saved as "internal data" in `R/sysdata.rda`, they are still exported later on, something not explicitly
+mentioned in the book [R Packages](https://r-pkgs.org/data.html#data-data) (and maybe a CRAN violation?).
+
+## Define data
+
+### Regular expression rules for text normalization
+
+```{r, purl = FALSE}
+regex_text_normalization <-
+  tibble::tibble(id = character(),
+                 category = character(),
+                 purpose = character(),
+                 pattern = list(),
+                 replacement = character()) %>%
+  # harmonize punctuation
+  tibble::add_row(id = "uniform_quotation_marks",
+                  category = "harmonize_punctuation",
+                  purpose = "use typewriter double quotes (`\"`) as quotation marks",
+                  pattern = list("[“”„‟⹂]"),
+                  replacement = "\"") %>%
+  tibble::add_row(id = "uniform_apostrophes",
+                  category = "harmonize_punctuation",
+                  purpose = "use typewriter single quotes (`'`) as apostrophes",
+                  pattern = list("[’‘‚‛]"),
+                  replacement = "'") %>%
+  # prettify punctuation
+  tibble::add_row(id = "no_break_percentages",
+                  category = "prettify_punctuation",
+                  purpose = "use narrow non-breaking space between numbers and percentage signs",
+                  pattern = list("(\\d+) ?(\\\\?%|Prozent|percent|per cent)(?![\"'])"),
+                  replacement = "\\1\u202f\\2") %>%
+  tibble::add_row(id = "no_break_abbreviations_german",
+                  category = "prettify_punctuation",
+                  purpose = "use narrow non-breaking space between characters of common German abbreviations",
+                  pattern = list("(?i)\\b(z\\.) ?(B\\.)",
+                                 "(?i)\\b(z\\.) ?(T\\.)",
+                                 "(?i)\\b(u\\.) ?(a\\.)",
+                                 "(?i)\\b(d\\.) ?(h\\.)"),
+                  replacement = "\\1\u202f\\2") %>%
+  tibble::add_row(id = "no_break_equals_sign",
+                  category = "prettify_punctuation",
+                  purpose = "use narrow non-breaking space before and after certain assignments and equality comparisons (`=` and `==`)",
+                  pattern = list("(?<= \\(\\w{1,32})(?: ?)(==?)(?: ?)(?=\\d+)"),
+                  replacement = "\u202f\\1\u202f") %>%
+  # TODO: the pattern below doesn't really work as intended, fix it!
+  tibble::add_row(id = "en_dash_value_ranges",
+                  category = "prettify_punctuation",
+                  purpose = "use [en dash](https://www.thepunctuationguide.com/en-dash.html) instead of hyphen in value ranges",
+                  pattern = list("(?<!-)(\\d+)-(\\d+)(?!-)"),
+                  replacement = "\\1\u2013\\2")
+```
+
+### Regular expression rules for file normalization
+
+```{r, purl = FALSE}
+regex_file_normalization <-
+  tibble::tibble(id = character(),
+                 category = character(),
+                 purpose = character(),
+                 pattern = list(),
+                 replacement = character()) %>%
+  # ensure terminating newline
+  tibble::add_row(id = "terminating_newline",
+                  category = "posix",
+                  purpose = "ensure file ends with the [POSIX-standard newline control character `LF`](https://en.wikipedia.org/wiki/Newline) (aka `\n`) ",
+                  pattern = list("(.)(?!\\n)\\Z"),
+                  replacement = "\\1\n") %>%
+  # lint [Go template](https://golang.org/pkg/text/template/) syntax
+  tibble::add_row(id = "go_template_opening_double_brace_space",
+                  category = "go_template",
+                  purpose = "ensure there's a space after opening double braces in Go templates",
+                  pattern = list("\\{\\{(?!( |- |%|<|/\\*))"),
+                  replacement = "{{ ") %>%
+  tibble::add_row(id = "go_template_closing_double_brace_space",
+                  category = "go_template",
+                  purpose = "ensure there's a space before closing double braces in Go templates",
+                  pattern = list("([^-%>/ ]|[^ ]-)\\}\\}"),
+                  replacement = "\\1 }}")
+```
+
+## Save data to `R/sysdata.rda`
+
+```{r, purl = FALSE}
+usethis::use_data(regex_text_normalization,
+                  regex_file_normalization,
+                  internal = FALSE,
+                  overwrite = TRUE,
+                  compress = "xz",
+                  version = 3L)
+```
+
+## Document data
+
+```{r}
+#' Regular expression patterns and replacements for text normalization
+#'
+#' @format `r pkgsnip::return_label("data")`
+#' @seealso [`regex_file_normalization`] [str_normalize()]
+#'
+#' @examples
+#' # unnest the pattern column
+#' tidyr::unnest_longer(data = regex_text_normalization,
+#'                      col = pattern)
+"regex_text_normalization"
+
+#' Regular expression patterns and replacements for file normalization
+#'
+#' @format `r pkgsnip::return_label("data")`
+#' @seealso [`regex_text_normalization`] [str_normalize()]
+#'
+#' @examples
+#' # unnest the pattern column
+#' tidyr::unnest_longer(data = regex_file_normalization,
+#'                      col = pattern)
+"regex_file_normalization"
 ```
 
 # Data frames / Tibbles
@@ -768,5 +895,41 @@ str_replace_file <- function(path,
               })
   
   invisible(path)
+}
+```
+
+### Apply regular-expression-based text normalization to files
+
+```{r}
+#' Apply regular-expression-based text normalization to files
+#'
+#' Applies a set of regular-expression-based text normalization rules to one or more files given in `path`. By default, changes are shown on the console only,
+#' without actually modifying any files. Set `run_dry = FALSE` to apply the changes.
+#'
+#' @param rules A [tibble][tibble::tibble()] of regular expression patterns and replacements. It must have the columns `pattern` and `replacement`. `pattern`
+#'   can optionally be a list column condensing multiple patterns to the same replacement rule. Patterns are interpreted as regular expressions as described
+#'   in [stringi::stringi-search-regex()]. Replacements are interpreted as-is, except that references of the form `\1`, `\2`, etc. will be replaced with the
+#'   contents of the respective matched group (created in patterns using `()`). Pattern-replacement pairs are processed in the order given, meaning that first
+#'   listed pairs are applied before later listed ones.
+#' @inheritParams str_replace_file
+#'
+#' @inherit str_replace_file return
+#' @seealso [`regex_text_normalization`]
+#' @export
+str_normalize <- function(path,
+                          rules = salim::regex_text_normalization,
+                          run_dry = TRUE,
+                          process_line_by_line = FALSE,
+                          n_context_chrs = 20L,
+                          verbose = TRUE) {
+  rules %>%
+    tidyr::unnest_longer(col = pattern) %$%
+    magrittr::set_names(x = replacement,
+                        value = pattern) %>%
+    str_replace_file(path = path,
+                     n_context_chrs = n_context_chrs,
+                     process_line_by_line = process_line_by_line,
+                     verbose = verbose,
+                     run_dry = run_dry)
 }
 ```
