@@ -462,9 +462,10 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                          start = repo))
 }
 
-#' Replace matched patterns in a string _verbosely_
+#' Replace matched patterns in strings _verbosely_
 #'
-#' Applies a series of regular-expression-replacement pairs to a string. All performed replacements are displayed on the console by default.
+#' Applies a series of regular-expression-replacement pairs to one or more strings. All performed replacements are displayed on the console by default
+#' (`verbose = TRUE`).
 #'
 #' This function provides a subset of [stringr::str_replace_all()]'s functionality. If you don't need the visual console output, it's recommended to directly
 #' resort to the latter.
@@ -633,9 +634,9 @@ str_replace_verbose_single_info <- function(string,
 
 #' Replace matched patterns in text files
 #'
-#' Applies pattern-based string replacement to multiple files at once. Just provide a series of regular-expression-replacement pairs which are applied
-#' one-by-one in the given order. All performed replacements are displayed on the console by default (`verbose = TRUE`), optionally without actually changing 
-#' any file content (`run_dry = TRUE`).
+#' Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the
+#' given order. All performed replacements are displayed on the console by default (`verbose = TRUE`), optionally without actually changing any file content
+#' (`run_dry = TRUE`).
 #'
 #' Note that `process_line_by_line` requires the [line ending standard (EOL)](https://en.wikipedia.org/wiki/Newline) of the input files to be correctly set in
 #' `eol`. It _always_ defaults to `"LF"` (Unix standard) since this is something which cannot be reliably detected without complex heuristics (and even then
@@ -720,16 +721,45 @@ str_replace_file <- function(path,
   invisible(path)
 }
 
-#' Apply regular-expression-based text normalization to files
+#' Apply regular-expression-based text normalization to strings
 #'
-#' Applies a set of regular-expression-based text normalization rules to one or more files given in `path`. By default, changes are shown on the console only,
-#' without actually modifying any files. Set `run_dry = FALSE` to apply the changes.
+#' Applies a set of regular-expression-based text normalization rules to one or more strings. All performed replacements are displayed on the console by default
+#' (`verbose = TRUE`).
 #'
 #' @param rules A [tibble][tibble::tibble()] of regular expression patterns and replacements. It must have the columns `pattern` and `replacement`. `pattern`
 #'   can optionally be a list column condensing multiple patterns to the same replacement rule. Patterns are interpreted as regular expressions as described
 #'   in [stringi::stringi-search-regex()]. Replacements are interpreted as-is, except that references of the form `\1`, `\2`, etc. will be replaced with the
 #'   contents of the respective matched group (created in patterns using `()`). Pattern-replacement pairs are processed in the order given, meaning that first
 #'   listed pairs are applied before later listed ones.
+#' @inheritParams str_replace_verbose
+#'
+#' @inherit str_replace_file return
+#' @family string
+#' @seealso [`regex_text_normalization`] [`regex_file_normalization`]
+#' @export
+#'
+#' @examples
+#' "This kind of “text normalization” is e.g. useful to apply before feeding stuff to ‘Pandoc’" %>%
+#'   yay::str_normalize()
+str_normalize <- function(string,
+                          rules = yay::regex_text_normalization,
+                          n_context_chrs = 20L,
+                          verbose = TRUE) {
+  rules %>%
+    tidyr::unnest_longer(col = pattern) %$%
+    magrittr::set_names(x = replacement,
+                        value = pattern) %>%
+    str_replace_verbose(string = string,
+                        n_context_chrs = n_context_chrs,
+                        verbose = verbose)
+}
+
+#' Apply regular-expression-based text normalization to files
+#'
+#' Applies a set of regular-expression-based text normalization rules to one or more files. By default, changes are shown on the console only, without actually
+#' modifying any files. Set `run_dry = FALSE` to apply the changes.
+#'
+#' @inheritParams str_normalize
 #' @inheritParams str_replace_file
 #'
 #' @inherit str_replace_file return
@@ -746,13 +776,13 @@ str_replace_file <- function(path,
 #'
 #' regex_file_normalization %>%
 #'   dplyr::filter(category == "posix") %>%
-#'   yay::str_normalize(path = temp_file)
-str_normalize <- function(path,
-                          rules = yay::regex_text_normalization,
-                          run_dry = TRUE,
-                          process_line_by_line = FALSE,
-                          n_context_chrs = 20L,
-                          verbose = TRUE) {
+#'   yay::str_normalize_file(path = temp_file)
+str_normalize_file <- function(path,
+                               rules = yay::regex_text_normalization,
+                               run_dry = TRUE,
+                               process_line_by_line = FALSE,
+                               n_context_chrs = 20L,
+                               verbose = TRUE) {
   rules %>%
     tidyr::unnest_longer(col = pattern) %$%
     magrittr::set_names(x = replacement,

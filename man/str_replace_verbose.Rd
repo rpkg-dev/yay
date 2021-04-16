@@ -2,7 +2,7 @@
 % Please edit documentation in R/yay-GEN.R
 \name{str_replace_verbose}
 \alias{str_replace_verbose}
-\title{Replace matched patterns in a string \emph{verbosely}}
+\title{Replace matched patterns in strings \emph{verbosely}}
 \usage{
 str_replace_verbose(string, pattern, verbose = TRUE, n_context_chrs = 20L)
 }
@@ -24,7 +24,8 @@ order given, meaning that first listed pairs are applied before later listed one
 A character vector.
 }
 \description{
-Applies a series of regular-expression-replacement pairs to a string. All performed replacements are displayed on the console by default.
+Applies a series of regular-expression-replacement pairs to one or more strings. All performed replacements are displayed on the console by default
+(\code{verbose = TRUE}).
 }
 \details{
 This function provides a subset of \code{\link[stringr:str_replace]{stringr::str_replace_all()}}'s functionality. If you don't need the visual console output, it's recommended to directly
@@ -67,6 +68,7 @@ yay::str_replace_verbose(string = input,
 }
 \seealso{
 Other string functions:
+\code{\link{str_normalize_file}()},
 \code{\link{str_normalize}()},
 \code{\link{str_replace_file}()}
 }
