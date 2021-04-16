@@ -32,12 +32,14 @@ This function provides a subset of \code{\link[stringr:str_replace]{stringr::str
 resort to the latter.
 }
 \examples{
-"Make love, not war" \%>\% str_replace_verbose(pattern = c("love" = "hummus",
-                                                         "war" = "walls"))
+"Make love, not war" \%>\%
+  yay::str_replace_verbose(pattern = c("love" = "hummus",
+                                       "war" = "walls"))
 
 # pattern-replacement pairs are processed one-by-one, so the following gives the same result
-"Make love, not war" \%>\% str_replace_verbose(pattern = c("love" = "hummus",
-                                                         "hummus, not war" = "hummus, not walls"))
+"Make love, not war" \%>\%
+  yay::str_replace_verbose(pattern = c("love" = "hummus",
+                                       "hummus, not war" = "hummus, not walls"))
 
 # varying `n_context_chrs` affects console output summarization
 input <- c("Tulips are not durable, ",
