@@ -619,6 +619,13 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 
 TODO:
 
+-   [ ] Investigate if we can somehow consolidate console output per line and pattern. When a single pattern yields multiple replacement infos, the console
+    output is currently confusing. Example:
+
+    ``` {.r}
+    "\t\t\t3 tabs" %>% yay::str_replace_verbose(pattern = c("\\t" = " "))
+    ```
+
 -   [ ] Implement param `n_context_lines` (default = `0L`) to optionally add *vertical* context for console output.
 
     If `n_context_lines > 0L`, we do not `escape_lf()` -\> we'd need to tokenize by LF's instead it seems...
