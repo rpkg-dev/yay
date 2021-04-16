@@ -566,11 +566,16 @@ str_replace_verbose <- function(string,
         cat(rep("\u00A0", times = nchar(n) + 2L), plus, "\n",
             sep = "")
       })
+    
+    result <- string_changed
+    
+  } else {
+    result <- stringr::str_replace_all(string = string,
+                                       pattern = pattern)
   }
   
-  # perform actual replacement
-  stringr::str_replace_all(string = string,
-                           pattern = pattern)
+  # return result
+  result
 }
 
 # helper to generate info for single replacement 
