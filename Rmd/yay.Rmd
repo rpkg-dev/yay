@@ -625,7 +625,8 @@ TODO:
 
 -   [ ] Currently, the regex-group-based replacements are not properly displayed on the console (`\1` instead of the parsed first group etc.).
 
-    -\> Check if it's possible to change this (without too much hassle).
+    -\> Check if it's possible to change this (without too much hassle). If yes, also think about adding support for functions (`stringr::str_replace_all()`
+    already supports this)... obviously, `pattern` would have to be of type list to support this.
 
 ```{r}
 #' Replace matched patterns in strings _verbosely_
