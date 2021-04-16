@@ -43,8 +43,8 @@
 
 
 <meta property="og:title" content="Replace matched patterns in text files — str_replace_file" />
-<meta name="description" content="Applies pattern-based string replacement to multiple files at once. Just provide a series of regular-expression-replacement pairs which are applied one-by-one in the given order. All performed replacements are displayed on the console by default (verbose = TRUE), optionally without actually changing any file content (run_dry = TRUE).">
-<meta property="og:description" content="Applies pattern-based string replacement to multiple files at once. Just provide a series of regular-expression-replacement pairs which are applied one-by-one in the given order. All performed replacements are displayed on the console by default (verbose = TRUE), optionally without actually changing any file content (run_dry = TRUE)." />
+<meta name="description" content="Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the given order. All performed replacements are displayed on the console by default (verbose = TRUE), optionally without actually changing any file content (run_dry = TRUE).">
+<meta property="og:description" content="Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the given order. All performed replacements are displayed on the console by default (verbose = TRUE), optionally without actually changing any file content (run_dry = TRUE)." />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@2BSalim" />
 <meta name="twitter:site" content="@2BSalim" />
@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9002</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9003</span>
       </span>
     </div>
 
@@ -119,9 +119,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Applies pattern-based string replacement to multiple files at once. Just provide a series of regular-expression-replacement pairs which are applied
-one-by-one in the given order. All performed replacements are displayed on the console by default (<code>verbose = TRUE</code>), optionally without actually changing
-any file content (<code>run_dry = TRUE</code>).</p>
+    <p>Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the
+given order. All performed replacements are displayed on the console by default (<code>verbose = TRUE</code>), optionally without actually changing any file content
+(<code>run_dry = TRUE</code>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>str_replace_file</span><span class='op'>(</span>
@@ -196,6 +196,7 @@ Windows) seems like a really bad idea with regard to cross-system collaboration 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other string functions:
+<code><a href='str_normalize_file.html'>str_normalize_file</a>()</code>,
 <code><a href='str_normalize.html'>str_normalize</a>()</code>,
 <code><a href='str_replace_verbose.html'>str_replace_verbose</a>()</code></p></div>
 

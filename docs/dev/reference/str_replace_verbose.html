@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Replace matched patterns in a string verbosely — str_replace_verbose • yay</title>
+<title>Replace matched patterns in strings verbosely — str_replace_verbose • yay</title>
 
 
 
@@ -42,9 +42,9 @@
 <script src="../pkgdown.js"></script>
 
 
-<meta property="og:title" content="Replace matched patterns in a string verbosely — str_replace_verbose" />
-<meta name="description" content="Applies a series of regular-expression-replacement pairs to a string. All performed replacements are displayed on the console by default.">
-<meta property="og:description" content="Applies a series of regular-expression-replacement pairs to a string. All performed replacements are displayed on the console by default." />
+<meta property="og:title" content="Replace matched patterns in strings verbosely — str_replace_verbose" />
+<meta name="description" content="Applies a series of regular-expression-replacement pairs to one or more strings. All performed replacements are displayed on the console by default (verbose = TRUE).">
+<meta property="og:description" content="Applies a series of regular-expression-replacement pairs to one or more strings. All performed replacements are displayed on the console by default (verbose = TRUE)." />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@2BSalim" />
 <meta name="twitter:site" content="@2BSalim" />
@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9002</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9003</span>
       </span>
     </div>
 
@@ -113,13 +113,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Replace matched patterns in a string <em>verbosely</em></h1>
+    <h1>Replace matched patterns in strings <em>verbosely</em></h1>
     <small class="dont-index">Source: <a href='https://gitlab.com/salim_b/r/pkgs/yay/blob/master/R/yay-GEN.R'><code>R/yay-GEN.R</code></a></small>
     <div class="hidden name"><code>str_replace_verbose.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Applies a series of regular-expression-replacement pairs to a string. All performed replacements are displayed on the console by default.</p>
+    <p>Applies a series of regular-expression-replacement pairs to one or more strings. All performed replacements are displayed on the console by default
+(<code>verbose = TRUE</code>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>str_replace_verbose</span><span class='op'>(</span><span class='va'>string</span>, <span class='va'>pattern</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span>, n_context_chrs <span class='op'>=</span> <span class='fl'>20L</span><span class='op'>)</span></pre>
@@ -160,6 +161,7 @@ resort to the latter.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other string functions:
+<code><a href='str_normalize_file.html'>str_normalize_file</a>()</code>,
 <code><a href='str_normalize.html'>str_normalize</a>()</code>,
 <code><a href='str_replace_file.html'>str_replace_file</a>()</code></p></div>
 
