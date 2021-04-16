@@ -96,7 +96,7 @@ regex_text_normalization <-
   tibble::add_row(id = "no_break_percentages",
                   category = "prettify_punctuation",
                   purpose = "use narrow non-breaking space between numbers and percentage signs",
-                  pattern = list("(\\d+) ?(\\\\?%|Prozent|percent|per cent)(?![\"'])"),
+                  pattern = list("(\\d+) ?(\\\\?%|Prozent|percent|per\\scent)(?![\"'])"),
                   replacement = "\\1\u202f\\2") %>%
   tibble::add_row(id = "no_break_abbreviations_german",
                   category = "prettify_punctuation",
