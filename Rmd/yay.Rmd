@@ -349,7 +349,7 @@ show_diff <- function(x,
       } else {
         
         pal::assert_pkg("xopen")
-        tmp_file <- fs::file_temp(pattern = "pal_show_diff",
+        tmp_file <- fs::file_temp(pattern = "yay-show_diff_",
                                   ext = "html")
         
         daff::render_diff(diff = daff_obj,
