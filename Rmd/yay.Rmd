@@ -121,6 +121,9 @@ regex_text_normalization <-
 
 ### Regular expression rules for file normalization
 
+Note that the ICU regex engine used by yay/stringr/stringi [doesn't yet support](https://unicode-org.atlassian.net/browse/ICU-11291) case-conversion replacement
+syntax (`\U`, `\L` and friends).
+
 ```{r, purl = FALSE}
 regex_file_normalization <-
   tibble::tibble(id = character(),
