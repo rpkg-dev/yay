@@ -8,7 +8,7 @@ This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(comp
 
 To install the latest development version of yay, run the following in R:
 
-``` {.r}
+``` r
 if (!("remotes" %in% rownames(installed.packages()))) {
   install.packages(pkgs = "remotes",
                    repos = "https://cloud.r-project.org/")
@@ -39,7 +39,7 @@ This package borrows a lot of the [Tidyverse](https://www.tidyverse.org/) design
 
 As far as possible, these deviations from the TSG plus some additional restrictions are formally specified in the [lintr configuration file](https://github.com/jimhester/lintr#project-configuration) [`.lintr`](.lintr), so lintr can be used right away to check for formatting issues:
 
-``` {.r}
+``` r
 pkgpurl::lint_rmd()
 ```
 

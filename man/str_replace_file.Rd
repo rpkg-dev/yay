@@ -12,7 +12,7 @@ str_replace_file(
   verbose = TRUE,
   n_context_chrs = 20L,
   show_rel_path = TRUE,
-  run_dry = FALSE
+  run_dry = TRUE
 )
 }
 \arguments{
@@ -42,7 +42,7 @@ more performant, you probably want the former if you're using \code{"^"} or \cod
 \item{show_rel_path}{Whether to display file \code{path}s as relative from the current working directory. If \code{FALSE}, absolute paths are displayed. Only relevant
 if \code{verbose = TRUE}.}
 
-\item{run_dry}{Show replacements on the console only, without actually modifying any files. Implies \code{verbose = TRUE}.}
+\item{run_dry}{Whether to show replacements on the console only, without actually modifying any files. Implies \code{verbose = TRUE}.}
 }
 \value{
 \code{path} invisibly.

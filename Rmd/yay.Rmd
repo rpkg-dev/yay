@@ -849,7 +849,7 @@ TODO:
 #'   - `"LFCR"` for the line feed + carriage return (LF+CR) character sequence (`"\n\r"`). The standard on RISC OS and some other exotic systems.
 #' @param show_rel_path Whether to display file `path`s as relative from the current working directory. If `FALSE`, absolute paths are displayed. Only relevant
 #'   if `verbose = TRUE`.
-#' @param run_dry Show replacements on the console only, without actually modifying any files. Implies `verbose = TRUE`.
+#' @param run_dry Whether to show replacements on the console only, without actually modifying any files. Implies `verbose = TRUE`.
 #' @inheritParams str_replace_verbose
 #'
 #' @return `path` invisibly.
@@ -862,7 +862,7 @@ str_replace_file <- function(path,
                              verbose = TRUE,
                              n_context_chrs = 20L,
                              show_rel_path = TRUE,
-                             run_dry = FALSE) {
+                             run_dry = TRUE) {
   
   pal::assert_pkg("brio")
   checkmate::assert_file(path,
@@ -875,6 +875,9 @@ str_replace_file <- function(path,
   
   if (run_dry && !verbose) {
     rlang::abort("Setting `run_dry = TRUE` and `verbose = FALSE` at the same time is pointless.")
+    
+  } else if (run_dry) {
+    cli::cli_alert_info("Running in dry mode. Set {.code run_dry = FALSE} to actually modify any files.")
   }
   
   purrr::walk(.x = path,

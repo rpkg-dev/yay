@@ -22,7 +22,7 @@ in \code{\link[stringi:about_search_regex]{stringi::stringi-search-regex()}}. Re
 contents of the respective matched group (created in patterns using \verb{()}). Pattern-replacement pairs are processed in the order given, meaning that first
 listed pairs are applied before later listed ones.}
 
-\item{run_dry}{Show replacements on the console only, without actually modifying any files. Implies \code{verbose = TRUE}.}
+\item{run_dry}{Whether to show replacements on the console only, without actually modifying any files. Implies \code{verbose = TRUE}.}
 
 \item{process_line_by_line}{Whether each line in a file should be treated as a separate string or the whole file as one single string. While the latter is
 more performant, you probably want the former if you're using \code{"^"} or \code{"$"} in your \code{pattern}s.}
