@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9003</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9004</span>
       </span>
     </div>
 
@@ -169,18 +169,18 @@ resort to the latter.</p>
     <pre class="examples"><div class='input'><span class='st'>"Make love, not war"</span> <span class='op'>%&gt;%</span>
   <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>pattern <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"love"</span> <span class='op'>=</span> <span class='st'>"hummus"</span>,
                                        <span class='st'>"war"</span> <span class='op'>=</span> <span class='st'>"walls"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000;text-decoration: line-through;'>love</span><span style='background-color: #000000;'>, not war</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus</span><span style='background-color: #000000;'>, not war</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #000000;'>Make hummus, not </span><span style='background-color: #5F0000;text-decoration: line-through;'>war</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #000000;'>Make hummus, not </span><span style='background-color: #005F00;'>walls</span><span></div><div class='output co'>#&gt; [1] "Make hummus, not walls"</div><div class='input'>
+</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000; text-decoration: line-through;'>love</span><span style='background-color: #000000;'>, not war</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus</span><span style='background-color: #000000;'>, not war</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make hummus, not </span><span style='background-color: #5F0000; text-decoration: line-through;'>war</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make hummus, not </span><span style='background-color: #005F00;'>walls</span></div><div class='output co'>#&gt; [1] "Make hummus, not walls"</div><div class='input'>
 <span class='co'># pattern-replacement pairs are processed one-by-one, so the following gives the same result</span>
 <span class='st'>"Make love, not war"</span> <span class='op'>%&gt;%</span>
   <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>pattern <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"love"</span> <span class='op'>=</span> <span class='st'>"hummus"</span>,
                                        <span class='st'>"hummus, not war"</span> <span class='op'>=</span> <span class='st'>"hummus, not walls"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000;text-decoration: line-through;'>love</span><span style='background-color: #000000;'>, not war</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus</span><span style='background-color: #000000;'>, not war</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000;text-decoration: line-through;'>hummus, not war</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus, not walls</span><span></div><div class='output co'>#&gt; [1] "Make hummus, not walls"</div><div class='input'>
+</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000; text-decoration: line-through;'>love</span><span style='background-color: #000000;'>, not war</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus</span><span style='background-color: #000000;'>, not war</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000; text-decoration: line-through;'>hummus, not war</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus, not walls</span></div><div class='output co'>#&gt; [1] "Make hummus, not walls"</div><div class='input'>
 <span class='co'># varying `n_context_chrs` affects console output summarization</span>
 <span class='va'>input</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Tulips are not durable, "</span>,
            <span class='st'>"not scarce, "</span>,
@@ -202,24 +202,24 @@ resort to the latter.</p>
                          pattern <span class='op'>=</span> <span class='va'>pattern</span>,
                          n_context_chrs <span class='op'>=</span> <span class='fl'>5L</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>pal</span><span class='fu'>::</span><span class='fu'><a href='https://rpkg.dev/pal/reference/cat_lines.html'>cat_lines</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #000000;'>… are </span><span style='background-color: #5F0000;text-decoration: line-through;'>not</span><span style='background-color: #000000;'> dura…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #000000;'>… are </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> dura…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>not</span><span style='background-color: #000000;'> divi…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> divi…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>not</span><span style='background-color: #000000;'> fung…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> fung…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>not</span><span style='background-color: #000000;'> prog…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> prog…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>not</span><span style='background-color: #000000;'> scar…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> scar…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>not</span><span style='background-color: #000000;'> veri…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> veri…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #000000;'>and </span><span style='background-color: #5F0000;text-decoration: line-through;'>hard</span><span style='background-color: #000000;'> to t…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #000000;'>and </span><span style='background-color: #005F00;'>ridiculously easy</span><span style='background-color: #000000;'> to t…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>But tell me more about your analogy...</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>So... flower power?</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>\1🤪</span><span>
+</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>… are </span><span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> dura…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>… are </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> dura…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> divi…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> divi…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> fung…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> fung…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> prog…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> prog…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> scar…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> scar…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> veri…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> veri…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>and </span><span style='background-color: #5F0000; text-decoration: line-through;'>hard</span><span style='background-color: #000000;'> to t…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>and </span><span style='background-color: #005F00;'>ridiculously easy</span><span style='background-color: #000000;'> to t…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>But tell me more about your analogy...</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>So... flower power?</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>\1🤪</span>
 #&gt; Tulips are extremely durable, 
 #&gt; extremely scarce, 
 #&gt; extremely programmable, 
@@ -234,16 +234,16 @@ resort to the latter.</p>
                          pattern <span class='op'>=</span> <span class='va'>pattern</span>,
                          n_context_chrs <span class='op'>=</span> <span class='fl'>0L</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>pal</span><span class='fu'>::</span><span class='fu'><a href='https://rpkg.dev/pal/reference/cat_lines.html'>cat_lines</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #000000;'>…</span><span style='background-color: #5F0000;text-decoration: line-through;'>not</span><span style='background-color: #000000;'>…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #000000;'>…</span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'>…</span><span>
-#&gt; 5× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>not</span><span style='background-color: #000000;'>…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'>…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #000000;'>…</span><span style='background-color: #5F0000;text-decoration: line-through;'>hard</span><span style='background-color: #000000;'>…</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #000000;'>…</span><span style='background-color: #005F00;'>ridiculously easy</span><span style='background-color: #000000;'>…</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>But tell me more about your analogy...</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>So... flower power?</span><span>
-#&gt; 1× </span><span style='color: #BB0000;'>-</span><span> </span><span style='background-color: #5F0000;text-decoration: line-through;'>-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)</span><span>
-#&gt;    </span><span style='color: #00BB00;'>+</span><span> </span><span style='background-color: #005F00;'>\1🤪</span><span>
+</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>…</span><span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'>…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>…</span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'>…</span>
+#&gt; 5× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'>…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'>…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>…</span><span style='background-color: #5F0000; text-decoration: line-through;'>hard</span><span style='background-color: #000000;'>…</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>…</span><span style='background-color: #005F00;'>ridiculously easy</span><span style='background-color: #000000;'>…</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>But tell me more about your analogy...</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>So... flower power?</span>
+#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)</span>
+#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>\1🤪</span>
 #&gt; Tulips are extremely durable, 
 #&gt; extremely scarce, 
 #&gt; extremely programmable, 
@@ -253,7 +253,7 @@ resort to the latter.</p>
 #&gt; and ridiculously easy to transfer. 
 #&gt; So... flower power?
 #&gt; 
-#&gt; -🤪</div></span></pre>
+#&gt; -🤪</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

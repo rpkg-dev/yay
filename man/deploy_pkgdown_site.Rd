@@ -41,12 +41,12 @@ Use this function with \strong{caution} since by default it \strong{completely w
 Instead of directly providing a valid \code{to_path} argument, you can also set \code{to_path = NULL} and provide
 \itemize{
 \item the desired deploy paths for each package in the \R option \code{yay.local_pkgdown_deploy_paths}. The value of this option must be a named character vector
-whereas the names correspond to the package names and the values to the filesystem paths. As an example:\if{html}{\out{<div class="r">}}\preformatted{options(yay.local_pkgdown_deploy_paths = c(some_pkg    = "/path/to/common_pkgdown_repo/some_pkg",
+whereas the names correspond to the package names and the values to the filesystem paths. As an example:\if{html}{\out{<div class="sourceCode r">}}\preformatted{options(yay.local_pkgdown_deploy_paths = c(some_pkg    = "/path/to/common_pkgdown_repo/some_pkg",
                                            another_pkg = "/path/to/common_pkgdown_repo/another_pkg",
                                            foo_pkg     = "/path/to/dedicated_foo_pkgdown_repo"))
 }\if{html}{\out{</div>}}
 \item a default parent path in the \R option \code{yay.default_local_pkgdown_deploy_parent_path} that will be used as the deployment parent directory for all packages
-that are not explicitly listed in \code{yay.local_pkgdown_deploy_paths}. For example you could set\if{html}{\out{<div class="r">}}\preformatted{options(yay.default_local_pkgdown_deploy_parent_path = "/path/to/common_pkgdown_repo")
+that are not explicitly listed in \code{yay.local_pkgdown_deploy_paths}. For example you could set\if{html}{\out{<div class="sourceCode r">}}\preformatted{options(yay.default_local_pkgdown_deploy_parent_path = "/path/to/common_pkgdown_repo")
 }\if{html}{\out{</div>}}
 
 which would result in deploying the pkgdown website files of a hypothetical package named \emph{bar_pkg} to \verb{/path/to/common_pkgdown_repo/bar_pkg}.

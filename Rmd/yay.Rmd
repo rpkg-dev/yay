@@ -500,7 +500,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   checkmate::assert_flag(clean_to_path)
   
   if (!(pal::is_pkgdown_dir(pkg_path))) {
-    rlang::abort(paste0("No pkgdown configuration found under path: ", pkg_path))
+    rlang::abort(cli::format_error("No pkgdown configuration found under path: {.path {pkg_path}}"))
   }
   
   # get pkg's pkgdown config
@@ -513,36 +513,36 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   config <- pkgdown::as_pkgdown(pkg = pkg_path,
                                 override = override)
   
-  # get `to_path` if necessary
-  if (is.null(to_path)) {
-    
-    to_path <- getOption("yay.local_pkgdown_deploy_paths")[config$package]
-    
-    if (is.null(to_path) || is.na(to_path)) {
-      
-      to_path_parent <- getOption("yay.default_local_pkgdown_deploy_parent_path")
-      
-      if (is.null(to_path_parent)) {
-        rlang::abort(glue::glue("Either set `to_path` directly to a valid filesystem path or provide the path in the R option `yay.local_pkgdown_deploy_paths`",
-                                " as a named character vector of the form `c({config$package} = \"/path/to/local_git_repo\")`. Another alternative is to set a",
-                                " default parent path in the R option `yay.default_local_pkgdown_deploy_parent_path`. See `?yay::deploy_pkgdown_site` for",
-                                " details."))
-        
-      } else if (!checkmate::test_directory(to_path_parent,
-                                            access = "w")) {
-        rlang::abort(glue::glue("The R option `yay.default_local_pkgdown_deploy_parent_path` is set, but not to valid filesystem path with write access.",
-                     " Current option value: {to_path_parent}"))
-        
+  # determine `to_path` if necessary
+  arg_to_path <- to_path
+  to_path <- to_path %||% getOption("yay.local_pkgdown_deploy_paths")[config$package]
+  to_path_parent <- getOption("yay.default_local_pkgdown_deploy_parent_path")
+  to_path <- to_path %||% fs::path_join(c(to_path_parent, config$package))
+  to_path_parent <- fs::path_dir(to_path)
+  
+  if (!checkmate::test_path_for_output(to_path,
+                                       overwrite = TRUE)) {
+    if (is.null(arg_to_path)) {
+      if (is.null(getOption("yay.local_pkgdown_deploy_paths")[config$package])) {
+        if (!is.null(getOption("yay.default_local_pkgdown_deploy_parent_path"))) {
+          rlang::abort(cli::format_error(paste0("The R option {.field yay.default_local_pkgdown_deploy_parent_path} is set, but not to a valid filesystem path",
+                                                " with write access. Current option value: {.path {to_path_parent}}")))
+        } else {
+          rlang::abort(cli::format_error(paste0("Either set {.arg to_path} directly to a valid filesystem path or provide the path in the R option {.field ",
+                                                "yay.local_pkgdown_deploy_paths} as a named character vector of the form {.code c({config$package} = ",
+                                                "\"/path/to/local_git_repo\")}. Another alternative is to set a default parent path in the R option {.field ",
+                                                "yay.default_local_pkgdown_deploy_parent_path}. See {.code ?yay::deploy_pkgdown_site} for details.")))
+        }
       } else {
-        to_path <- fs::path(to_path_parent, config$package)
+        rlang::abort(cli::format_error(paste0("The R option {.field yay.local_pkgdown_deploy_paths[\"{config$package}\"]} is set, but not to a valid ",
+                                              "filesystem path with write access. Current option value: {.path {to_path}}")))
       }
+    } else {
+      rlang::abort(cli::format_error("{.arg {to_path}} is not a valid filesystem path."))
     }
   }
   
-  checkmate::assert_path_for_output(to_path,
-                                    overwrite = TRUE)
-  
-  # create pkg website subfolder if necessary (only leaf directory will be created because of the checkmate assertion above)
+  # create pkg website subfolder if necessary (only leaf directory will be created because of `checkmate::test_path_for_output()` above)
   if (!fs::dir_exists(to_path)) fs::dir_create(path = to_path)
   
   repo <- to_path %>% gert::git_find()
@@ -576,9 +576,8 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                      invert = TRUE)
   
   dirs %>% purrr::walk2(.y =
-                          config$dst_path %>%
-                          fs::path_rel(start = pkg_path) %>%
-                          fs::path_rel(path = dirs) %>%
+                          dirs %>%
+                          fs::path_rel(start = config$dst_path) %>%
                           fs::path(to_path, .),
                         .f = fs::dir_copy,
                         overwrite = TRUE)
@@ -591,13 +590,13 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                         new_path = to_path,
                         overwrite = TRUE)
   
-  paths <- c(dirs, files)
-  
   # commit and push files
   staged <-
-    paths %>%
+    c(dirs, files) %>%
     fs::path_rel(start = config$dst_path) %>%
-    fs::path(to_path %>% fs::path_rel(start = repo), .) %>%
+    fs::path(fs::path_rel(path = to_path,
+                          start = repo),
+             .) %>%
     gert::git_add(repo = repo)
   
   if (nrow(staged)) {
