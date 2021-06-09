@@ -304,6 +304,9 @@ open_as_tmp_spreadsheet <- function(x,
 #' [pkgdown::build_site()] before running this function in order to create the website files.
 #'
 #' Use this function with **caution** since by default it **completely wipes the `to_path` directory**!
+#' 
+#' @details
+#' `r pkgsnip::md_snip("rstudio_addin_hint")`
 #'
 #' # Setting `to_path` via \R options
 #'

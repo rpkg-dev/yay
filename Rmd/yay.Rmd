@@ -446,6 +446,9 @@ These functions are likely to be proposed upstream, and if accepted, will be rem
 #' [pkgdown::build_site()] before running this function in order to create the website files.
 #'
 #' Use this function with **caution** since by default it **completely wipes the `to_path` directory**!
+#' 
+#' @details
+#' `r pkgsnip::md_snip("rstudio_addin_hint")`
 #'
 #' # Setting `to_path` via \R options
 #'

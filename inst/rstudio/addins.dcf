@@ -1,0 +1,4 @@
+Name: Deploy pkgdown site to local Git folder
+Description: Copies the static pkgdown website files to another local Git folder, then stages, commits and pushes the changes.
+Binding: deploy_pkgdown_site
+Interactive: false

@@ -37,6 +37,9 @@ Copies the static \link[pkgdown:pkgdown-package]{pkgdown} website files to anoth
 
 Use this function with \strong{caution} since by default it \strong{completely wipes the \code{to_path} directory}!
 }
+\details{
+This function is also registered as an \href{https://rstudio.github.io/rstudioaddins/}{RStudio add-in} allowing RStudio users to assign a custom shortcut to it.
+}
 \section{Setting \code{to_path} via \R options}{
 Instead of directly providing a valid \code{to_path} argument, you can also set \code{to_path = NULL} and provide
 \itemize{
