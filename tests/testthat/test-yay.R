@@ -34,6 +34,7 @@ test_that("`str_replace_file()` basically works", {
       str_replace_file(path = "test_file_1.txt",
                        pattern = pattern,
                        process_line_by_line = TRUE,
+                       run_dry = FALSE,
                        verbose = FALSE)},
     "test_file_2.txt" = {
       readr::write_lines(x = before,
@@ -41,6 +42,7 @@ test_that("`str_replace_file()` basically works", {
       str_replace_file(path = "test_file_2.txt",
                        pattern = pattern,
                        process_line_by_line = FALSE,
+                       run_dry = FALSE,
                        verbose = FALSE)}))
 
   expect_identical(readr::read_lines("test_file_1.txt"),
