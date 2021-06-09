@@ -23,8 +23,8 @@ and \code{yay.default_local_pkgdown_deploy_parent_path} will be respected. See s
 \href{https://pkgdown.r-lib.org/reference/build_site.html#development-mode}{\code{development.mode}} set in the pkgdown YAML configuration file from \code{pkg_path} will
 be respected.}
 
-\item{clean_to_path}{Whether to completely wipe \code{to_path} before deploying the new pkgdown website files. Setting this \code{TRUE} ensures there are no obsolete
-files left over from previous deployments.}
+\item{clean_to_path}{Whether to completely wipe \code{to_path} before deploying the new pkgdown website files. Setting this to \code{TRUE} ensures there are no
+obsolete files left over from previous deployments.}
 
 \item{commit_msg}{The Git commit message used for the deployment.}
 }

@@ -2,7 +2,7 @@ pandoc: 2.14.0.1
 pkgdown: 1.6.1.9000
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-06-08T10:36Z
+last_built: 2021-06-09T22:10Z
 urls:
   reference: https://rpkg.dev/yay/reference
   article: https://rpkg.dev/yay/articles

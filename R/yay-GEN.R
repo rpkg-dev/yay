@@ -340,8 +340,8 @@ open_as_tmp_spreadsheet <- function(x,
 #' @param use_dev_build Whether to deploy the development build of the pkgdown website files. If `NULL`,
 #'   [`development.mode`](https://pkgdown.r-lib.org/reference/build_site.html#development-mode) set in the pkgdown YAML configuration file from `pkg_path` will
 #'   be respected.
-#' @param clean_to_path Whether to completely wipe `to_path` before deploying the new pkgdown website files. Setting this `TRUE` ensures there are no obsolete
-#'   files left over from previous deployments.
+#' @param clean_to_path Whether to completely wipe `to_path` before deploying the new pkgdown website files. Setting this to `TRUE` ensures there are no
+#'   obsolete files left over from previous deployments.
 #' @param commit_msg The Git commit message used for the deployment.
 #'
 #' @return A vector of paths to the deployed files/folders, invisibly.
