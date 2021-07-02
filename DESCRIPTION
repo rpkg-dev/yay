@@ -10,7 +10,7 @@ Authors@R:
 Description: A delightful mix of convenience functions designed to put a
     smile on your face during typical R workflows.
 License: AGPL (>= 3)
-URL: https://gitlab.com/salim_b/r/pkgs/yay
+URL: https://rpkg.dev/yay, https://gitlab.com/salim_b/r/pkgs/yay
 BugReports: https://gitlab.com/salim_b/r/pkgs/yay/issues
 Depends: 
     R (>= 3.5.0)

@@ -12,6 +12,7 @@ A delightful mix of convenience functions designed to put a
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://rpkg.dev/yay}
   \item \url{https://gitlab.com/salim_b/r/pkgs/yay}
   \item Report bugs at \url{https://gitlab.com/salim_b/r/pkgs/yay/issues}
 }
