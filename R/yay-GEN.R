@@ -434,6 +434,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   dirs <- fs::dir_ls(path = config$dst_path,
                      type = "directory",
                      regexp = paste0("^\\Q", fs::path(config$dst_path, config$development$destination), "\\E"),
+                     all = TRUE,
                      invert = TRUE)
   
   dirs %>% purrr::walk2(.y =
