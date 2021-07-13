@@ -217,8 +217,6 @@ show_diff <- function(x,
   
   if (length(diff)) {
     
-    pal::assert_pkg("cli")
-    
     if (verbose) {
       cli::cli_alert_info(text = paste0(diff_text, ":"))
       cat("\n")
@@ -333,7 +331,7 @@ deploy_static_site <- function(from_path,
                                to_path,
                                clean_to_path = TRUE,
                                commit_msg = "auto-deploy static website") {
-  
+  pal::assert_pkg("gert")
   checkmate::assert_directory(from_path,
                               access = "r")
   checkmate::assert_flag(clean_to_path)
@@ -341,7 +339,7 @@ deploy_static_site <- function(from_path,
   
   if (!checkmate::test_path_for_output(to_path,
                                        overwrite = TRUE)) {
-    rlang::abort(cli::format_error("{.arg {to_path}} is not a valid filesystem path."))
+    cli::cli_abort("{.arg {to_path}} is not a valid filesystem path.")
   }
   
   # create website deploy subfolder if necessary (only leaf directory will be created because of `checkmate::test_path_for_output()` above)
@@ -463,7 +461,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   checkmate::assert_string(commit_msg)
   
   if (!(pal::is_pkgdown_dir(pkg_path))) {
-    rlang::abort(cli::format_error("No pkgdown configuration found under path: {.path {pkg_path}}"))
+    cli::cli_abort("No pkgdown configuration found under path: {.path {pkg_path}}")
   }
   
   # get pkg's pkgdown config
@@ -488,20 +486,20 @@ deploy_pkgdown_site <- function(pkg_path = ".",
     if (is.null(arg_to_path)) {
       if (is.null(getOption("yay.local_pkgdown_deploy_paths")[config$package])) {
         if (!is.null(getOption("yay.default_local_pkgdown_deploy_parent_path"))) {
-          rlang::abort(cli::format_error(paste0("The R option {.field yay.default_local_pkgdown_deploy_parent_path} is set, but not to a valid filesystem path",
-                                                " with write access. Current option value: {.path {to_path_parent}}")))
+          cli::cli_abort(paste0("The R option {.field yay.default_local_pkgdown_deploy_parent_path} is set, but not to a valid filesystem path",
+                                " with write access. Current option value: {.path {to_path_parent}}"))
         } else {
-          rlang::abort(cli::format_error(paste0("Either set {.arg to_path} directly to a valid filesystem path or provide the path in the R option {.field ",
-                                                "yay.local_pkgdown_deploy_paths} as a named character vector of the form {.code c({config$package} = ",
-                                                "\"/path/to/local_git_repo\")}. Another alternative is to set a default parent path in the R option {.field ",
-                                                "yay.default_local_pkgdown_deploy_parent_path}. See {.code ?yay::deploy_pkgdown_site} for details.")))
+          cli::cli_abort(paste0("Either set {.arg to_path} directly to a valid filesystem path or provide the path in the R option {.field ",
+                                "yay.local_pkgdown_deploy_paths} as a named character vector of the form {.code c({config$package} = ",
+                                "\"/path/to/local_git_repo\")}. Another alternative is to set a default parent path in the R option {.field ",
+                                "yay.default_local_pkgdown_deploy_parent_path}. See {.code ?yay::deploy_pkgdown_site} for details."))
         }
       } else {
-        rlang::abort(cli::format_error(paste0("The R option {.field yay.local_pkgdown_deploy_paths[\"{config$package}\"]} is set, but not to a valid ",
-                                              "filesystem path with write access. Current option value: {.path {to_path}}")))
+        cli::cli_abort(paste0("The R option {.field yay.local_pkgdown_deploy_paths[\"{config$package}\"]} is set, but not to a valid ",
+                              "filesystem path with write access. Current option value: {.path {to_path}}"))
       }
     } else {
-      rlang::abort(cli::format_error("{.arg {to_path}} is not a valid filesystem path."))
+      cli::cli_abort("{.arg {to_path}} is not a valid filesystem path.")
     }
   }
   
@@ -632,8 +630,6 @@ str_replace_verbose <- function(string,
   
   # print replacement info for humans
   if (verbose) {
-    
-    pal::assert_pkg("cli")
     
     # we have to process each pattern-replacement pair one-by-one because other than `stringr::str_replace_all()`, `stringr::str_locate_all()` doesn't support
     # the pair-wise spec
@@ -799,8 +795,6 @@ str_replace_file <- function(path,
                 
                 # print file progress info
                 if (verbose) {
-                  
-                  pal::assert_pkg("cli")
                   
                   path_show <- dplyr::if_else(show_rel_path,
                                               fs::path_rel(path),
