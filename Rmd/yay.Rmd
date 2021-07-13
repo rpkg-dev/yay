@@ -65,12 +65,10 @@ as_line_feed_chr <- function(eol = c("LF", "CRLF", "CR", "LFCR")) {
 }
 ```
 
-# DATA
+## Data
 
 Note that although the datasets defined below are saved as "internal data" in `R/sysdata.rda`, they are still exported later on, something not explicitly
 mentioned in the book [R Packages](https://r-pkgs.org/data.html#data-data) (and maybe a CRAN violation?).
-
-## Define data
 
 ### Regular expression rules for text normalization
 
@@ -150,7 +148,7 @@ regex_file_normalization <-
                   replacement = "\\1 }}")
 ```
 
-## Save data to `R/sysdata.rda`
+### Save data to `R/sysdata.rda`
 
 ```{r, purl = FALSE}
 usethis::use_data(regex_text_normalization,
@@ -161,7 +159,9 @@ usethis::use_data(regex_text_normalization,
                   version = 3L)
 ```
 
-## Document data
+# Regular expression rules
+
+## `regex_text_normalization`
 
 ```{r}
 #' Regular expression patterns and replacements for text normalization
@@ -174,7 +174,11 @@ usethis::use_data(regex_text_normalization,
 #' tidyr::unnest_longer(data = yay::regex_text_normalization,
 #'                      col = pattern)
 "regex_text_normalization"
+```
 
+## `regex_file_normalization`
+
+```{r}
 #' Regular expression patterns and replacements for file normalization
 #'
 #' @format `r pkgsnip::return_label("data")`
@@ -189,7 +193,7 @@ usethis::use_data(regex_text_normalization,
 
 # Data frames / Tibbles
 
-## Determine the differences between two data frames/tibbles in tabular diff format
+## `show_diff`
 
 ```{r}
 #' Determine the differences between two data frames/tibbles in tabular diff format
@@ -371,7 +375,7 @@ show_diff <- function(x,
 }
 ```
 
-## Open as temporary spreadsheet
+## `open_as_tmp_spreadsheet`
 
 ```{r}
 #' Open as temporary spreadsheet
@@ -422,21 +426,11 @@ open_as_tmp_spreadsheet <- function(x,
 }
 ```
 
-# R scripts
+# Git repositories
 
-## Load R script(s) as a package
 
-TODO:
 
--   [ ] Create a function based upon [this StackOverflow answer](https://stackoverflow.com/a/15794201/7196903).
-
-# Extending other R packages
-
-These functions are likely to be proposed upstream, and if accepted, will be removed from this package.
-
-## pkgdown
-
-### Deploy pkgdown site to local Git folder
+## `deploy_pkgdown_site`
 
 ```{r}
 #' Deploy pkgdown site to local Git folder
@@ -619,9 +613,21 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 }
 ```
 
+# R scripts
+
+## ...
+
+TODO:
+
+-   [ ] Create a function titled `Load R script(s) as a package` based upon [this StackOverflow answer](https://stackoverflow.com/a/15794201/7196903).
+
+# Extending other R packages
+
+These functions are likely to be proposed upstream, and if accepted, will be removed from this package.
+
 ## stringr
 
-### Replace matched patterns in strings *verbosely*
+### `str_replace_verbose`
 
 TODO:
 
@@ -820,7 +826,7 @@ str_replace_verbose_single_info <- function(string,
 }
 ```
 
-### Replace matched patterns in text files
+### `str_replace_file`
 
 TODO:
 
@@ -923,7 +929,7 @@ str_replace_file <- function(path,
 }
 ```
 
-### Apply regular-expression-based text normalization to strings
+### `str_normalize`
 
 ```{r}
 #' Apply regular-expression-based text normalization to strings
@@ -960,7 +966,7 @@ str_normalize <- function(string,
 }
 ```
 
-### Apply regular-expression-based text normalization to files
+### `str_normalize_file`
 
 ```{r}
 #' Apply regular-expression-based text normalization to files
