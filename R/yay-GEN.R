@@ -189,17 +189,16 @@ show_diff <- function(x,
   
   if (n_backtick) {
     
-    caption %<>%
-      purrr::reduce(.x = 1:n_backtick,
-                    .init = .,
-                    .f = function(string, i) {
-                      
-                      stringr::str_replace(string = string,
-                                           pattern = "`",
-                                           replacement = dplyr::if_else(i %% 2L == 0L,
-                                                                        "</code>",
-                                                                        "<code>"))
-                    })
+    caption %<>% purrr::reduce(.x = 1:n_backtick,
+                               .init = .,
+                               .f = function(string, i) {
+                                 
+                                 stringr::str_replace(string = string,
+                                                      pattern = "`",
+                                                      replacement = dplyr::if_else(i %% 2L == 0L,
+                                                                                   "</code>",
+                                                                                   "<code>"))
+                               })
   }
   
   daff_obj <- daff::diff_data(data = x,
