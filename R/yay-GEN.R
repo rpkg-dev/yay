@@ -35,6 +35,28 @@ bg_green_dark <- cli::make_ansi_style("#003300",
 
 pkg <- utils::packageName()
 
+clean_git_dir <- function(path,
+                          repo = path) {
+  
+  fs::dir_walk(path = path,
+               fun = fs::dir_delete,
+               type = "directory")
+  
+  fs::dir_walk(path = path,
+               fun = fs::file_delete,
+               all = TRUE,
+               type = "file")
+  
+  gert::git_status(repo = repo,
+                   staged = FALSE) %>%
+    dplyr::filter(status == "deleted"
+                  & fs::path_has_parent(path = file,
+                                        parent = fs::path_rel(path = path ,
+                                                              start = repo))) %$%
+    file %>%
+    gert::git_add(repo = repo)
+}
+
 as_line_feed_chr <- function(eol = c("LF", "CRLF", "CR", "LFCR")) {
   
   switch(EXPR = rlang::arg_match(eol),
@@ -297,6 +319,87 @@ open_as_tmp_spreadsheet <- function(x,
   invisible(x)
 }
 
+#' Deploy static website to local Git folder
+#'
+#' @param from_path Path to the directory containing the static website files that are to be deployed. A character scalar.
+#' @param to_path Path to the Git (sub)folder to which the static website files are to be deployed. A character scalar.
+#' @param clean_to_path Whether or not to completely wipe `to_path` before deploying the new website files. Setting this to `TRUE` ensures there are no obsolete
+#'   files left over from previous deployments.
+#' @param commit_msg The Git commit message used for the deployment. A character scalar.
+#'
+#' @return A vector of paths to the deployed files/folders, invisibly.
+#' @export
+deploy_static_site <- function(from_path,
+                               to_path,
+                               clean_to_path = TRUE,
+                               commit_msg = "auto-deploy static website") {
+  
+  checkmate::assert_directory(from_path,
+                              access = "r")
+  checkmate::assert_flag(clean_to_path)
+  checkmate::assert_string(commit_msg)
+  
+  if (!checkmate::test_path_for_output(to_path,
+                                       overwrite = TRUE)) {
+    rlang::abort(cli::format_error("{.arg {to_path}} is not a valid filesystem path."))
+  }
+  
+  # create website deploy subfolder if necessary (only leaf directory will be created because of `checkmate::test_path_for_output()` above)
+  if (!fs::dir_exists(to_path)) fs::dir_create(path = to_path)
+  
+  repo <- to_path %>% gert::git_find()
+  
+  # clean destination path if requested
+  if (clean_to_path) {
+    
+    clean_git_dir(path = to_path,
+                  repo = repo)
+  }
+  
+  # copy files/dirs
+  dirs <- fs::dir_ls(path = from_path,
+                     type = "directory",
+                     all = TRUE)
+  
+  dirs %>% purrr::walk2(.y =
+                          dirs %>%
+                          fs::path_rel(start = from_path) %>%
+                          fs::path(to_path, .),
+                        .f = fs::dir_copy,
+                        overwrite = TRUE)
+  
+  files <- fs::dir_ls(path = from_path,
+                      type = "file",
+                      all = TRUE)
+  
+  files %>% purrr::walk(fs::file_copy,
+                        new_path = to_path,
+                        overwrite = TRUE)
+  
+  # commit and push files
+  staged <-
+    c(dirs, files) %>%
+    fs::path_rel(start = from_path) %>%
+    fs::path(fs::path_rel(path = to_path,
+                          start = repo),
+             .) %>%
+    gert::git_add(repo = repo)
+  
+  if (nrow(staged)) {
+    
+    gert::git_commit(message = commit_msg,
+                     repo = repo)
+    
+    gert::git_push(repo = repo)
+    
+  } else {
+    message("No files changed.")
+  }
+  
+  invisible(fs::path_abs(path = staged$file,
+                         start = repo))
+}
+
 #' Deploy pkgdown site to local Git folder
 #'
 #' @description
@@ -340,11 +443,9 @@ open_as_tmp_spreadsheet <- function(x,
 #' @param use_dev_build Whether to deploy the development build of the pkgdown website files. If `NULL`,
 #'   [`development.mode`](https://pkgdown.r-lib.org/reference/build_site.html#development-mode) set in the pkgdown YAML configuration file from `pkg_path` will
 #'   be respected.
-#' @param clean_to_path Whether to completely wipe `to_path` before deploying the new pkgdown website files. Setting this to `TRUE` ensures there are no
-#'   obsolete files left over from previous deployments.
-#' @param commit_msg The Git commit message used for the deployment.
+#' @inheritParams deploy_static_site
 #'
-#' @return A vector of paths to the deployed files/folders, invisibly.
+#' @inherit deploy_static_site return
 #' @export
 deploy_pkgdown_site <- function(pkg_path = ".",
                                 to_path = NULL,
@@ -359,6 +460,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   checkmate::assert_flag(use_dev_build,
                          null.ok = TRUE)
   checkmate::assert_flag(clean_to_path)
+  checkmate::assert_string(commit_msg)
   
   if (!(pal::is_pkgdown_dir(pkg_path))) {
     rlang::abort(cli::format_error("No pkgdown configuration found under path: {.path {pkg_path}}"))
@@ -411,23 +513,8 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   # clean destination path if requested
   if (clean_to_path) {
     
-    fs::dir_walk(path = to_path,
-                 fun = fs::dir_delete,
-                 type = "directory")
-    
-    fs::dir_walk(path = to_path,
-                 fun = fs::file_delete,
-                 all = TRUE,
-                 type = "file")
-    
-    gert::git_status(repo = repo,
-                     staged = FALSE) %>%
-      dplyr::filter(status == "deleted"
-                    & fs::path_has_parent(path = file,
-                                          parent = fs::path_rel(path = to_path ,
-                                                                start = repo))) %$%
-      file %>%
-      gert::git_add(repo = repo)
+    clean_git_dir(path = to_path,
+                  repo = repo)
   }
   
   # copy files/dirs
@@ -463,7 +550,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   
   if (nrow(staged)) {
     
-    gert::git_commit(message = checkmate::assert_string(commit_msg),
+    gert::git_commit(message = commit_msg,
                      repo = repo)
     
     gert::git_push(repo = repo)
