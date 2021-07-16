@@ -68,3 +68,8 @@ A suitable place to define the above options is the \href{https://support.rstudi
 in the user's home directory.
 }
 
+\seealso{
+Other Git repository functions:
+\code{\link{deploy_static_site}()}
+}
+\concept{gitrepo}

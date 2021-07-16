@@ -345,6 +345,7 @@ open_as_tmp_spreadsheet <- function(x,
 #' @param commit_msg The Git commit message used for the deployment. A character scalar.
 #'
 #' @return A vector of paths to the deployed files/folders, invisibly.
+#' @family gitrepo
 #' @export
 deploy_static_site <- function(from_path,
                                to_path,
@@ -497,6 +498,7 @@ deploy_static_site <- function(from_path,
 #' @inheritParams deploy_static_site
 #'
 #' @inherit deploy_static_site return
+#' @family gitrepo
 #' @export
 deploy_pkgdown_site <- function(pkg_path = ".",
                                 to_path = NULL,

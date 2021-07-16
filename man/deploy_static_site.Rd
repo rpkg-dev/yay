@@ -39,3 +39,8 @@ Copies the content of a specific filesystem folder to another local Git folder, 
 Use this function with \strong{caution} since by default it – except for the paths listed in \code{never_clean} – \strong{completely wipes the \code{to_path}
 directory}!
 }
+\seealso{
+Other Git repository functions:
+\code{\link{deploy_pkgdown_site}()}
+}
+\concept{gitrepo}
