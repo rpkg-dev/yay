@@ -1162,7 +1162,8 @@ str_normalize <- function(string,
 #' temp_file <- tempfile()
 #' download.file(url = paste0("https://raw.githubusercontent.com/RcppCore/Rcpp/72f0652b93f196d",
 #'                            "64faab6b108cd02a197510a7b/inst/include/Rcpp/utils/tinyformat.h"),
-#'               destfile = temp_file)
+#'               destfile = temp_file,
+#'               quiet = TRUE)
 #'
 #' yay::regex_file_normalization %>%
 #'   dplyr::filter(category == "posix") %>%
