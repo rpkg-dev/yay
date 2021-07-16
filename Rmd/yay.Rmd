@@ -810,6 +810,14 @@ These functions are likely to be proposed upstream, and if accepted, will be rem
 
 TODO:
 
+-   [ ] [UTF-8 byte order mark (BOM)](https://en.wikipedia.org/wiki/Byte_order_mark) leads to replacement highlighting error (first char not highlighted).
+
+    Example:
+
+    ``` {.r}
+    "\uFEFFHello" %>% yay::str_replace_verbose(pattern = c("Hello" = "olà"))
+    ```
+
 -   [ ] Investigate if we can somehow consolidate console output per line and pattern. When a single pattern yields multiple replacement infos, the console
     output is currently confusing. Example:
 
