@@ -1,6 +1,6 @@
 Package: yay
 Title: Delightful Convenience Functions
-Version: 0.0.9005
+Version: 0.0.9006
 Authors@R: 
     person(given = "Salim",
            family = "Brüggemann",
