@@ -36,22 +36,32 @@ bg_green_dark <- cli::make_ansi_style("#003300",
 pkg <- utils::packageName()
 
 clean_git_dir <- function(path,
+                          exclude_paths = c("netlify.toml",
+                                            "robots.txt",
+                                            "_headers",
+                                            "_redirects",
+                                            ".gitignore",
+                                            ".htaccess"),
                           repo = path) {
   
-  fs::dir_walk(path = path,
-               fun = fs::dir_delete,
-               type = "directory")
+  fs::dir_ls(path = path,
+             all = TRUE,
+             type = "directory") %>%
+    setdiff(fs::path(path, c(exclude_paths,
+                             ".git"))) %>%
+    purrr::walk(fs::dir_delete)
   
-  fs::dir_walk(path = path,
-               fun = fs::file_delete,
-               all = TRUE,
-               type = "file")
+  fs::dir_ls(path = path,
+             all = TRUE,
+             type = "file") %>%
+    setdiff(fs::path(path, exclude_paths)) %>%
+    purrr::walk(fs::file_delete)
   
   gert::git_status(repo = repo,
                    staged = FALSE) %>%
     dplyr::filter(status == "deleted"
                   & fs::path_has_parent(path = file,
-                                        parent = fs::path_rel(path = path ,
+                                        parent = fs::path_rel(path = path,
                                                               start = repo))) %$%
     file %>%
     gert::git_add(repo = repo)
@@ -318,10 +328,20 @@ open_as_tmp_spreadsheet <- function(x,
 
 #' Deploy static website to local Git folder
 #'
+#' @description
+#' Copies the content of a specific filesystem folder to another local Git folder, then stages, commits and pushes the changes. Primarily useful to deploy a
+#' [static website](https://en.wikipedia.org/wiki/Static_web_page) (typically the output of a [static site generator](https://jamstack.org/generators/)).
+#'
+#' Use this function with **caution** since by default it – except for the paths listed in `never_clean` – **completely wipes the `to_path`
+#' directory**!
+#'
 #' @param from_path Path to the directory containing the static website files that are to be deployed. A character scalar.
 #' @param to_path Path to the Git (sub)folder to which the static website files are to be deployed. A character scalar.
-#' @param clean_to_path Whether or not to completely wipe `to_path` before deploying the new website files. Setting this to `TRUE` ensures there are no obsolete
-#'   files left over from previous deployments.
+#' @param clean_to_path Whether or not to wipe `to_path` before deploying the new website files. Setting this to `TRUE` ensures there are no obsolete files left
+#'   over from previous deployments.
+#' @param never_clean A character vector of paths relative to `to_path` which are preserved when wiping `to_path` (i.e. `clean_to_path = TRUE`).
+#' @param branch The name of the Git branch to which the static website files are to be committed. A character scalar or `NULL`. If `NULL`, defaults to the
+#'   currently checked out branch of the repository `to_path` belongs to.
 #' @param commit_msg The Git commit message used for the deployment. A character scalar.
 #'
 #' @return A vector of paths to the deployed files/folders, invisibly.
@@ -329,12 +349,23 @@ open_as_tmp_spreadsheet <- function(x,
 deploy_static_site <- function(from_path,
                                to_path,
                                clean_to_path = TRUE,
+                               never_clean = c("netlify.toml",
+                                               "robots.txt",
+                                               "_headers",
+                                               "_redirects",
+                                               ".gitignore",
+                                               ".htaccess"),
+                               branch = NULL,
                                commit_msg = "auto-deploy static website") {
   pal::assert_pkg("gert")
   checkmate::assert_directory(from_path,
                               access = "r")
   checkmate::assert_flag(clean_to_path)
   checkmate::assert_string(commit_msg)
+  checkmate::assert_character(never_clean,
+                              any.missing = FALSE)
+  checkmate::assert_string(branch,
+                           null.ok = TRUE)
   
   if (!checkmate::test_path_for_output(to_path,
                                        overwrite = TRUE)) {
@@ -344,12 +375,27 @@ deploy_static_site <- function(from_path,
   # create website deploy subfolder if necessary (only leaf directory will be created because of `checkmate::test_path_for_output()` above)
   if (!fs::dir_exists(to_path)) fs::dir_create(path = to_path)
   
-  repo <- to_path %>% gert::git_find()
+  # determine root path of Git repository
+  repo <- gert::git_find(path = to_path)
+  
+  # change branch if requested
+  if (!is.null(branch)) {
+    
+    initial_branch <- gert::git_branch(repo = repo)
+    
+    if (!(gert::git_branch_exists(branch = branch,
+                                  repo = repo))) {
+      cli::cli_abort("Branch {.val {branch}} doesn't exist in Git repository {.path {repo}}.")
+    }
+    
+    gert::git_branch_checkout(branch = branch,
+                              repo = repo)
+  }
   
   # clean destination path if requested
   if (clean_to_path) {
-    
     clean_git_dir(path = to_path,
+                  exclude_paths = never_clean,
                   repo = repo)
   }
   
@@ -380,6 +426,7 @@ deploy_static_site <- function(from_path,
     fs::path(fs::path_rel(path = to_path,
                           start = repo),
              .) %>%
+    fs::path_norm() %>%
     gert::git_add(repo = repo)
   
   if (nrow(staged)) {
@@ -390,7 +437,13 @@ deploy_static_site <- function(from_path,
     gert::git_push(repo = repo)
     
   } else {
-    message("No files changed.")
+    cli::cli_alert_info("No files changed.")
+  }
+  
+  # restore branch if necessary
+  if (!is.null(branch)) {
+    gert::git_branch_checkout(branch = initial_branch,
+                              repo = repo)
   }
   
   invisible(fs::path_abs(path = staged$file,
@@ -403,7 +456,8 @@ deploy_static_site <- function(from_path,
 #' Copies the static [pkgdown][pkgdown::pkgdown] website files to another local Git folder, then stages, commits and pushes the changes. Use
 #' [pkgdown::build_site()] before running this function in order to create the website files.
 #'
-#' Use this function with **caution** since by default it **completely wipes the `to_path` directory**!
+#' Use this function with **caution** since by default it – except for the paths listed in `never_clean` – **completely wipes the `to_path`
+#' directory**!
 #' 
 #' @details
 #' `r pkgsnip::md_snip("rstudio_addin_hint")`
@@ -448,6 +502,13 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                                 to_path = NULL,
                                 use_dev_build = NULL,
                                 clean_to_path = TRUE,
+                                never_clean = c("netlify.toml",
+                                                "robots.txt",
+                                                "_headers",
+                                                "_redirects",
+                                                ".gitignore",
+                                                ".htaccess"),
+                                branch = NULL,
                                 commit_msg = paste0("auto-deploy pkgdown site for ",
                                                     desc::desc_get_field(file = pkg_path,
                                                                          key = "Package"))) {
@@ -458,6 +519,10 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                          null.ok = TRUE)
   checkmate::assert_flag(clean_to_path)
   checkmate::assert_string(commit_msg)
+  checkmate::assert_character(never_clean,
+                              any.missing = FALSE)
+  checkmate::assert_string(branch,
+                           null.ok = TRUE)
   
   if (!(pal::is_pkgdown_dir(pkg_path))) {
     cli::cli_abort("No pkgdown configuration found under path: {.path {pkg_path}}")
@@ -505,12 +570,27 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   # create pkg website subfolder if necessary (only leaf directory will be created because of `checkmate::test_path_for_output()` above)
   if (!fs::dir_exists(to_path)) fs::dir_create(path = to_path)
   
-  repo <- to_path %>% gert::git_find()
+  # determine root path of Git repository
+  repo <- gert::git_find(path = to_path)
+  
+  # change branch if requested
+  if (!is.null(branch)) {
+    
+    initial_branch <- gert::git_branch(repo = repo)
+    
+    if (!(gert::git_branch_exists(branch = branch,
+                                  repo = repo))) {
+      cli::cli_abort("Branch {.val {branch}} doesn't exist in Git repository {.path {repo}}.")
+    }
+    
+    gert::git_branch_checkout(branch = branch,
+                              repo = repo)
+  }
   
   # clean destination path if requested
   if (clean_to_path) {
-    
     clean_git_dir(path = to_path,
+                  exclude_paths = never_clean,
                   repo = repo)
   }
   
@@ -543,6 +623,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
     fs::path(fs::path_rel(path = to_path,
                           start = repo),
              .) %>%
+    fs::path_norm() %>%
     gert::git_add(repo = repo)
   
   if (nrow(staged)) {
@@ -553,7 +634,13 @@ deploy_pkgdown_site <- function(pkg_path = ".",
     gert::git_push(repo = repo)
     
   } else {
-    message("No files changed.")
+    cli::cli_alert_info("No files changed.")
+  }
+  
+  # restore branch if necessary
+  if (!is.null(branch)) {
+    gert::git_branch_checkout(branch = initial_branch,
+                              repo = repo)
   }
   
   invisible(fs::path_abs(path = staged$file,

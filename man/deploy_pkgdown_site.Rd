@@ -9,6 +9,9 @@ deploy_pkgdown_site(
   to_path = NULL,
   use_dev_build = NULL,
   clean_to_path = TRUE,
+  never_clean = c("netlify.toml", "robots.txt", "_headers", "_redirects", ".gitignore",
+    ".htaccess"),
+  branch = NULL,
   commit_msg = paste0("auto-deploy pkgdown site for ", desc::desc_get_field(file =
     pkg_path, key = "Package"))
 )
@@ -23,8 +26,13 @@ and \code{yay.default_local_pkgdown_deploy_parent_path} will be respected. See s
 \href{https://pkgdown.r-lib.org/reference/build_site.html#development-mode}{\code{development.mode}} set in the pkgdown YAML configuration file from \code{pkg_path} will
 be respected.}
 
-\item{clean_to_path}{Whether or not to completely wipe \code{to_path} before deploying the new website files. Setting this to \code{TRUE} ensures there are no obsolete
-files left over from previous deployments.}
+\item{clean_to_path}{Whether or not to wipe \code{to_path} before deploying the new website files. Setting this to \code{TRUE} ensures there are no obsolete files left
+over from previous deployments.}
+
+\item{never_clean}{A character vector of paths relative to \code{to_path} which are preserved when wiping \code{to_path} (i.e. \code{clean_to_path = TRUE}).}
+
+\item{branch}{The name of the Git branch to which the static website files are to be committed. A character scalar or \code{NULL}. If \code{NULL}, defaults to the
+currently checked out branch of the repository \code{to_path} belongs to.}
 
 \item{commit_msg}{The Git commit message used for the deployment. A character scalar.}
 }
@@ -35,7 +43,8 @@ A vector of paths to the deployed files/folders, invisibly.
 Copies the static \link[pkgdown:pkgdown-package]{pkgdown} website files to another local Git folder, then stages, commits and pushes the changes. Use
 \code{\link[pkgdown:build_site]{pkgdown::build_site()}} before running this function in order to create the website files.
 
-Use this function with \strong{caution} since by default it \strong{completely wipes the \code{to_path} directory}!
+Use this function with \strong{caution} since by default it – except for the paths listed in \code{never_clean} – \strong{completely wipes the \code{to_path}
+directory}!
 }
 \details{
 This function is also registered as an \href{https://rstudio.github.io/rstudioaddins/}{RStudio add-in} allowing RStudio users to assign a custom shortcut to it.

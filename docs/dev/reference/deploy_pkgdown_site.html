@@ -43,8 +43,8 @@
 
 
 <meta property="og:title" content="Deploy pkgdown site to local Git folder — deploy_pkgdown_site" />
-<meta name="description" content="Copies the static pkgdown website files to another local Git folder, then stages, commits and pushes the changes. Use pkgdown::build_site() before running this function in order to create the website files. Use this function with caution since by default it completely wipes the to_path directory!">
-<meta property="og:description" content="Copies the static pkgdown website files to another local Git folder, then stages, commits and pushes the changes. Use pkgdown::build_site() before running this function in order to create the website files. Use this function with caution since by default it completely wipes the to_path directory!" />
+<meta name="description" content="Copies the static pkgdown website files to another local Git folder, then stages, commits and pushes the changes. Use pkgdown::build_site() before running this function in order to create the website files. Use this function with caution since by default it – except for the paths listed in never_clean – completely wipes the to_path directory!">
+<meta property="og:description" content="Copies the static pkgdown website files to another local Git folder, then stages, commits and pushes the changes. Use pkgdown::build_site() before running this function in order to create the website files. Use this function with caution since by default it – except for the paths listed in never_clean – completely wipes the to_path directory!" />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@2BSalim" />
 <meta name="twitter:site" content="@2BSalim" />
@@ -121,7 +121,8 @@
     <div class="ref-description">
     <p>Copies the static <a href='https://pkgdown.r-lib.org/reference/pkgdown-package.html'>pkgdown</a> website files to another local Git folder, then stages, commits and pushes the changes. Use
 <code><a href='https://pkgdown.r-lib.org/reference/build_site.html'>pkgdown::build_site()</a></code> before running this function in order to create the website files.</p>
-<p>Use this function with <strong>caution</strong> since by default it <strong>completely wipes the <code>to_path</code> directory</strong>!</p>
+<p>Use this function with <strong>caution</strong> since by default it – except for the paths listed in <code>never_clean</code> – <strong>completely wipes the <code>to_path</code>
+directory</strong>!</p>
     </div>
 
     <pre class="usage"><span class='fu'>deploy_pkgdown_site</span><span class='op'>(</span>
@@ -129,6 +130,9 @@
   to_path <span class='op'>=</span> <span class='cn'>NULL</span>,
   use_dev_build <span class='op'>=</span> <span class='cn'>NULL</span>,
   clean_to_path <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  never_clean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"netlify.toml"</span>, <span class='st'>"robots.txt"</span>, <span class='st'>"_headers"</span>, <span class='st'>"_redirects"</span>, <span class='st'>".gitignore"</span>,
+    <span class='st'>".htaccess"</span><span class='op'>)</span>,
+  branch <span class='op'>=</span> <span class='cn'>NULL</span>,
   commit_msg <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"auto-deploy pkgdown site for "</span>, <span class='fu'>desc</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/desc/man/desc_get_field.html'>desc_get_field</a></span><span class='op'>(</span>file <span class='op'>=</span>
     <span class='va'>pkg_path</span>, key <span class='op'>=</span> <span class='st'>"Package"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
@@ -153,8 +157,17 @@ be respected.</p></td>
     </tr>
     <tr>
       <th>clean_to_path</th>
-      <td><p>Whether or not to completely wipe <code>to_path</code> before deploying the new website files. Setting this to <code>TRUE</code> ensures there are no obsolete
-files left over from previous deployments.</p></td>
+      <td><p>Whether or not to wipe <code>to_path</code> before deploying the new website files. Setting this to <code>TRUE</code> ensures there are no obsolete files left
+over from previous deployments.</p></td>
+    </tr>
+    <tr>
+      <th>never_clean</th>
+      <td><p>A character vector of paths relative to <code>to_path</code> which are preserved when wiping <code>to_path</code> (i.e. <code>clean_to_path = TRUE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>branch</th>
+      <td><p>The name of the Git branch to which the static website files are to be committed. A character scalar or <code>NULL</code>. If <code>NULL</code>, defaults to the
+currently checked out branch of the repository <code>to_path</code> belongs to.</p></td>
     </tr>
     <tr>
       <th>commit_msg</th>

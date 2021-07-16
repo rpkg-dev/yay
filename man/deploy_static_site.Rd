@@ -8,6 +8,9 @@ deploy_static_site(
   from_path,
   to_path,
   clean_to_path = TRUE,
+  never_clean = c("netlify.toml", "robots.txt", "_headers", "_redirects", ".gitignore",
+    ".htaccess"),
+  branch = NULL,
   commit_msg = "auto-deploy static website"
 )
 }
@@ -16,8 +19,13 @@ deploy_static_site(
 
 \item{to_path}{Path to the Git (sub)folder to which the static website files are to be deployed. A character scalar.}
 
-\item{clean_to_path}{Whether or not to completely wipe \code{to_path} before deploying the new website files. Setting this to \code{TRUE} ensures there are no obsolete
-files left over from previous deployments.}
+\item{clean_to_path}{Whether or not to wipe \code{to_path} before deploying the new website files. Setting this to \code{TRUE} ensures there are no obsolete files left
+over from previous deployments.}
+
+\item{never_clean}{A character vector of paths relative to \code{to_path} which are preserved when wiping \code{to_path} (i.e. \code{clean_to_path = TRUE}).}
+
+\item{branch}{The name of the Git branch to which the static website files are to be committed. A character scalar or \code{NULL}. If \code{NULL}, defaults to the
+currently checked out branch of the repository \code{to_path} belongs to.}
 
 \item{commit_msg}{The Git commit message used for the deployment. A character scalar.}
 }
@@ -25,5 +33,9 @@ files left over from previous deployments.}
 A vector of paths to the deployed files/folders, invisibly.
 }
 \description{
-Deploy static website to local Git folder
+Copies the content of a specific filesystem folder to another local Git folder, then stages, commits and pushes the changes. Primarily useful to deploy a
+\href{https://en.wikipedia.org/wiki/Static_web_page}{static website} (typically the output of a \href{https://jamstack.org/generators/}{static site generator}).
+
+Use this function with \strong{caution} since by default it – except for the paths listed in \code{never_clean} – \strong{completely wipes the \code{to_path}
+directory}!
 }
