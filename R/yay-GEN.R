@@ -33,8 +33,6 @@ bg_green_dark <- cli::make_ansi_style("#003300",
                                       bg = TRUE,
                                       colors = 2L^24L)
 
-pkg <- utils::packageName()
-
 clean_git_dir <- function(path,
                           exclude_paths = c("netlify.toml",
                                             "robots.txt",

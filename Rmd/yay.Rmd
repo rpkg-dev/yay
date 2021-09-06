@@ -44,12 +44,6 @@ bg_green_dark <- cli::make_ansi_style("#003300",
                                       colors = 2L^24L)
 ```
 
-### Other
-
-```{r}
-pkg <- utils::packageName()
-```
-
 ## Functions
 
 ### Clean Git-versioned directory
