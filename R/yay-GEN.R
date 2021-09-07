@@ -172,7 +172,7 @@ show_diff <- function(x,
   pal::assert_pkg("daff")
   
   pal::check_dots_named(...,
-                        .function = daff::diff_data,
+                        .fn = daff::diff_data,
                         .forbidden = c("data",
                                        "data_ref",
                                        "ids",
