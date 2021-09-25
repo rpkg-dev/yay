@@ -1033,11 +1033,7 @@ TODO:
 #' @param path Paths to the text files. A character vector.
 #' @param process_line_by_line Whether each line in a file should be treated as a separate string or the whole file as one single string. While the latter is 
 #'   more performant, you probably want the former if you're using `"^"` or `"$"` in your `pattern`s.
-#' @param eol End of line (EOL) control character sequence. Only relevant if `process_line_by_line = TRUE`. One of
-#'   - `"LF"` for the line feed (LF) character (`"\n"`). The standard on Unix and Unix-like systems (Linux, macOS, *BSD, etc.) and the **default**.
-#'   - `"CRLF"` for the carriage return + line feed (CR+LF) character sequence (`"\r\n"`). The standard on Microsoft Windows, DOS and some other systems.
-#'   - `"CR"` for the carriage return (CR) character (`"\r"`). The standard on classic Mac OS and some other antiquated systems.
-#'   - `"LFCR"` for the line feed + carriage return (LF+CR) character sequence (`"\n\r"`). The standard on RISC OS and some other exotic systems.
+#' @param eol `r pkgsnip::param_label("eol") %>% stringr::str_replace(pattern = "(\\.)", replacement = "\\1 Only relevant if \x60process_line_by_line = TRUE\x60.")`
 #' @param show_rel_path Whether to display file `path`s as relative from the current working directory. If `FALSE`, absolute paths are displayed. Only relevant
 #'   if `verbose = TRUE`.
 #' @param run_dry Whether to show replacements on the console only, without actually modifying any files. Implies `verbose = TRUE`.
