@@ -46,7 +46,7 @@ bg_green_dark <- cli::make_ansi_style("#003300",
 
 ## Functions
 
-### Clean Git-versioned directory
+### `clean_git_dir`
 
 This removes all files and folders under `path` and stages the deletions.
 
