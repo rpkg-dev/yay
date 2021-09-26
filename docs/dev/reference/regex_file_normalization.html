@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9006</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9007</span>
       </span>
     </div>
 
@@ -136,12 +136,12 @@
     <pre class="examples"><div class='input'><span class='co'># unnest the pattern column</span>
 <span class='fu'>tidyr</span><span class='fu'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/hoist.html'>unnest_longer</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'>yay</span><span class='fu'>::</span><span class='va'>regex_file_normalization</span>,
                      col <span class='op'>=</span> <span class='va'>pattern</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 x 5</span>
-#&gt;   id              category  purpose                     pattern      replacement
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      
-#&gt; <span style='color: #BCBCBC;'>1</span> terminating_ne… posix     <span style='color: #949494;'>"</span>ensure file ends with the… <span style='color: #949494;'>"</span>(.)(?!\\n)… <span style='color: #949494;'>"</span>\\1\n<span style='color: #949494;'>"</span>    
-#&gt; <span style='color: #BCBCBC;'>2</span> go_template_op… go_templ… <span style='color: #949494;'>"</span>ensure there's a space af… <span style='color: #949494;'>"</span>\\{\\{(?!(… <span style='color: #949494;'>"</span>{{ <span style='color: #949494;'>"</span>      
-#&gt; <span style='color: #BCBCBC;'>3</span> go_template_cl… go_templ… <span style='color: #949494;'>"</span>ensure there's a space be… <span style='color: #949494;'>"</span>([^-%&gt;/ ]|… <span style='color: #949494;'>"</span>\\1 }}<span style='color: #949494;'>"</span>   </div></pre>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 × 5</span>
+#&gt;   id                                     category    purpose pattern replacement
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                                  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      
+#&gt; <span style='color: #BCBCBC;'>1</span> terminating_newline                    posix       <span style='color: #949494;'>"</span>ensur… <span style='color: #949494;'>"</span>(.)(?… <span style='color: #949494;'>"</span>\\1\n<span style='color: #949494;'>"</span>    
+#&gt; <span style='color: #BCBCBC;'>2</span> go_template_opening_double_brace_space go_template <span style='color: #949494;'>"</span>ensur… <span style='color: #949494;'>"</span>\\{\\… <span style='color: #949494;'>"</span>{{ <span style='color: #949494;'>"</span>      
+#&gt; <span style='color: #BCBCBC;'>3</span> go_template_closing_double_brace_space go_template <span style='color: #949494;'>"</span>ensur… <span style='color: #949494;'>"</span>([^-%… <span style='color: #949494;'>"</span>\\1 }}<span style='color: #949494;'>"</span>   </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
