@@ -65,15 +65,6 @@ clean_git_dir <- function(path,
     gert::git_add(repo = repo)
 }
 
-as_line_feed_chr <- function(eol = c("LF", "CRLF", "CR", "LFCR")) {
-  
-  switch(EXPR = rlang::arg_match(eol),
-         LF = "\n",
-         CRLF = "\r\n",
-         CR = "\r",
-         LFCR = "\n\r")
-}
-
 
 
 
@@ -860,7 +851,7 @@ str_replace_file <- function(path,
   checkmate::assert_file(path,
                          access = "r")
   checkmate::assert_flag(process_line_by_line)
-  eol %<>% as_line_feed_chr()
+  eol %<>% pal::as_line_feed_chr()
   checkmate::assert_flag(verbose)
   checkmate::assert_flag(show_rel_path)
   checkmate::assert_flag(run_dry)
