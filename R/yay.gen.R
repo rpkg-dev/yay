@@ -2,7 +2,7 @@
 # See `README.md#r-markdown-format` for more information on the literate programming approach used applying the R Markdown format.
 
 # yay: Delightful Convenience Functions
-# Copyright (C) 2021 Salim Brüggemann
+# Copyright (C) 2022 Salim Brüggemann
 # 
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free
 # Software Foundation, either version 3 of the License, or any later version.
@@ -113,8 +113,8 @@ clean_git_dir <- function(path,
 #' @param ignore_order Whether or not to ignore the order of columns and rows.
 #' @param ids A character vector of column names that make up a [primary key](https://en.wikipedia.org/wiki/Primary_key), if known. If `NULL`, heuristics are
 #'   used to find a decent key (or a set of decent keys).
-#' @param ask Whether to ask interactively if the resulting difference object should be opened in case `x` and `y` differ. If `FALSE`, it will be opened right
-#'   away. Only relevant if run [interactively][base::interactive()].
+#' @param ask Whether or not to ask interactively if the resulting difference object should be opened in case `x` and `y` differ. If `FALSE`, it will be opened
+#'   right away. Only relevant if run [interactively][base::interactive()].
 #' @param bypass_rstudio_viewer If `TRUE`, `x` and `y` actually differ, and `ask` is set to `TRUE`, the resulting difference object will be
 #'   opened in the system's default web browser instead of RStudio's built-in viewer. Only relevant if run within RStudio.
 #' @param verbose Whether or not to also output the differences detected by [pal::is_equal_df()] to the console.
@@ -481,7 +481,7 @@ deploy_static_site <- function(from_path,
 #' @param pkg_path Path to the \R package of which the pkgdown website files are to be deployed.
 #' @param to_path Path to the Git (sub)folder to which the pkgdown website files are to be deployed. If `NULL`, the \R options `yay.local_pkgdown_deploy_paths`
 #'   and `yay.default_local_pkgdown_deploy_parent_path` will be respected. See section _Setting `to_path` via R options_ for details.
-#' @param use_dev_build Whether to deploy the development build of the pkgdown website files. If `NULL`,
+#' @param use_dev_build Whether or not to deploy the development build of the pkgdown website files. If `NULL`,
 #'   [`development.mode`](https://pkgdown.r-lib.org/reference/build_site.html#development-mode) set in the pkgdown YAML configuration file from `pkg_path` will
 #'   be respected.
 #' @inheritParams deploy_static_site
@@ -650,7 +650,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 #'   regular expressions as described in [stringi::stringi-search-regex()]. Replacements are interpreted as-is, except that references of the form `\1`, `\2`,
 #'   etc. will be replaced with the contents of the respective matched group (created in patterns using `()`). Pattern-replacement pairs are processed in the
 #'   order given, meaning that first listed pairs are applied before later listed ones.
-#' @param verbose Whether to display replacements on the console.
+#' @param verbose Whether or not to display replacements on the console.
 #' @param n_context_chrs The (maximum) number of characters displayed around the actual `string` and its replacement. The number refers to a single side of
 #'   `string`/replacement, so the total number of context characters is at the maximum `2 * n_context_chrs`. Only relevant if `verbose = TRUE`.
 #' @inheritParams stringr::str_replace_all
@@ -830,9 +830,9 @@ str_replace_verbose_single_info <- function(string,
 #' @param process_line_by_line Whether each line in a file should be treated as a separate string or the whole file as one single string. While the latter is 
 #'   more performant, you probably want the former if you're using `"^"` or `"$"` in your `pattern`s.
 #' @param eol `r pkgsnip::param_label("eol") %>% stringr::str_replace(pattern = "(\\.)", replacement = "\\1 Only relevant if \x60process_line_by_line = TRUE\x60.")`
-#' @param show_rel_path Whether to display file `path`s as relative from the current working directory. If `FALSE`, absolute paths are displayed. Only relevant
-#'   if `verbose = TRUE`.
-#' @param run_dry Whether to show replacements on the console only, without actually modifying any files. Implies `verbose = TRUE`.
+#' @param show_rel_path Whether or not to display file `path`s as relative from the current working directory. If `FALSE`, absolute paths are displayed. Only
+#'   relevant if `verbose = TRUE`.
+#' @param run_dry Whether or not to show replacements on the console only, without actually modifying any files. Implies `verbose = TRUE`.
 #' @inheritParams str_replace_verbose
 #'
 #' @return `path` invisibly.

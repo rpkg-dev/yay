@@ -114,7 +114,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Determine the differences between two data frames/tibbles in tabular diff format</h1>
-    <small class="dont-index">Source: <a href='https://gitlab.com/salim_b/r/pkgs/yay/blob/master/R/yay-GEN.R'><code>R/yay-GEN.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://gitlab.com/salim_b/r/pkgs/yay/blob/master/R/yay.gen.R'><code>R/yay.gen.R</code></a></small>
     <div class="hidden name"><code>show_diff.Rd</code></div>
     </div>
 
@@ -167,8 +167,8 @@ used to find a decent key (or a set of decent keys).</p></td>
     </tr>
     <tr>
       <th>ask</th>
-      <td><p>Whether to ask interactively if the resulting difference object should be opened in case <code>x</code> and <code>y</code> differ. If <code>FALSE</code>, it will be opened right
-away. Only relevant if run <a href='https://rdrr.io/r/base/interactive.html'>interactively</a>.</p></td>
+      <td><p>Whether or not to ask interactively if the resulting difference object should be opened in case <code>x</code> and <code>y</code> differ. If <code>FALSE</code>, it will be opened
+right away. Only relevant if run <a href='https://rdrr.io/r/base/interactive.html'>interactively</a>.</p></td>
     </tr>
     <tr>
       <th>bypass_rstudio_viewer</th>
@@ -222,12 +222,12 @@ therein won't be displayed:</p><ul>
 <code><a href='open_as_tmp_spreadsheet.html'>open_as_tmp_spreadsheet</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='va'>mtcars</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span><span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/across.html'>across</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>cyl</span>, <span class='va'>gear</span><span class='op'>)</span>,
-                              <span class='op'>~</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>.</span> <span class='op'>&gt;</span> <span class='fl'>4</span>, <span class='va'>.</span> <span class='op'>*</span> <span class='fl'>2</span>, <span class='va'>.</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>show_diff</span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span><span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='va'>mtcars</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span><span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/across.html'>across</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>cyl</span>, <span class='va'>gear</span><span class='op'>)</span>,</span>
+<span class='r-in'>                              <span class='op'>~</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>.</span> <span class='op'>&gt;</span> <span class='fl'>4</span>, <span class='va'>.</span> <span class='op'>*</span> <span class='fl'>2</span>, <span class='va'>.</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>show_diff</span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span><span class='op'>}</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -243,7 +243,7 @@ therein won't be displayed:</p><ul>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>1.6.1.9000.</p></p>
 </div>
 
       </footer>

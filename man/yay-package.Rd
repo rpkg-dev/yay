@@ -6,8 +6,7 @@
 \alias{yay-package}
 \title{yay: Delightful Convenience Functions}
 \description{
-A delightful mix of convenience functions designed to put a
-    smile on your face during typical R workflows.
+A delightful mix of convenience functions designed to put a smile on your face during typical R workflows.
 }
 \seealso{
 Useful links:

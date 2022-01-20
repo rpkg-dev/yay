@@ -114,7 +114,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Replace matched patterns in strings <em>verbosely</em></h1>
-    <small class="dont-index">Source: <a href='https://gitlab.com/salim_b/r/pkgs/yay/blob/master/R/yay-GEN.R'><code>R/yay-GEN.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://gitlab.com/salim_b/r/pkgs/yay/blob/master/R/yay.gen.R'><code>R/yay.gen.R</code></a></small>
     <div class="hidden name"><code>str_replace_verbose.Rd</code></div>
     </div>
 
@@ -135,14 +135,14 @@ coercible to one.</p></td>
     </tr>
     <tr>
       <th>pattern</th>
-      <td><p>A named character vector with patterns as names and replacements as values (<code><a href='https://rdrr.io/r/base/c.html'>c(pattern1 = replacement1)</a></code>). Patterns are interpreted as
+      <td><p>A named character vector with patterns as names and replacements as values (<code>c(pattern1 = replacement1)</code>). Patterns are interpreted as
 regular expressions as described in <code><a href='https://rdrr.io/pkg/stringi/man/about_search_regex.html'>stringi::stringi-search-regex()</a></code>. Replacements are interpreted as-is, except that references of the form <code>\1</code>, <code>\2</code>,
 etc. will be replaced with the contents of the respective matched group (created in patterns using <code>()</code>). Pattern-replacement pairs are processed in the
 order given, meaning that first listed pairs are applied before later listed ones.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Whether to display replacements on the console.</p></td>
+      <td><p>Whether or not to display replacements on the console.</p></td>
     </tr>
     <tr>
       <th>n_context_chrs</th>
@@ -166,94 +166,100 @@ resort to the latter.</p>
 <code><a href='str_replace_file.html'>str_replace_file</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='st'>"Make love, not war"</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>pattern <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"love"</span> <span class='op'>=</span> <span class='st'>"hummus"</span>,
-                                       <span class='st'>"war"</span> <span class='op'>=</span> <span class='st'>"walls"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000; text-decoration: line-through;'>love</span><span style='background-color: #000000;'>, not war</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus</span><span style='background-color: #000000;'>, not war</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make hummus, not </span><span style='background-color: #5F0000; text-decoration: line-through;'>war</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make hummus, not </span><span style='background-color: #005F00;'>walls</span></div><div class='output co'>#&gt; [1] "Make hummus, not walls"</div><div class='input'>
-<span class='co'># pattern-replacement pairs are processed one-by-one, so the following gives the same result</span>
-<span class='st'>"Make love, not war"</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>pattern <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"love"</span> <span class='op'>=</span> <span class='st'>"hummus"</span>,
-                                       <span class='st'>"hummus, not war"</span> <span class='op'>=</span> <span class='st'>"hummus, not walls"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000; text-decoration: line-through;'>love</span><span style='background-color: #000000;'>, not war</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus</span><span style='background-color: #000000;'>, not war</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #5F0000; text-decoration: line-through;'>hummus, not war</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #005F00;'>hummus, not walls</span></div><div class='output co'>#&gt; [1] "Make hummus, not walls"</div><div class='input'>
-<span class='co'># varying `n_context_chrs` affects console output summarization</span>
-<span class='va'>input</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Tulips are not durable, "</span>,
-           <span class='st'>"not scarce, "</span>,
-           <span class='st'>"not programmable, "</span>,
-           <span class='st'>"not fungible, "</span>,
-           <span class='st'>"not verifiable, "</span>,
-           <span class='st'>"not divisible, "</span>,
-           <span class='st'>"and hard to transfer. "</span>,
-           <span class='st'>"But tell me more about your analogy..."</span>,
-           <span class='st'>""</span>,
-           <span class='st'>"-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)"</span><span class='op'>)</span>
-
-<span class='va'>pattern</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"not"</span> <span class='op'>=</span> <span class='st'>"extremely"</span>,
-             <span class='st'>"hard"</span> <span class='op'>=</span> <span class='st'>"ridiculously easy"</span>,
-             <span class='st'>"^But.*"</span> <span class='op'>=</span> <span class='st'>"So... flower power?"</span>,
-             <span class='st'>"(^-).*Naval.*"</span> <span class='op'>=</span> <span class='st'>"\\1\U0001F92A"</span><span class='op'>)</span>
-
-<span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>string <span class='op'>=</span> <span class='va'>input</span>,
-                         pattern <span class='op'>=</span> <span class='va'>pattern</span>,
-                         n_context_chrs <span class='op'>=</span> <span class='fl'>5L</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>pal</span><span class='fu'>::</span><span class='fu'><a href='https://rpkg.dev/pal/reference/cat_lines.html'>cat_lines</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>… are </span><span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> dura…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>… are </span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> dura…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> divi…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> divi…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> fung…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> fung…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> prog…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> prog…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> scar…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> scar…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> veri…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'> veri…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>and </span><span style='background-color: #5F0000; text-decoration: line-through;'>hard</span><span style='background-color: #000000;'> to t…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>and </span><span style='background-color: #005F00;'>ridiculously easy</span><span style='background-color: #000000;'> to t…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>But tell me more about your analogy...</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>So... flower power?</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>\1🤪</span>
-#&gt; Tulips are extremely durable, 
-#&gt; extremely scarce, 
-#&gt; extremely programmable, 
-#&gt; extremely fungible, 
-#&gt; extremely verifiable, 
-#&gt; extremely divisible, 
-#&gt; and ridiculously easy to transfer. 
-#&gt; So... flower power?
-#&gt; 
-#&gt; -🤪</div><div class='input'>
-<span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>string <span class='op'>=</span> <span class='va'>input</span>,
-                         pattern <span class='op'>=</span> <span class='va'>pattern</span>,
-                         n_context_chrs <span class='op'>=</span> <span class='fl'>0L</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>pal</span><span class='fu'>::</span><span class='fu'><a href='https://rpkg.dev/pal/reference/cat_lines.html'>cat_lines</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>…</span><span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'>…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>…</span><span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'>…</span>
-#&gt; 5× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'>…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>extremely</span><span style='background-color: #000000;'>…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>…</span><span style='background-color: #5F0000; text-decoration: line-through;'>hard</span><span style='background-color: #000000;'>…</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>…</span><span style='background-color: #005F00;'>ridiculously easy</span><span style='background-color: #000000;'>…</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>But tell me more about your analogy...</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>So... flower power?</span>
-#&gt; 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #5F0000; text-decoration: line-through;'>-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)</span>
-#&gt;    <span style='color: #00BB00;'>+</span> <span style='background-color: #005F00;'>\1🤪</span>
-#&gt; Tulips are extremely durable, 
-#&gt; extremely scarce, 
-#&gt; extremely programmable, 
-#&gt; extremely fungible, 
-#&gt; extremely verifiable, 
-#&gt; extremely divisible, 
-#&gt; and ridiculously easy to transfer. 
-#&gt; So... flower power?
-#&gt; 
-#&gt; -🤪</div></pre>
+    <pre class="examples"><span class='r-in'><span class='st'>"Make love, not war"</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>pattern <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"love"</span> <span class='op'>=</span> <span class='st'>"hummus"</span>,</span>
+<span class='r-in'>                                       <span class='st'>"war"</span> <span class='op'>=</span> <span class='st'>"walls"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #330000; text-decoration: line-through;'>love</span><span style='background-color: #000000;'>, not war</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #003300;'>hummus</span><span style='background-color: #000000;'>, not war</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make hummus, not </span><span style='background-color: #330000; text-decoration: line-through;'>war</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make hummus, not </span><span style='background-color: #003300;'>walls</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Make hummus, not walls"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># pattern-replacement pairs are processed one-by-one, so the following gives the same result</span></span>
+<span class='r-in'><span class='st'>"Make love, not war"</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>pattern <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"love"</span> <span class='op'>=</span> <span class='st'>"hummus"</span>,</span>
+<span class='r-in'>                                       <span class='st'>"hummus, not war"</span> <span class='op'>=</span> <span class='st'>"hummus, not walls"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #330000; text-decoration: line-through;'>love</span><span style='background-color: #000000;'>, not war</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #003300;'>hummus</span><span style='background-color: #000000;'>, not war</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #330000; text-decoration: line-through;'>hummus, not war</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>Make </span><span style='background-color: #003300;'>hummus, not walls</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Make hummus, not walls"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># varying `n_context_chrs` affects console output summarization</span></span>
+<span class='r-in'><span class='va'>input</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Tulips are not durable, "</span>,</span>
+<span class='r-in'>           <span class='st'>"not scarce, "</span>,</span>
+<span class='r-in'>           <span class='st'>"not programmable, "</span>,</span>
+<span class='r-in'>           <span class='st'>"not fungible, "</span>,</span>
+<span class='r-in'>           <span class='st'>"not verifiable, "</span>,</span>
+<span class='r-in'>           <span class='st'>"not divisible, "</span>,</span>
+<span class='r-in'>           <span class='st'>"and hard to transfer. "</span>,</span>
+<span class='r-in'>           <span class='st'>"But tell me more about your analogy..."</span>,</span>
+<span class='r-in'>           <span class='st'>""</span>,</span>
+<span class='r-in'>           <span class='st'>"-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>pattern</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"not"</span> <span class='op'>=</span> <span class='st'>"extremely"</span>,</span>
+<span class='r-in'>             <span class='st'>"hard"</span> <span class='op'>=</span> <span class='st'>"ridiculously easy"</span>,</span>
+<span class='r-in'>             <span class='st'>"^But.*"</span> <span class='op'>=</span> <span class='st'>"So... flower power?"</span>,</span>
+<span class='r-in'>             <span class='st'>"(^-).*Naval.*"</span> <span class='op'>=</span> <span class='st'>"\\1\U0001F92A"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>string <span class='op'>=</span> <span class='va'>input</span>,</span>
+<span class='r-in'>                         pattern <span class='op'>=</span> <span class='va'>pattern</span>,</span>
+<span class='r-in'>                         n_context_chrs <span class='op'>=</span> <span class='fl'>5L</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>pal</span><span class='fu'>::</span><span class='fu'><a href='https://rpkg.dev/pal/reference/cat_lines.html'>cat_lines</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>… are </span><span style='background-color: #330000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> dura…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>… are </span><span style='background-color: #003300;'>extremely</span><span style='background-color: #000000;'> dura…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> divi…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>extremely</span><span style='background-color: #000000;'> divi…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> fung…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>extremely</span><span style='background-color: #000000;'> fung…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> prog…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>extremely</span><span style='background-color: #000000;'> prog…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> scar…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>extremely</span><span style='background-color: #000000;'> scar…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'> veri…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>extremely</span><span style='background-color: #000000;'> veri…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>and </span><span style='background-color: #330000; text-decoration: line-through;'>hard</span><span style='background-color: #000000;'> to t…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>and </span><span style='background-color: #003300;'>ridiculously easy</span><span style='background-color: #000000;'> to t…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>But tell me more about your analogy...</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>So... flower power?</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>\1🤪</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Tulips are extremely durable, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely scarce, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely programmable, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely fungible, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely verifiable, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely divisible, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> and ridiculously easy to transfer. </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> So... flower power?</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -🤪</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>yay</span><span class='fu'>::</span><span class='fu'>str_replace_verbose</span><span class='op'>(</span>string <span class='op'>=</span> <span class='va'>input</span>,</span>
+<span class='r-in'>                         pattern <span class='op'>=</span> <span class='va'>pattern</span>,</span>
+<span class='r-in'>                         n_context_chrs <span class='op'>=</span> <span class='fl'>0L</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>pal</span><span class='fu'>::</span><span class='fu'><a href='https://rpkg.dev/pal/reference/cat_lines.html'>cat_lines</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>…</span><span style='background-color: #330000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'>…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>…</span><span style='background-color: #003300;'>extremely</span><span style='background-color: #000000;'>…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>not</span><span style='background-color: #000000;'>…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>extremely</span><span style='background-color: #000000;'>…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #000000;'>…</span><span style='background-color: #330000; text-decoration: line-through;'>hard</span><span style='background-color: #000000;'>…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #000000;'>…</span><span style='background-color: #003300;'>ridiculously easy</span><span style='background-color: #000000;'>…</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>But tell me more about your analogy...</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>So... flower power?</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1× <span style='color: #BB0000;'>-</span> <span style='background-color: #330000; text-decoration: line-through;'>-[Naval Ravikant](https://twitter.com/naval/status/939316447318122496)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #00BB00;'>+</span> <span style='background-color: #003300;'>\1🤪</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Tulips are extremely durable, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely scarce, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely programmable, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely fungible, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely verifiable, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extremely divisible, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> and ridiculously easy to transfer. </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> So... flower power?</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -🤪</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -269,7 +275,7 @@ resort to the latter.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>1.6.1.9000.</p></p>
 </div>
 
       </footer>

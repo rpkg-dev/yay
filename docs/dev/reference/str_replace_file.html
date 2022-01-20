@@ -114,7 +114,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Replace matched patterns in text files</h1>
-    <small class="dont-index">Source: <a href='https://gitlab.com/salim_b/r/pkgs/yay/blob/master/R/yay-GEN.R'><code>R/yay-GEN.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://gitlab.com/salim_b/r/pkgs/yay/blob/master/R/yay.gen.R'><code>R/yay.gen.R</code></a></small>
     <div class="hidden name"><code>str_replace_file.Rd</code></div>
     </div>
 
@@ -144,7 +144,7 @@ given order. All performed replacements are displayed on the console by default 
     </tr>
     <tr>
       <th>pattern</th>
-      <td><p>A named character vector with patterns as names and replacements as values (<code><a href='https://rdrr.io/r/base/c.html'>c(pattern1 = replacement1)</a></code>). Patterns are interpreted as
+      <td><p>A named character vector with patterns as names and replacements as values (<code>c(pattern1 = replacement1)</code>). Patterns are interpreted as
 regular expressions as described in <code><a href='https://rdrr.io/pkg/stringi/man/about_search_regex.html'>stringi::stringi-search-regex()</a></code>. Replacements are interpreted as-is, except that references of the form <code>\1</code>, <code>\2</code>,
 etc. will be replaced with the contents of the respective matched group (created in patterns using <code>()</code>). Pattern-replacement pairs are processed in the
 order given, meaning that first listed pairs are applied before later listed ones.</p></td>
@@ -165,7 +165,7 @@ more performant, you probably want the former if you're using <code>"^"</code> o
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Whether to display replacements on the console.</p></td>
+      <td><p>Whether or not to display replacements on the console.</p></td>
     </tr>
     <tr>
       <th>n_context_chrs</th>
@@ -174,12 +174,12 @@ more performant, you probably want the former if you're using <code>"^"</code> o
     </tr>
     <tr>
       <th>show_rel_path</th>
-      <td><p>Whether to display file <code>path</code>s as relative from the current working directory. If <code>FALSE</code>, absolute paths are displayed. Only relevant
-if <code>verbose = TRUE</code>.</p></td>
+      <td><p>Whether or not to display file <code>path</code>s as relative from the current working directory. If <code>FALSE</code>, absolute paths are displayed. Only
+relevant if <code>verbose = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>run_dry</th>
-      <td><p>Whether to show replacements on the console only, without actually modifying any files. Implies <code>verbose = TRUE</code>.</p></td>
+      <td><p>Whether or not to show replacements on the console only, without actually modifying any files. Implies <code>verbose = TRUE</code>.</p></td>
     </tr>
     </table>
 
@@ -215,7 +215,7 @@ Windows) seems like a really bad idea with regard to cross-system collaboration 
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>1.6.1.9000.</p></p>
 </div>
 
       </footer>
