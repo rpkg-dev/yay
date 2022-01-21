@@ -58,7 +58,7 @@ regex_text_normalization <-
   tibble::add_row(id = "en_dash_value_ranges",
                   category = "prettify_punctuation",
                   purpose = "use [en dash](https://www.thepunctuationguide.com/en-dash.html) instead of hyphen in value ranges",
-                  pattern = list("(?<!-(\\d{0,999}))(\\d+)-(\\d+)(?!(\\d+)?-)"),
+                  pattern = list("(?<!-)(\\b\\d+)-(\\d+\\b)(?!-)"),
                   replacement = "\\1\u2013\\2")
 ```
 
