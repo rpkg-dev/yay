@@ -1,0 +1,108 @@
+---
+editor_options:
+  chunk_output_type: console
+---
+
+NOTES:
+
+-   This file is *not* included in the [source package](https://r-pkgs.org/package-structure-state.html#source-package) because of the [`.nopurl` suffix in the
+    filename](https://rpkg.dev/pkgpurl/reference/purl_rmd.html#-rmd-files-excluded-from-purling).
+
+-   The chunks below have to be manually executed in order to regenerate the package data.
+
+# Exported data
+
+NOTES:
+
+-   When used internally, other than internal data, exported data must always be referred to by its explicit namespace, i.e. e.g. `fokus::qx`.
+
+## `regex_text_normalization`
+
+```{r}
+regex_text_normalization <-
+  tibble::tibble(id = character(),
+                 category = character(),
+                 purpose = character(),
+                 pattern = list(),
+                 replacement = character()) %>%
+  # harmonize punctuation
+  tibble::add_row(id = "uniform_quotation_marks",
+                  category = "harmonize_punctuation",
+                  purpose = "use typewriter double quotes (`\"`) as quotation marks",
+                  pattern = list("[“”„‟⹂]"),
+                  replacement = "\"") %>%
+  tibble::add_row(id = "uniform_apostrophes",
+                  category = "harmonize_punctuation",
+                  purpose = "use typewriter single quotes (`'`) as apostrophes",
+                  pattern = list("[’‘‚‛]"),
+                  replacement = "'") %>%
+  # prettify punctuation
+  tibble::add_row(id = "no_break_percentages",
+                  category = "prettify_punctuation",
+                  purpose = "use narrow non-breaking space between numbers and percentage signs",
+                  pattern = list("(\\d+) ?(\\\\?%|Prozent|percent|per\\scent)(?![\"'])"),
+                  replacement = "\\1\u202f\\2") %>%
+  tibble::add_row(id = "no_break_abbreviations_german",
+                  category = "prettify_punctuation",
+                  purpose = "use narrow non-breaking space between characters of common German abbreviations",
+                  pattern = list("(?i)\\b(z\\.) ?(B\\.)",
+                                 "(?i)\\b(z\\.) ?(T\\.)",
+                                 "(?i)\\b(u\\.) ?(a\\.)",
+                                 "(?i)\\b(d\\.) ?(h\\.)"),
+                  replacement = "\\1\u202f\\2") %>%
+  tibble::add_row(id = "no_break_equals_sign",
+                  category = "prettify_punctuation",
+                  purpose = "use narrow non-breaking space before and after certain assignments and equality comparisons (`=` and `==`)",
+                  pattern = list("(?<= \\(\\w{1,32})(?: ?)(==?)(?: ?)(?=\\d+)"),
+                  replacement = "\u202f\\1\u202f") %>%
+  tibble::add_row(id = "en_dash_value_ranges",
+                  category = "prettify_punctuation",
+                  purpose = "use [en dash](https://www.thepunctuationguide.com/en-dash.html) instead of hyphen in value ranges",
+                  pattern = list("(?<!-(\\d{0,999}))(\\d+)-(\\d+)(?!(\\d+)?-)"),
+                  replacement = "\\1\u2013\\2")
+```
+
+## `regex_file_normalization`
+
+Note that the ICU regex engine used by yay/stringr/stringi [doesn't yet support](https://unicode-org.atlassian.net/browse/ICU-11291) case-conversion replacement
+syntax (`\U`, `\L` and friends).
+
+```{r}
+regex_file_normalization <-
+  tibble::tibble(id = character(),
+                 category = character(),
+                 purpose = character(),
+                 pattern = list(),
+                 replacement = character()) %>%
+  # ensure terminating newline
+  tibble::add_row(id = "terminating_newline",
+                  category = "posix",
+                  purpose = "ensure file ends with the [POSIX-standard newline control character `LF`](https://en.wikipedia.org/wiki/Newline) (aka `\n`) ",
+                  pattern = list("(.)(?!\\n)\\Z"),
+                  replacement = "\\1\n") %>%
+  # lint [Go template](https://golang.org/pkg/text/template/) syntax
+  tibble::add_row(id = "go_template_opening_double_brace_space",
+                  category = "go_template",
+                  purpose = "ensure there's a space after opening double braces in Go templates",
+                  pattern = list("\\{\\{(?!( |- |%|<|/\\*))"),
+                  replacement = "{{ ") %>%
+  tibble::add_row(id = "go_template_closing_double_brace_space",
+                  category = "go_template",
+                  purpose = "ensure there's a space before closing double braces in Go templates",
+                  pattern = list("([^-%>/ ]|[^ ]-)\\}\\}"),
+                  replacement = "\\1 }}")
+```
+
+## Write data
+
+Save all of the above data objects to separate files under `data/*.rda`. Note that when documenting them, they mustn't be explicitly `@export`ed since they're
+already automatically exported and thus available to package users.
+
+```{r}
+usethis::use_data(regex_text_normalization,
+                  regex_file_normalization,
+                  internal = FALSE,
+                  overwrite = TRUE,
+                  compress = "xz",
+                  version = 3L)
+```

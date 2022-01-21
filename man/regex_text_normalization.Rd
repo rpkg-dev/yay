@@ -19,6 +19,10 @@ tidyr::unnest_longer(data = yay::regex_text_normalization,
                      col = pattern)
 }
 \seealso{
-\code{\link{regex_file_normalization}} \code{\link[=str_normalize]{str_normalize()}}
+\code{\link[=str_normalize]{str_normalize()}} \code{\link[=str_normalize_file]{str_normalize_file()}}
+
+Other regular expression rules:
+\code{\link{regex_file_normalization}}
 }
+\concept{regex}
 \keyword{datasets}

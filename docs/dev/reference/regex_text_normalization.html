@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9007</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9008</span>
       </span>
     </div>
 
@@ -130,7 +130,9 @@
     <p>A <a href='https://tibble.tidyverse.org/reference/tbl_df-class.html'>tibble</a>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='regex_file_normalization.html'>regex_file_normalization</a></code> <code><a href='str_normalize.html'>str_normalize()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='str_normalize.html'>str_normalize()</a></code> <code><a href='str_normalize_file.html'>str_normalize_file()</a></code></p>
+<p>Other regular expression rules:
+<code><a href='regex_file_normalization.html'>regex_file_normalization</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='co'># unnest the pattern column</span></span>
@@ -147,7 +149,7 @@
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>6</span> no_break_abbreviations_german prettify_… <span style='color: #949494;'>"</span>use narrow … <span style='color: #949494;'>"</span>(?i)\\b(u… <span style='color: #949494;'>"</span>\\1 \\2<span style='color: #949494;'>"</span>  </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>7</span> no_break_abbreviations_german prettify_… <span style='color: #949494;'>"</span>use narrow … <span style='color: #949494;'>"</span>(?i)\\b(d… <span style='color: #949494;'>"</span>\\1 \\2<span style='color: #949494;'>"</span>  </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>8</span> no_break_equals_sign          prettify_… <span style='color: #949494;'>"</span>use narrow … <span style='color: #949494;'>"</span>(?&lt;= \\(\… <span style='color: #949494;'>"</span> \\1 <span style='color: #949494;'>"</span>    </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>9</span> en_dash_value_ranges          prettify_… <span style='color: #949494;'>"</span>use [en das… <span style='color: #949494;'>"</span>(?&lt;!-)(\\… <span style='color: #949494;'>"</span>\\1–\\2<span style='color: #949494;'>"</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>9</span> en_dash_value_ranges          prettify_… <span style='color: #949494;'>"</span>use [en das… <span style='color: #949494;'>"</span>(?&lt;!-(\\d… <span style='color: #949494;'>"</span>\\1–\\2<span style='color: #949494;'>"</span>  </span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

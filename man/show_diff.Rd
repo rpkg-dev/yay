@@ -74,6 +74,8 @@ therein won't be displayed:
 }
 \examples{
 \dontrun{
+library(magrittr)
+
 mtcars \%>\%
   dplyr::mutate(dplyr::across(c(cyl, gear),
                               ~ dplyr::if_else(. > 4, . * 2, .))) \%>\%

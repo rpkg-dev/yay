@@ -47,8 +47,8 @@ download.file(url = paste0("https://raw.githubusercontent.com/RcppCore/Rcpp/72f0
               destfile = temp_file,
               quiet = TRUE)
 
-yay::regex_file_normalization \%>\%
-  dplyr::filter(category == "posix") \%>\%
+yay::regex_file_normalization |>
+  dplyr::filter(category == "posix") |>
   yay::str_normalize_file(path = temp_file)
 }
 \seealso{

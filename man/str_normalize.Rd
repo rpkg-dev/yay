@@ -34,7 +34,7 @@ Applies a set of regular-expression-based text normalization rules to one or mor
 (\code{verbose = TRUE}).
 }
 \examples{
-"This kind of “text normalization” is e.g. useful to apply before feeding stuff to ‘Pandoc’" \%>\%
+"This kind of “text normalization” is e.g. useful to apply before feeding stuff to ‘Pandoc’" |>
   yay::str_normalize()
 }
 \seealso{

@@ -32,12 +32,12 @@ This function provides a subset of \code{\link[stringr:str_replace]{stringr::str
 resort to the latter.
 }
 \examples{
-"Make love, not war" \%>\%
+"Make love, not war" |>
   yay::str_replace_verbose(pattern = c("love" = "hummus",
                                        "war" = "walls"))
 
 # pattern-replacement pairs are processed one-by-one, so the following gives the same result
-"Make love, not war" \%>\%
+"Make love, not war" |>
   yay::str_replace_verbose(pattern = c("love" = "hummus",
                                        "hummus, not war" = "hummus, not walls"))
 
@@ -60,12 +60,12 @@ pattern <- c("not" = "extremely",
 
 yay::str_replace_verbose(string = input,
                          pattern = pattern,
-                         n_context_chrs = 5L) \%>\%
+                         n_context_chrs = 5L) |>
   pal::cat_lines()
 
 yay::str_replace_verbose(string = input,
                          pattern = pattern,
-                         n_context_chrs = 0L) \%>\%
+                         n_context_chrs = 0L) |>
   pal::cat_lines()
 }
 \seealso{

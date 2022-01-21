@@ -65,16 +65,11 @@ clean_git_dir <- function(path,
     gert::git_add(repo = repo)
 }
 
-
-
-
-
-
-
 #' Regular expression patterns and replacements for text normalization
 #'
 #' @format `r pkgsnip::return_label("data")`
-#' @seealso [`regex_file_normalization`] [str_normalize()]
+#' @family regex
+#' @seealso [str_normalize()] [str_normalize_file()]
 #'
 #' @examples
 #' # unnest the pattern column
@@ -85,7 +80,8 @@ clean_git_dir <- function(path,
 #' Regular expression patterns and replacements for file normalization
 #'
 #' @format `r pkgsnip::return_label("data")`
-#' @seealso [`regex_text_normalization`] [str_normalize()]
+#' @family regex
+#' @seealso [str_normalize()] [str_normalize_file()]
 #'
 #' @examples
 #' # unnest the pattern column
@@ -133,6 +129,8 @@ clean_git_dir <- function(path,
 #'
 #' @examples
 #' \dontrun{
+#' library(magrittr)
+#' 
 #' mtcars %>%
 #'   dplyr::mutate(dplyr::across(c(cyl, gear),
 #'                               ~ dplyr::if_else(. > 4, . * 2, .))) %>%
@@ -660,12 +658,12 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 #' @export
 #'
 #' @examples
-#' "Make love, not war" %>%
+#' "Make love, not war" |>
 #'   yay::str_replace_verbose(pattern = c("love" = "hummus",
 #'                                        "war" = "walls"))
 #'
 #' # pattern-replacement pairs are processed one-by-one, so the following gives the same result
-#' "Make love, not war" %>%
+#' "Make love, not war" |>
 #'   yay::str_replace_verbose(pattern = c("love" = "hummus",
 #'                                        "hummus, not war" = "hummus, not walls"))
 #'
@@ -688,12 +686,12 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 #'
 #' yay::str_replace_verbose(string = input,
 #'                          pattern = pattern,
-#'                          n_context_chrs = 5L) %>%
+#'                          n_context_chrs = 5L) |>
 #'   pal::cat_lines()
 #'
 #' yay::str_replace_verbose(string = input,
 #'                          pattern = pattern,
-#'                          n_context_chrs = 0L) %>%
+#'                          n_context_chrs = 0L) |>
 #'   pal::cat_lines()
 str_replace_verbose <- function(string,
                                 pattern,
@@ -917,7 +915,7 @@ str_replace_file <- function(path,
 #' @export
 #'
 #' @examples
-#' "This kind of “text normalization” is e.g. useful to apply before feeding stuff to ‘Pandoc’" %>%
+#' "This kind of “text normalization” is e.g. useful to apply before feeding stuff to ‘Pandoc’" |>
 #'   yay::str_normalize()
 str_normalize <- function(string,
                           rules = yay::regex_text_normalization,
@@ -953,8 +951,8 @@ str_normalize <- function(string,
 #'               destfile = temp_file,
 #'               quiet = TRUE)
 #'
-#' yay::regex_file_normalization %>%
-#'   dplyr::filter(category == "posix") %>%
+#' yay::regex_file_normalization |>
+#'   dplyr::filter(category == "posix") |>
 #'   yay::str_normalize_file(path = temp_file)
 str_normalize_file <- function(path,
                                rules = yay::regex_text_normalization,

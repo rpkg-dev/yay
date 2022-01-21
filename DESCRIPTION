@@ -1,6 +1,6 @@
 Package: yay
 Title: Delightful Convenience Functions
-Version: 0.0.9007
+Version: 0.0.9008
 Authors@R: 
     person(given = "Salim",
            family = "Brüggemann",
@@ -13,7 +13,7 @@ License: AGPL (>= 3)
 URL: https://rpkg.dev/yay, https://gitlab.com/salim_b/r/pkgs/yay
 BugReports: https://gitlab.com/salim_b/r/pkgs/yay/issues
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.1)
 Imports: 
     checkmate (>= 2.0.0),
     cli (>= 3.0.0),
