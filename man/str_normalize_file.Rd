@@ -52,7 +52,7 @@ yay::regex_file_normalization |>
   yay::str_normalize_file(path = temp_file)
 }
 \seealso{
-\code{\link{regex_text_normalization}} \code{\link{regex_file_normalization}}
+Regular expression rules: \code{\link{regex_text_normalization}} \code{\link{regex_file_normalization}}
 
 Other string functions:
 \code{\link{str_normalize}()},

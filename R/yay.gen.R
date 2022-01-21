@@ -69,7 +69,7 @@ clean_git_dir <- function(path,
 #'
 #' @format `r pkgsnip::return_label("data")`
 #' @family regex
-#' @seealso [str_normalize()] [str_normalize_file()]
+#' @seealso String normalization functions: [str_normalize()] [str_normalize_file()]
 #'
 #' @examples
 #' # unnest the pattern column
@@ -81,7 +81,7 @@ clean_git_dir <- function(path,
 #'
 #' @format `r pkgsnip::return_label("data")`
 #' @family regex
-#' @seealso [str_normalize()] [str_normalize_file()]
+#' @seealso String normalization functions: [str_normalize()] [str_normalize_file()]
 #'
 #' @examples
 #' # unnest the pattern column
@@ -911,7 +911,7 @@ str_replace_file <- function(path,
 #'
 #' @inherit str_replace_file return
 #' @family string
-#' @seealso [`regex_text_normalization`] [`regex_file_normalization`]
+#' @seealso Regular expression rules: [`regex_text_normalization`] [`regex_file_normalization`]
 #' @export
 #'
 #' @examples
@@ -940,7 +940,7 @@ str_normalize <- function(string,
 #'
 #' @inherit str_replace_file return
 #' @family string
-#' @seealso [`regex_text_normalization`] [`regex_file_normalization`]
+#' @seealso Regular expression rules: [`regex_text_normalization`] [`regex_file_normalization`]
 #' @export
 #'
 #' @examples

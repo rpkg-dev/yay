@@ -38,7 +38,7 @@ Applies a set of regular-expression-based text normalization rules to one or mor
   yay::str_normalize()
 }
 \seealso{
-\code{\link{regex_text_normalization}} \code{\link{regex_file_normalization}}
+Regular expression rules: \code{\link{regex_text_normalization}} \code{\link{regex_file_normalization}}
 
 Other string functions:
 \code{\link{str_normalize_file}()},

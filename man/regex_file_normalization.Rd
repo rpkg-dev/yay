@@ -19,7 +19,7 @@ tidyr::unnest_longer(data = yay::regex_file_normalization,
                      col = pattern)
 }
 \seealso{
-\code{\link[=str_normalize]{str_normalize()}} \code{\link[=str_normalize_file]{str_normalize_file()}}
+String normalization functions: \code{\link[=str_normalize]{str_normalize()}} \code{\link[=str_normalize_file]{str_normalize_file()}}
 
 Other regular expression rules:
 \code{\link{regex_text_normalization}}
