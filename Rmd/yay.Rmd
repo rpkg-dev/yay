@@ -29,21 +29,6 @@ utils::globalVariables(names = c(".",
 unicode_ellipsis <- "\u2026"
 ```
 
-### Terminal styling based on ANSI escape sequences
-
-Note that the colors defined here are intended for terminals capable to display [ANSI 24-bit colors](https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit).
-
-```{r}
-# dark background colors that are easy on the eyes
-bg_red_dark <- cli::make_ansi_style("#330000",
-                                    bg = TRUE,
-                                    colors = 2L^24L)
-
-bg_green_dark <- cli::make_ansi_style("#003300",
-                                      bg = TRUE,
-                                      colors = 2L^24L)
-```
-
 ## Functions
 
 ### `clean_git_dir`
@@ -703,7 +688,7 @@ These functions are likely to be proposed upstream, and if accepted, will be rem
 
 TODO:
 
--   [ ] [UTF-8 byte order mark (BOM)](https://en.wikipedia.org/wiki/Byte_order_mark) leads to replacement highlighting error (first char not highlighted).
+-   [UTF-8 byte order mark (BOM)](https://en.wikipedia.org/wiki/Byte_order_mark) leads to replacement highlighting error (first char not highlighted).
 
     Example:
 
@@ -711,18 +696,18 @@ TODO:
     "\uFEFFHello" %>% yay::str_replace_verbose(pattern = c("Hello" = "olà"))
     ```
 
--   [ ] Investigate if we can somehow consolidate console output per line and pattern. When a single pattern yields multiple replacement infos, the console
-    output is currently confusing. Example:
+-   Investigate if we can somehow consolidate console output per line and pattern. When a single pattern yields multiple replacement infos, the console output
+    is currently confusing. Example:
 
     ``` r
     "\t\t\t3 tabs" %>% yay::str_replace_verbose(pattern = c("\\t" = " "))
     ```
 
--   [ ] Implement param `n_context_lines` (default = `0L`) to optionally add *vertical* context for console output.
+-   Implement param `n_context_lines` (default = `0L`) to optionally add *vertical* context for console output.
 
     If `n_context_lines > 0L`, we do not `escape_lf()` -> we'd need to tokenize by LF's instead it seems...
 
--   [ ] Currently, the regex-group-based replacements are not properly displayed on the console (`\1` instead of the parsed first group etc.).
+-   Currently, the regex-group-based replacements are not properly displayed on the console (`\1` instead of the parsed first group etc.).
 
     -> Check if it's possible to change this (without too much hassle). If yes, also think about adding support for functions (`stringr::str_replace_all()`
     already supports this)... obviously, `pattern` would have to be of type list to support this.
@@ -849,6 +834,14 @@ str_replace_verbose_single_info <- function(string,
                                             pattern,
                                             n_context_chrs) {
   
+  # define dark background colors that are easy on the eyes based on ANSI escape sequences
+  # (shouldn't be outsourced to package-constants since the number of supported terminal colors couldn't be auto-detected that way)
+  bg_red_dark <- cli::make_ansi_style("#330000",
+                                      bg = TRUE)
+  
+  bg_green_dark <- cli::make_ansi_style("#003300",
+                                        bg = TRUE)
+  
   # escape newlines (in case replacement contains newlines)
   replacement <- pal::escape_lf(as.character(pattern))
   
@@ -908,7 +901,7 @@ str_replace_verbose_single_info <- function(string,
 
 TODO:
 
--   [ ] Promote functionality in SO questions and the like, e.g.
+-   Promote functionality in SO questions and the like, e.g.
 
     -   <https://stackoverflow.com/questions/45894069/find-and-replace-text-in-all-files-rstudio/52096986>
     -   <https://stackoverflow.com/questions/25548333/r-find-and-replace-multiple-scripts-at-once>
@@ -917,10 +910,10 @@ TODO:
 #' Replace matched patterns in text files
 #'
 #' Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the
-#' given order. All performed replacements are displayed on the console by default (`verbose = TRUE`), optionally without actually changing any file content
+#' given order. By default, all performed replacements are displayed on the console (`verbose = TRUE`) without actually changing any file content
 #' (`run_dry = TRUE`).
 #'
-#' Note that `process_line_by_line` requires the [line ending standard (EOL)](https://en.wikipedia.org/wiki/Newline) of the input files to be correctly set in
+#' Note that `process_line_by_line` requires the [line ending standard (EOL)](https://en.wikipedia.org/wiki/Newline) of the input files to be correctly set via
 #' `eol`. It _always_ defaults to `"LF"` (Unix standard) since this is something which cannot be reliably detected without complex heuristics (and even then
 #' not unambiguously in all edge cases). Simply deriving a default depending on the host OS (i.a. `"LF"` on Unix systems like Linux and macOS and `"CRLF"` on
 #' Windows) seems like a really bad idea with regard to cross-system collaboration (files shared via Git etc.), thus it was refrained from.
@@ -974,7 +967,10 @@ str_replace_file <- function(path,
                                               fs::path_rel(path),
                                               fs::path_abs(path))
                   
-                  cli::cli_alert_info(text = "Processing file {.file {path_show}}{unicode_ellipsis}")
+                  status_msg <- "Processing file {.file {path_show}}{unicode_ellipsis}"
+                  cli::cli_progress_step(msg = status_msg,
+                                         msg_done = paste(status_msg, "done"),
+                                         msg_failed = paste(status_msg, "failed"))
                 }
                 
                 # perform replacement
@@ -995,6 +991,8 @@ str_replace_file <- function(path,
                                                  collapse = eol),
                                    path = path)
                 }
+                
+                if (verbose) cli::cli_progress_done()
               })
   
   invisible(path)

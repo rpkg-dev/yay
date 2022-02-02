@@ -49,11 +49,11 @@ relevant if \code{verbose = TRUE}.}
 }
 \description{
 Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the
-given order. All performed replacements are displayed on the console by default (\code{verbose = TRUE}), optionally without actually changing any file content
+given order. By default, all performed replacements are displayed on the console (\code{verbose = TRUE}) without actually changing any file content
 (\code{run_dry = TRUE}).
 }
 \details{
-Note that \code{process_line_by_line} requires the \href{https://en.wikipedia.org/wiki/Newline}{line ending standard (EOL)} of the input files to be correctly set in
+Note that \code{process_line_by_line} requires the \href{https://en.wikipedia.org/wiki/Newline}{line ending standard (EOL)} of the input files to be correctly set via
 \code{eol}. It \emph{always} defaults to \code{"LF"} (Unix standard) since this is something which cannot be reliably detected without complex heuristics (and even then
 not unambiguously in all edge cases). Simply deriving a default depending on the host OS (i.a. \code{"LF"} on Unix systems like Linux and macOS and \code{"CRLF"} on
 Windows) seems like a really bad idea with regard to cross-system collaboration (files shared via Git etc.), thus it was refrained from.

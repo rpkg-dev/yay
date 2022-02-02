@@ -43,8 +43,8 @@
 
 
 <meta property="og:title" content="Replace matched patterns in text files — str_replace_file" />
-<meta name="description" content="Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the given order. All performed replacements are displayed on the console by default (verbose = TRUE), optionally without actually changing any file content (run_dry = TRUE).">
-<meta property="og:description" content="Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the given order. All performed replacements are displayed on the console by default (verbose = TRUE), optionally without actually changing any file content (run_dry = TRUE)." />
+<meta name="description" content="Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the given order. By default, all performed replacements are displayed on the console (verbose = TRUE) without actually changing any file content (run_dry = TRUE).">
+<meta property="og:description" content="Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the given order. By default, all performed replacements are displayed on the console (verbose = TRUE) without actually changing any file content (run_dry = TRUE)." />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@2BSalim" />
 <meta name="twitter:site" content="@2BSalim" />
@@ -120,7 +120,7 @@
 
     <div class="ref-description">
     <p>Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the
-given order. All performed replacements are displayed on the console by default (<code>verbose = TRUE</code>), optionally without actually changing any file content
+given order. By default, all performed replacements are displayed on the console (<code>verbose = TRUE</code>) without actually changing any file content
 (<code>run_dry = TRUE</code>).</p>
     </div>
 
@@ -188,7 +188,7 @@ relevant if <code>verbose = TRUE</code>.</p></td>
     <p><code>path</code> invisibly.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Note that <code>process_line_by_line</code> requires the <a href='https://en.wikipedia.org/wiki/Newline'>line ending standard (EOL)</a> of the input files to be correctly set in
+    <p>Note that <code>process_line_by_line</code> requires the <a href='https://en.wikipedia.org/wiki/Newline'>line ending standard (EOL)</a> of the input files to be correctly set via
 <code>eol</code>. It <em>always</em> defaults to <code>"LF"</code> (Unix standard) since this is something which cannot be reliably detected without complex heuristics (and even then
 not unambiguously in all edge cases). Simply deriving a default depending on the host OS (i.a. <code>"LF"</code> on Unix systems like Linux and macOS and <code>"CRLF"</code> on
 Windows) seems like a really bad idea with regard to cross-system collaboration (files shared via Git etc.), thus it was refrained from.</p>

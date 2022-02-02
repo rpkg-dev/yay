@@ -24,15 +24,6 @@ utils::globalVariables(names = c(".",
 
 unicode_ellipsis <- "\u2026"
 
-# dark background colors that are easy on the eyes
-bg_red_dark <- cli::make_ansi_style("#330000",
-                                    bg = TRUE,
-                                    colors = 2L^24L)
-
-bg_green_dark <- cli::make_ansi_style("#003300",
-                                      bg = TRUE,
-                                      colors = 2L^24L)
-
 clean_git_dir <- function(path,
                           exclude_paths = c("netlify.toml",
                                             "robots.txt",
@@ -757,6 +748,14 @@ str_replace_verbose_single_info <- function(string,
                                             pattern,
                                             n_context_chrs) {
   
+  # define dark background colors that are easy on the eyes based on ANSI escape sequences
+  # (shouldn't be outsourced to package-constants since the number of supported terminal colors couldn't be auto-detected that way)
+  bg_red_dark <- cli::make_ansi_style("#330000",
+                                      bg = TRUE)
+  
+  bg_green_dark <- cli::make_ansi_style("#003300",
+                                        bg = TRUE)
+  
   # escape newlines (in case replacement contains newlines)
   replacement <- pal::escape_lf(as.character(pattern))
   
@@ -814,10 +813,10 @@ str_replace_verbose_single_info <- function(string,
 #' Replace matched patterns in text files
 #'
 #' Applies pattern-based string replacements to one or more files. Expects a series of regular-expression-replacement pairs that are applied one-by-one in the
-#' given order. All performed replacements are displayed on the console by default (`verbose = TRUE`), optionally without actually changing any file content
+#' given order. By default, all performed replacements are displayed on the console (`verbose = TRUE`) without actually changing any file content
 #' (`run_dry = TRUE`).
 #'
-#' Note that `process_line_by_line` requires the [line ending standard (EOL)](https://en.wikipedia.org/wiki/Newline) of the input files to be correctly set in
+#' Note that `process_line_by_line` requires the [line ending standard (EOL)](https://en.wikipedia.org/wiki/Newline) of the input files to be correctly set via
 #' `eol`. It _always_ defaults to `"LF"` (Unix standard) since this is something which cannot be reliably detected without complex heuristics (and even then
 #' not unambiguously in all edge cases). Simply deriving a default depending on the host OS (i.a. `"LF"` on Unix systems like Linux and macOS and `"CRLF"` on
 #' Windows) seems like a really bad idea with regard to cross-system collaboration (files shared via Git etc.), thus it was refrained from.
@@ -871,7 +870,10 @@ str_replace_file <- function(path,
                                               fs::path_rel(path),
                                               fs::path_abs(path))
                   
-                  cli::cli_alert_info(text = "Processing file {.file {path_show}}{unicode_ellipsis}")
+                  status_msg <- "Processing file {.file {path_show}}{unicode_ellipsis}"
+                  cli::cli_progress_step(msg = status_msg,
+                                         msg_done = paste(status_msg, "done"),
+                                         msg_failed = paste(status_msg, "failed"))
                 }
                 
                 # perform replacement
@@ -892,6 +894,8 @@ str_replace_file <- function(path,
                                                  collapse = eol),
                                    path = path)
                 }
+                
+                if (verbose) cli::cli_progress_done()
               })
   
   invisible(path)
