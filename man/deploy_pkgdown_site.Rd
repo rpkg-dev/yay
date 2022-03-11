@@ -13,7 +13,8 @@ deploy_pkgdown_site(
     ".htaccess"),
   branch = NULL,
   commit_msg = paste0("auto-deploy pkgdown site for ", desc::desc_get_field(file =
-    pkg_path, key = "Package"))
+    pkg_path, key = "Package")),
+  quiet = FALSE
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ over from previous deployments.}
 currently checked out branch of the repository \code{to_path} belongs to.}
 
 \item{commit_msg}{The Git commit message used for the deployment. A character scalar.}
+
+\item{quiet}{Whether or not to suppress printing status output from internal processing.}
 }
 \value{
 A vector of paths to the deployed files/folders, invisibly.
@@ -47,7 +50,7 @@ Use this function with \strong{caution} since by default it – except for the p
 directory}!
 }
 \details{
-This function is also registered as an \href{https://rstudio.github.io/rstudioaddins/}{RStudio add-in} allowing RStudio users to assign a custom shortcut to it.
+This function is also registered as an \href{https://rstudio.github.io/rstudioaddins/}{RStudio add-in}, allowing RStudio users to assign a \href{https://support.rstudio.com/hc/en-us/articles/206382178-Customizing-Keyboard-Shortcuts-in-the-RStudio-IDE}{custom shortcut} to it or to invoke it from the \href{https://www.rstudio.com/blog/rstudio-1-4-a-quick-tour/#command-palette--shortcuts}{command palette}.
 }
 \section{Setting \code{to_path} via \R options}{
 Instead of directly providing a valid \code{to_path} argument, you can also set \code{to_path = NULL} and provide

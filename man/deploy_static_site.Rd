@@ -11,7 +11,8 @@ deploy_static_site(
   never_clean = c("netlify.toml", "robots.txt", "_headers", "_redirects", ".gitignore",
     ".htaccess"),
   branch = NULL,
-  commit_msg = "auto-deploy static website"
+  commit_msg = "auto-deploy static website",
+  quiet = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ over from previous deployments.}
 currently checked out branch of the repository \code{to_path} belongs to.}
 
 \item{commit_msg}{The Git commit message used for the deployment. A character scalar.}
+
+\item{quiet}{Whether or not to suppress printing status output from internal processing.}
 }
 \value{
 A vector of paths to the deployed files/folders, invisibly.

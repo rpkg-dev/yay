@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9008</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9009</span>
       </span>
     </div>
 
@@ -132,7 +132,8 @@ directory</strong>!</p>
   never_clean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"netlify.toml"</span>, <span class='st'>"robots.txt"</span>, <span class='st'>"_headers"</span>, <span class='st'>"_redirects"</span>, <span class='st'>".gitignore"</span>,
     <span class='st'>".htaccess"</span><span class='op'>)</span>,
   branch <span class='op'>=</span> <span class='cn'>NULL</span>,
-  commit_msg <span class='op'>=</span> <span class='st'>"auto-deploy static website"</span>
+  commit_msg <span class='op'>=</span> <span class='st'>"auto-deploy static website"</span>,
+  quiet <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -163,6 +164,10 @@ currently checked out branch of the repository <code>to_path</code> belongs to.<
     <tr>
       <th>commit_msg</th>
       <td><p>The Git commit message used for the deployment. A character scalar.</p></td>
+    </tr>
+    <tr>
+      <th>quiet</th>
+      <td><p>Whether or not to suppress printing status output from internal processing.</p></td>
     </tr>
     </table>
 

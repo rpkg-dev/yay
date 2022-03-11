@@ -321,6 +321,7 @@ open_as_tmp_spreadsheet <- function(x,
 #' @param branch The name of the Git branch to which the static website files are to be committed. A character scalar or `NULL`. If `NULL`, defaults to the
 #'   currently checked out branch of the repository `to_path` belongs to.
 #' @param commit_msg The Git commit message used for the deployment. A character scalar.
+#' @param quiet `r pkgsnip::param_label("quiet")`
 #'
 #' @return A vector of paths to the deployed files/folders, invisibly.
 #' @family gitrepo
@@ -335,16 +336,18 @@ deploy_static_site <- function(from_path,
                                                ".gitignore",
                                                ".htaccess"),
                                branch = NULL,
-                               commit_msg = "auto-deploy static website") {
+                               commit_msg = "auto-deploy static website",
+                               quiet = FALSE) {
   pal::assert_pkg("gert")
   checkmate::assert_directory(from_path,
                               access = "r")
   checkmate::assert_flag(clean_to_path)
-  checkmate::assert_string(commit_msg)
   checkmate::assert_character(never_clean,
                               any.missing = FALSE)
   checkmate::assert_string(branch,
                            null.ok = TRUE)
+  checkmate::assert_string(commit_msg)
+  checkmate::assert_flag(quiet)
   
   if (!checkmate::test_path_for_output(to_path,
                                        overwrite = TRUE)) {
@@ -413,7 +416,8 @@ deploy_static_site <- function(from_path,
     gert::git_commit(message = commit_msg,
                      repo = repo)
     
-    gert::git_push(repo = repo)
+    gert::git_push(repo = repo,
+                   verbose = !quiet)
     
   } else {
     cli::cli_alert_info("No files changed.")
@@ -467,13 +471,13 @@ deploy_static_site <- function(from_path,
 #' file](https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf)
 #' in the user's home directory.
 #'
+#' @inheritParams deploy_static_site
 #' @param pkg_path Path to the \R package of which the pkgdown website files are to be deployed.
 #' @param to_path Path to the Git (sub)folder to which the pkgdown website files are to be deployed. If `NULL`, the \R options `yay.local_pkgdown_deploy_paths`
 #'   and `yay.default_local_pkgdown_deploy_parent_path` will be respected. See section _Setting `to_path` via R options_ for details.
 #' @param use_dev_build Whether or not to deploy the development build of the pkgdown website files. If `NULL`,
 #'   [`development.mode`](https://pkgdown.r-lib.org/reference/build_site.html#development-mode) set in the pkgdown YAML configuration file from `pkg_path` will
 #'   be respected.
-#' @inheritParams deploy_static_site
 #'
 #' @inherit deploy_static_site return
 #' @family gitrepo
@@ -491,18 +495,20 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                                 branch = NULL,
                                 commit_msg = paste0("auto-deploy pkgdown site for ",
                                                     desc::desc_get_field(file = pkg_path,
-                                                                         key = "Package"))) {
+                                                                         key = "Package")),
+                                quiet = FALSE) {
   pal::assert_pkg("desc")
   pal::assert_pkg("gert")
   pal::assert_pkg("pkgdown")
   checkmate::assert_flag(use_dev_build,
                          null.ok = TRUE)
   checkmate::assert_flag(clean_to_path)
-  checkmate::assert_string(commit_msg)
   checkmate::assert_character(never_clean,
                               any.missing = FALSE)
   checkmate::assert_string(branch,
                            null.ok = TRUE)
+  checkmate::assert_string(commit_msg)
+  checkmate::assert_flag(quiet)
   
   if (!(pal::is_pkgdown_dir(pkg_path))) {
     cli::cli_abort("No pkgdown configuration found under path: {.path {pkg_path}}")
@@ -611,7 +617,8 @@ deploy_pkgdown_site <- function(pkg_path = ".",
     gert::git_commit(message = commit_msg,
                      repo = repo)
     
-    gert::git_push(repo = repo)
+    gert::git_push(repo = repo,
+                   verbose = !quiet)
     
   } else {
     cli::cli_alert_info("No files changed.")
