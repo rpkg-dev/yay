@@ -14,7 +14,7 @@ NOTES:
 
 NOTES:
 
--   When used internally, other than internal data, exported data must always be referred to by its explicit namespace, i.e. e.g. `fokus::qx`.
+-   When used internally, other than internal data, exported data must always be referred to by its explicit namespace.
 
 ## `regex_text_normalization`
 

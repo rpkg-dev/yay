@@ -183,9 +183,9 @@ show_diff <- function(x,
                                  
                                  stringr::str_replace(string = string,
                                                       pattern = "`",
-                                                      replacement = dplyr::if_else(i %% 2L == 0L,
-                                                                                   "</code>",
-                                                                                   "<code>"))
+                                                      replacement = ifelse(i %% 2L == 0L,
+                                                                           "</code>",
+                                                                           "<code>"))
                                })
   }
   
@@ -784,9 +784,9 @@ str_replace_verbose_single_info <- function(string,
                                         
                                         ## extract excerpt
                                         ### begin (part before `pattern`)
-                                        excerpt_begin <- string %>% stringr::str_sub(start = dplyr::if_else(prune_start,
-                                                                                                            start - n_context_chrs,
-                                                                                                            1L),
+                                        excerpt_begin <- string %>% stringr::str_sub(start = ifelse(prune_start,
+                                                                                                    start - n_context_chrs,
+                                                                                                    1L),
                                                                                      end = start - 1L)
                                         ### the `pattern` as-is, i.e. without regex syntax
                                         pattern_asis <- string %>% stringr::str_sub(start = start,
@@ -794,9 +794,9 @@ str_replace_verbose_single_info <- function(string,
                                         
                                         ### end (part after `pattern`)
                                         excerpt_end <- string %>% stringr::str_sub(start = end + 1L,
-                                                                                   end = dplyr::if_else(prune_end,
-                                                                                                        end + n_context_chrs,
-                                                                                                        -1L))
+                                                                                   end = ifelse(prune_end,
+                                                                                                end + n_context_chrs,
+                                                                                                -1L))
                                         
                                         # replace excerpt start/end with ellipsis dots (pruned to whole words if appropriate)
                                         if (prune_start) excerpt_begin %<>% paste0(unicode_ellipsis, .)
@@ -873,9 +873,9 @@ str_replace_file <- function(path,
                 # print file progress info
                 if (verbose) {
                   
-                  path_show <- dplyr::if_else(show_rel_path,
-                                              fs::path_rel(path),
-                                              fs::path_abs(path))
+                  path_show <- ifelse(show_rel_path,
+                                      fs::path_rel(path),
+                                      fs::path_abs(path))
                   
                   status_msg <- "Processing file {.file {path_show}}{unicode_ellipsis}"
                   cli::cli_progress_step(msg = status_msg,

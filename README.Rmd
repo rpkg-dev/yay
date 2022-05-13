@@ -19,6 +19,12 @@ pkgsnip::md_snip(name = "pkgdown_notice") %>%
 ```{r, install-snippet-dev, child = pkgsnip::snip_path("installation-notice_dev-version_gitlab.Rmd")}
 ```
 
+```{r, usage, eval = isTRUE(getOption("pal.build_readme.is_pkgdown")), results = "asis", echo = FALSE}
+pkgsnip::md_snip(name = "usage_notice") %>%
+  paste0("## Usage\n\n", .) %>%
+  pal::cat_lines()
+```
+
 ## Development
 
 ### R Markdown format

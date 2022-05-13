@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9009</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9010</span>
       </span>
     </div>
 
@@ -88,6 +88,11 @@ in R:</p>
 
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_gitlab.html" class="external-link">install_gitlab</a></span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"salim_b/r/pkgs/yay"</span><span class="op">)</span></code></pre></div>
 </div>
+<div id="usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h2>
+<p>The (function) reference is found <a href="https://rpkg.dev/yay/reference">here</a>.</p>
+</div>
 <div id="development" class="section level2">
 <h2 class="hasAnchor">
 <a href="#development" class="anchor"></a>Development</h2>
@@ -100,9 +105,9 @@ programming</em></a>. It allows the actual code to be freely mixed with
 explanatory and supplementary information in expressive Markdown format
 instead of having to rely on <a href="https://cran.r-project.org/doc/manuals/r-release/R-lang.html#Comments" class="external-link"><code>#</code>
 comments</a> only.</p>
-<p>All the <code>-GEN.R</code> suffixed R source code found under <a href="R/"><code>R/</code></a> is generated from the respective R
+<p>All the <code>.gen.R</code> suffixed R source code found under <a href="R/"><code>R/</code></a> is generated from the respective R
 Markdown counterparts under <a href="Rmd/"><code>Rmd/</code></a> using
-<a href="https://gitlab.com/salim_b/r/pkgs/pkgpurl/" class="external-link"><code>pkgpurl::purl_rmd()</code></a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Always
+<a href="https://rpkg.dev/pkgpurl/reference/purl_rmd.html" class="external-link"><code>pkgpurl::purl_rmd()</code></a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Always
 make changes only to the <code>.Rmd</code> files – never the
 <code>.R</code> files – and then run <code><a href="https://rpkg.dev/pkgpurl/reference/purl_rmd.html" class="external-link">pkgpurl::purl_rmd()</a></code> to
 regenerate the R source files.</p>
