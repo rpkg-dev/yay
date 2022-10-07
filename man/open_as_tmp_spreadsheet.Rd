@@ -4,7 +4,7 @@
 \alias{open_as_tmp_spreadsheet}
 \title{Open as temporary spreadsheet}
 \usage{
-open_as_tmp_spreadsheet(x, format = c("csv", "xlsx"), quiet = TRUE)
+open_as_tmp_spreadsheet(x, format = c("csv", "xlsx"), ..., quiet = TRUE)
 }
 \arguments{
 \item{x}{A dataframe or \link[tibble:tibble]{tibble}, or something coercible to.}
@@ -15,6 +15,8 @@ open_as_tmp_spreadsheet(x, format = c("csv", "xlsx"), quiet = TRUE)
 \item \code{"xlsx"} for an \href{https://en.wikipedia.org/wiki/Office_Open_XML}{Office Open XML} file commonly used by Microsoft Excel 2007+, written using
 \code{\link[writexl:write_xlsx]{writexl::write_xlsx()}}.
 }}
+
+\item{...}{Further arguments passed on to \code{\link[readr:write_delim]{readr::write_csv()}} or \code{\link[writexl:write_xlsx]{writexl::write_xlsx()}}, depending on \code{format}.}
 
 \item{quiet}{Whether or not to echo the command to open the temporary spreadsheet on the console before running it.}
 }

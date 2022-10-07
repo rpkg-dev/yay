@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9010</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9011</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@
     <p>Regular expression patterns and replacements for file normalization</p>
     </div>
 
-    <pre class="usage"><span class='va'>regex_file_normalization</span></pre>
+    <pre class="usage"><span><span class='va'>regex_file_normalization</span></span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -135,15 +135,16 @@
 <code><a href='regex_text_normalization.html'>regex_text_normalization</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'># unnest the pattern column</span></span>
-<span class='r-in'><span class='fu'>tidyr</span><span class='fu'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/hoist.html'>unnest_longer</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'>yay</span><span class='fu'>::</span><span class='va'>regex_file_normalization</span>,</span>
-<span class='r-in'>                     col <span class='op'>=</span> <span class='va'>pattern</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span><span class='co'># unnest the pattern column</span></span></span>
+<span class='r-in'><span><span class='fu'>tidyr</span><span class='fu'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/hoist.html'>unnest_longer</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'>yay</span><span class='fu'>::</span><span class='va'>regex_file_normalization</span>,</span></span>
+<span class='r-in'><span>                     col <span class='op'>=</span> <span class='va'>pattern</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 3 × 5</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   id                                     category    purpose pattern replacement</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                                  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> terminating_newline                    posix       <span style='color: #949494;'>"</span>ensur… <span style='color: #949494;'>"</span>(.)(?… <span style='color: #949494;'>"</span>\\1\n<span style='color: #949494;'>"</span>    </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span> go_template_opening_double_brace_space go_template <span style='color: #949494;'>"</span>ensur… <span style='color: #949494;'>"</span>\\{\\… <span style='color: #949494;'>"</span>{{ <span style='color: #949494;'>"</span>      </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span> go_template_closing_double_brace_space go_template <span style='color: #949494;'>"</span>ensur… <span style='color: #949494;'>"</span>([^-%… <span style='color: #949494;'>"</span>\\1 }}<span style='color: #949494;'>"</span>   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   id                                     category    purpose     pattern repla…¹</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                                  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> terminating_newline                    posix       <span style='color: #949494;'>"</span>ensure fi… <span style='color: #949494;'>"</span>(.)(?… <span style='color: #949494;'>"</span>\\1\n<span style='color: #949494;'>"</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span> go_template_opening_double_brace_space go_template <span style='color: #949494;'>"</span>ensure th… <span style='color: #949494;'>"</span>\\{\\… <span style='color: #949494;'>"</span>{{ <span style='color: #949494;'>"</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span> go_template_closing_double_brace_space go_template <span style='color: #949494;'>"</span>ensure th… <span style='color: #949494;'>"</span>([^-%… <span style='color: #949494;'>"</span>\\1 }…</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with abbreviated variable name ¹​replacement</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

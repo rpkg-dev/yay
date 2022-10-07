@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">yay</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9010</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.0.9011</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@
     <p>Regular expression patterns and replacements for text normalization</p>
     </div>
 
-    <pre class="usage"><span class='va'>regex_text_normalization</span></pre>
+    <pre class="usage"><span><span class='va'>regex_text_normalization</span></span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -135,21 +135,22 @@
 <code><a href='regex_file_normalization.html'>regex_file_normalization</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'># unnest the pattern column</span></span>
-<span class='r-in'><span class='fu'>tidyr</span><span class='fu'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/hoist.html'>unnest_longer</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'>yay</span><span class='fu'>::</span><span class='va'>regex_text_normalization</span>,</span>
-<span class='r-in'>                     col <span class='op'>=</span> <span class='va'>pattern</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span><span class='co'># unnest the pattern column</span></span></span>
+<span class='r-in'><span><span class='fu'>tidyr</span><span class='fu'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/hoist.html'>unnest_longer</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'>yay</span><span class='fu'>::</span><span class='va'>regex_text_normalization</span>,</span></span>
+<span class='r-in'><span>                     col <span class='op'>=</span> <span class='va'>pattern</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 9 × 5</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   id                            category             purpose pattern replacement</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> uniform_quotation_marks       harmonize_punctuati… <span style='color: #949494;'>"</span>use t… <span style='color: #949494;'>"</span>[“”„‟… <span style='color: #949494;'>"</span>\"<span style='color: #949494;'>"</span>       </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span> uniform_apostrophes           harmonize_punctuati… <span style='color: #949494;'>"</span>use t… <span style='color: #949494;'>"</span>[’‘‚‛… <span style='color: #949494;'>"</span>'<span style='color: #949494;'>"</span>        </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span> no_break_percentages          prettify_punctuation <span style='color: #949494;'>"</span>use n… <span style='color: #949494;'>"</span>\\b(\… <span style='color: #949494;'>"</span>\\1 \\2<span style='color: #949494;'>"</span>  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>4</span> no_break_abbreviations_german prettify_punctuation <span style='color: #949494;'>"</span>use n… <span style='color: #949494;'>"</span>(?i)\… <span style='color: #949494;'>"</span>\\1 \\2<span style='color: #949494;'>"</span>  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>5</span> no_break_abbreviations_german prettify_punctuation <span style='color: #949494;'>"</span>use n… <span style='color: #949494;'>"</span>(?i)\… <span style='color: #949494;'>"</span>\\1 \\2<span style='color: #949494;'>"</span>  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>6</span> no_break_abbreviations_german prettify_punctuation <span style='color: #949494;'>"</span>use n… <span style='color: #949494;'>"</span>(?i)\… <span style='color: #949494;'>"</span>\\1 \\2<span style='color: #949494;'>"</span>  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>7</span> no_break_abbreviations_german prettify_punctuation <span style='color: #949494;'>"</span>use n… <span style='color: #949494;'>"</span>(?i)\… <span style='color: #949494;'>"</span>\\1 \\2<span style='color: #949494;'>"</span>  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>8</span> no_break_equals_sign          prettify_punctuation <span style='color: #949494;'>"</span>use n… <span style='color: #949494;'>"</span>(?&lt;= … <span style='color: #949494;'>"</span> \\1 <span style='color: #949494;'>"</span>    </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>9</span> en_dash_value_ranges          prettify_punctuation <span style='color: #949494;'>"</span>use [… <span style='color: #949494;'>"</span>(?&lt;!-… <span style='color: #949494;'>"</span>\\1–\\2<span style='color: #949494;'>"</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   id                            category              purpose    pattern repla…¹</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                 <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> uniform_quotation_marks       harmonize_punctuation <span style='color: #949494;'>"</span>use type… <span style='color: #949494;'>"</span>[“”„‟… <span style='color: #949494;'>"</span>\"<span style='color: #949494;'>"</span>   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span> uniform_apostrophes           harmonize_punctuation <span style='color: #949494;'>"</span>use type… <span style='color: #949494;'>"</span>[’‘‚‛… <span style='color: #949494;'>"</span>'<span style='color: #949494;'>"</span>    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span> no_break_percentages          prettify_punctuation  <span style='color: #949494;'>"</span>use narr… <span style='color: #949494;'>"</span>\\b(\… <span style='color: #949494;'>"</span>\\1 \…</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>4</span> no_break_abbreviations_german prettify_punctuation  <span style='color: #949494;'>"</span>use narr… <span style='color: #949494;'>"</span>(?i)\… <span style='color: #949494;'>"</span>\\1 \…</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>5</span> no_break_abbreviations_german prettify_punctuation  <span style='color: #949494;'>"</span>use narr… <span style='color: #949494;'>"</span>(?i)\… <span style='color: #949494;'>"</span>\\1 \…</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>6</span> no_break_abbreviations_german prettify_punctuation  <span style='color: #949494;'>"</span>use narr… <span style='color: #949494;'>"</span>(?i)\… <span style='color: #949494;'>"</span>\\1 \…</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>7</span> no_break_abbreviations_german prettify_punctuation  <span style='color: #949494;'>"</span>use narr… <span style='color: #949494;'>"</span>(?i)\… <span style='color: #949494;'>"</span>\\1 \…</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>8</span> no_break_equals_sign          prettify_punctuation  <span style='color: #949494;'>"</span>use narr… <span style='color: #949494;'>"</span>(?&lt;= … <span style='color: #949494;'>"</span> \\1 <span style='color: #949494;'>"</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>9</span> en_dash_value_ranges          prettify_punctuation  <span style='color: #949494;'>"</span>use [en … <span style='color: #949494;'>"</span>(?&lt;!-… <span style='color: #949494;'>"</span>\\1–\…</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with abbreviated variable name ¹​replacement</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -301,6 +301,7 @@ show_diff <- function(x,
 #'   - `"csv"` for a [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) file written using [readr::write_csv()]. The default.
 #'   - `"xlsx"` for an [Office Open XML](https://en.wikipedia.org/wiki/Office_Open_XML) file commonly used by Microsoft Excel 2007+, written using
 #'     [writexl::write_xlsx()].
+#' @param ... Further arguments passed on to [readr::write_csv()] or [writexl::write_xlsx()], depending on `format`.
 #' @param quiet Whether or not to echo the command to open the temporary spreadsheet on the console before running it.
 #'
 #' @return `x` invisibly.
@@ -313,6 +314,7 @@ show_diff <- function(x,
 #'                              format = "xslx")}
 open_as_tmp_spreadsheet <- function(x,
                                     format = c("csv", "xlsx"),
+                                    ...,
                                     quiet = TRUE) {
   pal::assert_pkg("xopen")
   format <- rlang::arg_match(format)
@@ -322,14 +324,22 @@ open_as_tmp_spreadsheet <- function(x,
   if (format == "csv") {
     
     pal::assert_pkg("readr")
+    pal::check_dots_named(...,
+                          .fn = readr::write_csv,
+                          .forbidden = "x")
     readr::write_csv(x = x,
-                     file = tmp_file)
+                     file = tmp_file,
+                     ...)
     
   } else if (format == "xlsx") {
     
     pal::assert_pkg("writexl")
+    pal::check_dots_named(...,
+                          .fn = writexl::write_xlsx,
+                          .forbidden = "x")
     writexl::write_xlsx(x = x,
-                        path = tmp_file)
+                        path = tmp_file,
+                        ...)
   }
   
   xopen::xopen(target = tmp_file,

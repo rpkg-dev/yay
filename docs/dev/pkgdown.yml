@@ -1,8 +1,8 @@
-pandoc: '2.18'
+pandoc: 2.19.2
 pkgdown: 1.6.1.9000
-pkgdown_sha: ~
+pkgdown_sha: 7e9bb083e7d476e27baaad7e5328ec0ae94f8c36
 articles: {}
-last_built: 2022-05-13T16:47Z
+last_built: 2022-10-07T16:45Z
 urls:
   reference: https://rpkg.dev/yay/reference
   article: https://rpkg.dev/yay/articles
