@@ -22,15 +22,20 @@ utils::globalVariables(names = c(".",
                                  "start",
                                  "status"))
 
+paths_to_keep <- c("netlify.toml",
+                   "robots.txt",
+                   "_headers",
+                   "_redirects",
+                   ".gitignore",
+                   ".gitmodules",
+                   ".gitsigners",
+                   ".htaccess",
+                   ".well-known")
+
 unicode_ellipsis <- "\u2026"
 
 clean_git_dir <- function(path,
-                          exclude_paths = c("netlify.toml",
-                                            "robots.txt",
-                                            "_headers",
-                                            "_redirects",
-                                            ".gitignore",
-                                            ".htaccess"),
+                          exclude_paths = paths_to_keep,
                           repo = path) {
   
   fs::dir_ls(path = path,
@@ -202,7 +207,7 @@ show_diff <- function(x,
                            quiet = TRUE,
                            return_waldo_compare = TRUE)
   
-  if (length(diff)) {
+  if (length(diff) > 0L) {
     
     if (verbose) {
       cli::cli_alert_info(text = paste0(diff_text, ":"))
@@ -327,7 +332,9 @@ open_as_tmp_spreadsheet <- function(x,
 #' @param to_path Path to the Git (sub)folder to which the static website files are to be deployed. A character scalar.
 #' @param clean_to_path Whether or not to wipe `to_path` before deploying the new website files. Setting this to `TRUE` ensures there are no obsolete files left
 #'   over from previous deployments.
-#' @param never_clean A character vector of paths relative to `to_path` which are preserved when wiping `to_path` (i.e. `clean_to_path = TRUE`).
+#' @param never_clean A character vector of paths relative to `to_path` which are preserved when wiping `to_path` (i.e. `clean_to_path = TRUE`). By default,
+#'   this includes the following files and directories:
+#'   `r pal::as_md_val_list(paths_to_keep)`
 #' @param branch The name of the Git branch to which the static website files are to be committed. A character scalar or `NULL`. If `NULL`, defaults to the
 #'   currently checked out branch of the repository `to_path` belongs to.
 #' @param commit_msg The Git commit message used for the deployment. A character scalar.
@@ -339,12 +346,7 @@ open_as_tmp_spreadsheet <- function(x,
 deploy_static_site <- function(from_path,
                                to_path,
                                clean_to_path = TRUE,
-                               never_clean = c("netlify.toml",
-                                               "robots.txt",
-                                               "_headers",
-                                               "_redirects",
-                                               ".gitignore",
-                                               ".htaccess"),
+                               never_clean = paths_to_keep,
                                branch = NULL,
                                commit_msg = "auto-deploy static website",
                                quiet = FALSE) {
@@ -485,7 +487,7 @@ deploy_static_site <- function(from_path,
 #' @param pkg_path Path to the \R package of which the pkgdown website files are to be deployed.
 #' @param to_path Path to the Git (sub)folder to which the pkgdown website files are to be deployed. If `NULL`, the \R options `yay.local_pkgdown_deploy_paths`
 #'   and `yay.default_local_pkgdown_deploy_parent_path` will be respected. See section _Setting `to_path` via R options_ for details.
-#' @param use_dev_build Whether or not to deploy the development build of the pkgdown website files. If `NULL`,
+#' @param use_dev_build Whether or not to deploy the development build of the pkgdown website files. If `NULL`, the
 #'   [`development.mode`](https://pkgdown.r-lib.org/reference/build_site.html#development-mode) set in the pkgdown YAML configuration file from `pkg_path` will
 #'   be respected.
 #'
@@ -496,12 +498,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                                 to_path = NULL,
                                 use_dev_build = NULL,
                                 clean_to_path = TRUE,
-                                never_clean = c("netlify.toml",
-                                                "robots.txt",
-                                                "_headers",
-                                                "_redirects",
-                                                ".gitignore",
-                                                ".htaccess"),
+                                never_clean = paths_to_keep,
                                 branch = NULL,
                                 commit_msg = paste0("auto-deploy pkgdown site for ",
                                                     desc::desc_get_field(file = pkg_path,

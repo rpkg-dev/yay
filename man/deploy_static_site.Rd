@@ -8,8 +8,7 @@ deploy_static_site(
   from_path,
   to_path,
   clean_to_path = TRUE,
-  never_clean = c("netlify.toml", "robots.txt", "_headers", "_redirects", ".gitignore",
-    ".htaccess"),
+  never_clean = paths_to_keep,
   branch = NULL,
   commit_msg = "auto-deploy static website",
   quiet = FALSE
@@ -23,7 +22,19 @@ deploy_static_site(
 \item{clean_to_path}{Whether or not to wipe \code{to_path} before deploying the new website files. Setting this to \code{TRUE} ensures there are no obsolete files left
 over from previous deployments.}
 
-\item{never_clean}{A character vector of paths relative to \code{to_path} which are preserved when wiping \code{to_path} (i.e. \code{clean_to_path = TRUE}).}
+\item{never_clean}{A character vector of paths relative to \code{to_path} which are preserved when wiping \code{to_path} (i.e. \code{clean_to_path = TRUE}). By default,
+this includes the following files and directories:
+\itemize{
+\item \code{"netlify.toml"}
+\item \code{"robots.txt"}
+\item \code{"_headers"}
+\item \code{"_redirects"}
+\item \code{".gitignore"}
+\item \code{".gitmodules"}
+\item \code{".gitsigners"}
+\item \code{".htaccess"}
+\item \code{".well-known"}
+}}
 
 \item{branch}{The name of the Git branch to which the static website files are to be committed. A character scalar or \code{NULL}. If \code{NULL}, defaults to the
 currently checked out branch of the repository \code{to_path} belongs to.}
