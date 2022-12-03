@@ -614,7 +614,10 @@ deploy_pkgdown_site <- function(pkg_path = ".",
     }
   }
   
-  # create pkg website subfolder if necessary (only leaf directory will be created because of `checkmate::test_path_for_output()` above)
+  # deploy dev build to `dev/` subfolder
+  if (config$development$mode == "devel") to_path %<>% fs::path("dev")
+  
+  # create pkg website subfolder(s) if necessary (only leaf directories will be created because of `checkmate::test_path_for_output()` above)
   if (!fs::dir_exists(to_path)) fs::dir_create(path = to_path)
   
   # determine root path of Git repository
