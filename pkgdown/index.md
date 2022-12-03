@@ -1,5 +1,7 @@
 # yay: Delightful Convenience Functions
 
+[![CRAN Status](https://r-pkg.org/badges/version/yay)](https://cran.r-project.org/package=yay){.pkgdown-release}
+
 A delightful mix of convenience functions designed to put a smile on your face during typical R workflows.
 
 This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) package.
@@ -19,7 +21,7 @@ remotes::install_gitlab(repo = "salim_b/r/pkgs/yay")
 
 ## Usage
 
-The (function) reference is found [here](https://rpkg.dev/yay/reference).
+The (function) reference is found [here](reference).
 
 ## Development
 

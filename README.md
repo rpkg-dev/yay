@@ -1,5 +1,7 @@
 # yay: Delightful Convenience Functions
 
+<a href="https://cran.r-project.org/package=yay" class="pkgdown-release"><img src="https://r-pkg.org/badges/version/yay" alt="CRAN Status" /></a>
+
 A delightful mix of convenience functions designed to put a smile on your face during typical R workflows.
 
 This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) package.
