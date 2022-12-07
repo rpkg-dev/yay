@@ -897,7 +897,7 @@ str_replace_file <- function(path,
                 input <- brio::read_file(path = path)
                 
                 if (process_line_by_line) {
-                  input %<>% stringr::str_split(pattern = eol) %>% dplyr::first()
+                  input %<>% stringr::str_split_1(pattern = eol)
                 }
                 
                 output <- str_replace_verbose(string = input,

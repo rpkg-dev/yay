@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://rpkg.dev/yay/LICENSE.html</loc>
+    <loc>https://rpkg.dev/yay/dev/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/authors.html</loc>
+    <loc>https://rpkg.dev/yay/dev/authors.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/index.html</loc>
+    <loc>https://rpkg.dev/yay/dev/index.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/deploy_pkgdown_site.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/deploy_pkgdown_site.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/deploy_static_site.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/deploy_static_site.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/index.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/open_as_tmp_spreadsheet.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/open_as_tmp_spreadsheet.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/reexports.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/reexports.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/regex_file_normalization.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/regex_file_normalization.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/regex_text_normalization.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/regex_text_normalization.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/show_diff.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/show_diff.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/str_normalize.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/str_normalize.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/str_normalize_file.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/str_normalize_file.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/str_replace_file.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/str_replace_file.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/str_replace_verbose.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/str_replace_verbose.html</loc>
   </url>
   <url>
-    <loc>https://rpkg.dev/yay/reference/yay-package.html</loc>
+    <loc>https://rpkg.dev/yay/dev/reference/yay-package.html</loc>
   </url>
 </urlset>
