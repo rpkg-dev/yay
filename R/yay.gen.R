@@ -351,8 +351,8 @@ deploy_static_site <- function(from_path,
                                commit_msg = "auto-deploy static website",
                                quiet = FALSE) {
   pal::assert_pkg("gert")
-  checkmate::assert_directory(from_path,
-                              access = "r")
+  checkmate::assert_directory_exists(from_path,
+                                     access = "r")
   checkmate::assert_flag(clean_to_path)
   checkmate::assert_character(never_clean,
                               any.missing = FALSE)
@@ -862,8 +862,8 @@ str_replace_file <- function(path,
                              run_dry = TRUE) {
   
   pal::assert_pkg("brio")
-  checkmate::assert_file(path,
-                         access = "r")
+  checkmate::assert_file_exists(path,
+                                access = "r")
   checkmate::assert_flag(process_line_by_line)
   eol %<>% pal::as_line_feed_chr()
   checkmate::assert_flag(verbose)
