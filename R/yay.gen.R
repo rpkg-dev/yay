@@ -524,9 +524,9 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   # get pkg's pkgdown config
   override <-
     use_dev_build %>%
-    purrr::when(isTRUE(.) ~ list(development = list(mode = "devel")),
-                isFALSE(.) ~ list(development = list(mode = "release")),
-                ~ list())
+    pal::when(isTRUE(.) ~ list(development = list(mode = "devel")),
+              isFALSE(.) ~ list(development = list(mode = "release")),
+              ~ list())
   
   config <- pkgdown::as_pkgdown(pkg = pkg_path,
                                 override = override)
