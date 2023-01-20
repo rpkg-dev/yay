@@ -45,4 +45,5 @@ exclusions: c(list.files(path = "R",
                          recursive = TRUE,
                          full.names = TRUE,
                          pattern = "\\.Rmd$"),
-              "renv")
+              "renv",
+              "tests")

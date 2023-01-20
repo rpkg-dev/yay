@@ -18,7 +18,7 @@ This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(comp
 pkgsnip::md_snip(name = "pkgdown_notice") %>%
   paste0("## Documentation\n\n",
          "[![Netlify Status](https://api.netlify.com/api/v1/badges/d6148c7f-0c73-4b79-9c8d-54a5a25e98f9/deploy-status)]",
-         "(https://app.netlify.com/sites/comforting-stroopwafel-dd1eed/deploys)\n\n",
+         "(https://app.netlify.com/sites/yay-rpkg-dev/deploys)\n\n",
          .) %>%
   pal::cat_lines()
 ```

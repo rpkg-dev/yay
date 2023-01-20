@@ -8,7 +8,7 @@ This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(comp
 
 ## Documentation
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/d6148c7f-0c73-4b79-9c8d-54a5a25e98f9/deploy-status)](https://app.netlify.com/sites/comforting-stroopwafel-dd1eed/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d6148c7f-0c73-4b79-9c8d-54a5a25e98f9/deploy-status)](https://app.netlify.com/sites/yay-rpkg-dev/deploys)
 
 The documentation of this package is found [here](https://yay.rpkg.dev).
 

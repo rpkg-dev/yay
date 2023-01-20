@@ -2,7 +2,7 @@
 # See `README.md#r-markdown-format` for more information on the literate programming approach used applying the R Markdown format.
 
 # yay: Delightful Convenience Functions
-# Copyright (C) 2022 Salim Brüggemann
+# Copyright (C) 2023 Salim Brüggemann
 # 
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free
 # Software Foundation, either version 3 of the License, or any later version.
@@ -170,15 +170,20 @@ show_diff <- function(x,
   
   if (length(x_lbl) > 1L || x_lbl == "." || make.names(x_lbl) != x_lbl) {
     x_lbl <- "`x`"
-  } else x_lbl <- glue::glue("`x` (`{x_lbl}`)")
+  } else {
+    x_lbl <- glue::glue("`x` (`{x_lbl}`)")
+  }
   
   if (length(y_lbl) > 1L || y_lbl == "." || make.names(y_lbl) != y_lbl) {
     y_lbl <- "`y`"
-  } else y_lbl <- glue::glue("`y` (`{y_lbl}`)")
+  } else {
+    y_lbl <- glue::glue("`y` (`{y_lbl}`)")
+  }
   
   # generate HTML caption
   caption %<>% glue::glue()
-  n_backtick <- caption %>% stringr::str_count(pattern = "`")
+  n_backtick <- stringr::str_count(caption,
+                                   pattern = "`")
   
   if (n_backtick) {
     
