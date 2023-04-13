@@ -1,4 +1,4 @@
-# yay: Delightful Convenience Functions
+# yay
 
 <a href="https://cran.r-project.org/package=yay" class="pkgdown-release"><img src="https://r-pkg.org/badges/version/yay" alt="CRAN Status" /></a>
 

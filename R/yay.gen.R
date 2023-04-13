@@ -740,10 +740,10 @@ str_replace_verbose <- function(string,
     
     msgs %>%
       dplyr::group_by(minus, plus) %>%
-      dplyr::summarise(i_pattern = pal::safe_min(i_pattern),
-                       n = dplyr::n(),
-                       .groups = "drop") %>%
-      # since summarizing can change row order, we need to restore the original order
+      # we need to reframe instead of summarize since there can be 0 rows in the result
+      dplyr::reframe(i_pattern = pal::safe_min(i_pattern),
+                     n = dplyr::n()) %>%
+      # since reframing can change row order, we need to restore the original order
       dplyr::arrange(i_pattern) %>%
       purrr::pwalk(function(minus, plus, i_pattern, n) {
         
@@ -848,7 +848,7 @@ str_replace_verbose_single_info <- function(string,
 #' @param path Paths to the text files. A character vector.
 #' @param process_line_by_line Whether each line in a file should be treated as a separate string or the whole file as one single string. While the latter is 
 #'   more performant, you probably want the former if you're using `"^"` or `"$"` in your `pattern`s.
-#' @param eol `r pkgsnip::param_label("eol") %>% stringr::str_replace(pattern = "(\\.)", replacement = "\\1 Only relevant if \x60process_line_by_line = TRUE\x60.")`
+#' @param eol `r pkgsnip::param_label("eol") %>% stringr::str_replace("(\\.)", "\\1 Only relevant if \x60process_line_by_line = TRUE\x60.")`
 #' @param show_rel_path Whether or not to display file `path`s as relative from the current working directory. If `FALSE`, absolute paths are displayed. Only
 #'   relevant if `verbose = TRUE`.
 #' @param run_dry Whether or not to show replacements on the console only, without actually modifying any files. Implies `verbose = TRUE`.
