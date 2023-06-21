@@ -30,7 +30,7 @@ spreadsheet in the system's default application using \code{\link[xopen:xopen]{x
 \examples{
 \dontrun{
 yay::open_as_tmp_spreadsheet(mtcars,
-                             format = "xslx")}
+                             format = "xlsx")}
 }
 \seealso{
 Other data frame / tibble functions:

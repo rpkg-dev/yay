@@ -75,11 +75,6 @@ normalize_tree_path <- function(path) {
     stringr::str_remove(pattern = "^\\.{0,2}(/|$)")
 }
 
-reason_pkg_required <- function(fn) {
-  
-  paste0("by `", this_pkg, "::", fn, "()` , but is not installed.")
-}
-
 #' Regular expression patterns and replacements for text normalization
 #'
 #' @format `r pkgsnip::return_label("data")`
@@ -173,10 +168,9 @@ show_diff <- function(x,
   checkmate::assert_flag(ignore_order)
   checkmate::assert_flag(ask)
   checkmate::assert_flag(bypass_rstudio_viewer)
-  reason_pkg_required_fn <- reason_pkg_required(fn = "show_diff")
+  reason_pkg_required_fn <- pal::reason_pkg_required()
   rlang::check_installed("daff",
                          reason = reason_pkg_required_fn)
-  
   pal::check_dots_named(...,
                         .fn = daff::diff_data,
                         .forbidden = c("data",
@@ -184,7 +178,6 @@ show_diff <- function(x,
                                        "ids",
                                        "ordered",
                                        "columns_to_ignore"))
-  
   # generate `x`/`y` labels
   x_lbl <- deparse(substitute(x))
   y_lbl <- deparse(substitute(y))
@@ -309,13 +302,13 @@ show_diff <- function(x,
 #' @examples
 #' \dontrun{
 #' yay::open_as_tmp_spreadsheet(mtcars,
-#'                              format = "xslx")}
+#'                              format = "xlsx")}
 open_as_tmp_spreadsheet <- function(x,
                                     format = c("csv", "xlsx"),
                                     ...,
                                     quiet = TRUE) {
   
-  reason_pkg_required_fn <- reason_pkg_required(fn = "open_as_tmp_spreadsheet")
+  reason_pkg_required_fn <- pal::reason_pkg_required()
   rlang::check_installed("xopen",
                          reason = reason_pkg_required_fn)
   format <- rlang::arg_match(format)
@@ -384,7 +377,7 @@ deploy_static_site <- function(from_path,
                                quiet = FALSE) {
   
   rlang::check_installed("gert",
-                         reason = reason_pkg_required(fn = "deploy_static_site"))
+                         reason = pal::reason_pkg_required())
   checkmate::assert_directory_exists(from_path,
                                      access = "r")
   checkmate::assert_flag(clean_to_path)
@@ -539,7 +532,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                                                                          key = "Package")),
                                 quiet = FALSE) {
   
-  reason_pkg_required_fn <- reason_pkg_required(fn = "deploy_pkgdown_site")
+  reason_pkg_required_fn <- pal::reason_pkg_required()
   rlang::check_installed("desc",
                          reason = reason_pkg_required_fn)
   rlang::check_installed("gert",
@@ -1119,7 +1112,7 @@ str_replace_file <- function(path,
                              run_dry = TRUE) {
   
   rlang::check_installed("brio",
-                         reason = reason_pkg_required(fn = "str_replace_file"))
+                         reason = pal::reason_pkg_required())
   checkmate::assert_file_exists(path,
                                 access = "r")
   checkmate::assert_flag(process_line_by_line)
