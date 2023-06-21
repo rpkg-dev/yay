@@ -744,6 +744,11 @@ These functions are likely to be proposed upstream, and if accepted, will be rem
 
 ### stringr
 
+#### DESCRIPTION
+
+Extending the [**stringr**](https://stringr.tidyverse.org/) package, that in turn is built on top of the [stringi](https://stringi.gagolewski.com/) package,
+which uses the [ICU](https://icu.unicode.org/) C library.
+
 #### `str_replace_verbose`
 
 TODO:
