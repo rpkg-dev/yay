@@ -23,6 +23,10 @@ utils::globalVariables(names = c(".",
 
 ## Constants
 
+```{r}
+this_pkg <- utils::packageName()
+```
+
 ### `paths_to_keep`
 
 ```{r}
@@ -75,6 +79,15 @@ clean_git_dir <- function(path,
                                                               start = repo))) %$%
     file %>%
     gert::git_add(repo = repo)
+}
+```
+
+### `reason_pkg_required`
+
+```{r}
+reason_pkg_required <- function(fn) {
+  
+  paste0("by `", this_pkg, "::", fn, "()` , but is not installed.")
 }
 ```
 
@@ -188,7 +201,9 @@ show_diff <- function(x,
   checkmate::assert_flag(ignore_order)
   checkmate::assert_flag(ask)
   checkmate::assert_flag(bypass_rstudio_viewer)
-  pal::assert_pkg("daff")
+  reason_pkg_required_fn <- reason_pkg_required(fn = "show_diff")
+  rlang::check_installed("daff",
+                         reason = reason_pkg_required_fn)
   
   pal::check_dots_named(...,
                         .fn = daff::diff_data,
@@ -260,7 +275,8 @@ show_diff <- function(x,
     open_diff <- TRUE
     
     if (ask && interactive()) {
-      pal::assert_pkg("yesno")
+      rlang::check_installed("yesno",
+                             reason = reason_pkg_required_fn)
       cat("\n")
       open_diff <- yesno::yesno2(ask_text)
     }
@@ -270,7 +286,8 @@ show_diff <- function(x,
       if (interactive()) {
         
         if (bypass_rstudio_viewer) {
-          pal::assert_pkg("withr")
+          rlang::check_installed("withr",
+                         reason = reason_pkg_required_fn)
           withr::with_options(new = list(viewer = NULL),
                               code = daff::render_diff(diff = daff_obj,
                                                        view = TRUE,
@@ -282,15 +299,14 @@ show_diff <- function(x,
         }
       } else {
         
-        pal::assert_pkg("xopen")
+        rlang::check_installed("xopen",
+                         reason = reason_pkg_required_fn)
         tmp_file <- fs::file_temp(pattern = "yay-show_diff_",
                                   ext = "html")
-        
         daff::render_diff(diff = daff_obj,
                           file = tmp_file,
                           view = FALSE,
                           title = caption)
-        
         xopen::xopen(target = glue::glue("file://{tmp_file}"),
                      quiet = TRUE)
         cli::cli_alert_info("A new tab displaying the changes has been opened in your default web browser.")
@@ -330,14 +346,18 @@ open_as_tmp_spreadsheet <- function(x,
                                     format = c("csv", "xlsx"),
                                     ...,
                                     quiet = TRUE) {
-  pal::assert_pkg("xopen")
+  
+  reason_pkg_required_fn <- reason_pkg_required(fn = "open_as_tmp_spreadsheet")
+  rlang::check_installed("xopen",
+                         reason = reason_pkg_required_fn)
   format <- rlang::arg_match(format)
   tmp_file <- fs::file_temp(pattern = "tmp_spreadsheet",
                             ext = format)
   
   if (format == "csv") {
     
-    pal::assert_pkg("readr")
+    rlang::check_installed("readr",
+                           reason = reason_pkg_required_fn)
     pal::check_dots_named(...,
                           .fn = readr::write_csv,
                           .forbidden = "x")
@@ -347,7 +367,8 @@ open_as_tmp_spreadsheet <- function(x,
     
   } else if (format == "xlsx") {
     
-    pal::assert_pkg("writexl")
+    rlang::check_installed("writexl",
+                           reason = reason_pkg_required_fn)
     pal::check_dots_named(...,
                           .fn = writexl::write_xlsx,
                           .forbidden = "x")
@@ -399,7 +420,9 @@ deploy_static_site <- function(from_path,
                                branch = NULL,
                                commit_msg = "auto-deploy static website",
                                quiet = FALSE) {
-  pal::assert_pkg("gert")
+  
+  rlang::check_installed("gert",
+                         reason = reason_pkg_required(fn = "deploy_static_site"))
   checkmate::assert_directory_exists(from_path,
                                      access = "r")
   checkmate::assert_flag(clean_to_path)
@@ -561,9 +584,14 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                                                     desc::desc_get_field(file = pkg_path,
                                                                          key = "Package")),
                                 quiet = FALSE) {
-  pal::assert_pkg("desc")
-  pal::assert_pkg("gert")
-  pal::assert_pkg("pkgdown")
+  
+  reason_pkg_required_fn <- reason_pkg_required(fn = "deploy_pkgdown_site")
+  rlang::check_installed("desc",
+                         reason = reason_pkg_required_fn)
+  rlang::check_installed("gert",
+                         reason = reason_pkg_required_fn)
+  rlang::check_installed("pkgdown",
+                         reason = reason_pkg_required_fn)
   checkmate::assert_flag(use_dev_build,
                          null.ok = TRUE)
   checkmate::assert_flag(clean_to_path)
@@ -973,7 +1001,8 @@ str_replace_file <- function(path,
                              show_rel_path = TRUE,
                              run_dry = TRUE) {
   
-  pal::assert_pkg("brio")
+  rlang::check_installed("brio",
+                         reason = reason_pkg_required(fn = "str_replace_file"))
   checkmate::assert_file_exists(path,
                                 access = "r")
   checkmate::assert_flag(process_line_by_line)
