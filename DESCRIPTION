@@ -1,11 +1,8 @@
 Package: yay
 Title: Delightful Convenience Functions
-Version: 0.0.9012
+Version: 0.0.9013
 Authors@R: 
-    person(given = "Salim",
-           family = "Brüggemann",
-           role = c("aut", "cre"),
-           email = "salim-b@pm.me",
+    person("Salim", "Brüggemann", , "salim-b@pm.me", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5329-5987"))
 Description: A delightful mix of convenience functions designed to put a
     smile on your face during typical R workflows.
@@ -32,6 +29,7 @@ Suggests:
     daff (>= 0.3.5),
     desc (>= 1.3.0),
     gert (>= 1.2.0),
+    gh (>= 1.4.0),
     pkgdown (>= 2.0.7),
     pkgsnip (>= 0.0.9032),
     readr (>= 1.4.0),

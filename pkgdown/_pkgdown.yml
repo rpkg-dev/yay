@@ -30,7 +30,19 @@ reference:
   - deploy_static_site
   - deploy_pkgdown_site
 - title: Extending other R packages
+  desc: These functions closely follow the API of existing packages, but are usually
+    out of scope for direct inclusion in them.
+- subtitle: gh
+  desc: Extending the [**gh**](https://gh.r-lib.org/) package, leveraging [GitHub's
+    GraphQL API](https://docs.github.com/en/graphql).
+- contents:
+  - gh_text_file
+  - gh_text_files
+  - gh_dir_ls
 - subtitle: stringr
+  desc: |-
+    Extending the [**stringr**](https://stringr.tidyverse.org/) package, that in turn is built on top of the [stringi](https://stringi.gagolewski.com/) package,
+    which uses the [ICU](https://icu.unicode.org/) C library.
 - contents:
   - str_replace_verbose
   - str_replace_file

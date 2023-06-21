@@ -34,6 +34,11 @@ paths_to_keep <- c("netlify.toml",
                    ".htaccess",
                    ".well-known")
 
+md_gh_pat <- paste0("Works for both public and private repositories, for the latter you just need to set up a sufficiently authorized [GitHub Personal Access ",
+                    "Token (PAT)][gh::gh_token].")
+
+reason_pkg_required_gh <- "for yay's `gh_*()` functions, but is not installed."
+
 unicode_ellipsis <- "\u2026"
 
 clean_git_dir <- function(path,
@@ -61,6 +66,13 @@ clean_git_dir <- function(path,
                                                               start = repo))) %$%
     file %>%
     gert::git_add(repo = repo)
+}
+
+normalize_tree_path <- function(path) {
+  
+  checkmate::assert_string(path) %>%
+    fs::path_norm() %>%
+    stringr::str_remove(pattern = "^\\.{0,2}(/|$)")
 }
 
 reason_pkg_required <- function(fn) {
@@ -669,6 +681,224 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   
   invisible(fs::path_abs(path = staged$file,
                          start = repo))
+}
+
+#' Read in a text file from a GitHub repository
+#'
+#' Downloads the text file under the specified path from a GitHub repository via [GitHub's GraphQL API
+#' v4](https://docs.github.com/en/graphql/overview/about-the-graphql-api) and returns its content as a string.
+#'
+#' @details
+#' `r md_gh_pat`
+#'
+#' Note that nothing is returned in case of a [_binary_ file](https://en.wikipedia.org/wiki/Binary_file), as if no file at all existed under the given
+#' `path`.
+#'
+#' @inheritParams gh_dir_ls
+#'
+#' @return A character scalar, or an empty character vector in case no text file is found under `rev:path`.
+#' @family gh
+#' @export
+#'
+#' @examples
+#' yay::gh_text_file(path = "pal.Rproj",
+#'                   owner = "salim-b",
+#'                   name = "pal",
+#'                   rev = "HEAD~2") |>
+#'   cat()
+gh_text_file <- function(path,
+                         owner,
+                         name,
+                         rev = "HEAD") {
+  
+  rlang::check_installed("gh",
+                         reason = reason_pkg_required_gh)
+  path <- checkmate::assert_string(path) |> normalize_tree_path()
+  checkmate::assert_string(owner)
+  checkmate::assert_string(name)
+  checkmate::assert_string(rev)
+  
+  result <- gh::gh_gql(query = 'query ($name: String!, $owner: String!, $expression: String!) {
+                        repository(name: $name, owner: $owner) {
+                          object(expression: $expression) {
+                            ... on Blob {
+                              text
+                            }
+                          }
+                        }
+                      }',
+                      variables = list(name = name,
+                                       owner = owner,
+                                       expression = glue::glue("{rev}:{path}"))) |>
+    purrr::pluck("data", "repository", "object", "text")
+  
+  if (is.null(result)) {
+    result <- character()
+  }
+  
+  result
+}
+
+#' Read in text files from a GitHub repository
+#'
+#' @description
+#' Downloads all text files under the specified path from a GitHub repository via [GitHub's GraphQL API
+#' v4](https://docs.github.com/en/graphql/overview/about-the-graphql-api) and returns a named character vector with the file paths as names and the file
+#' contents as values.
+#'
+#' This is a simple convenience function combining [gh_dir_ls()] and [gh_text_file()]. 
+#'
+#' @inherit gh_text_file details
+#'
+#' @inheritParams gh_dir_ls
+#' @param recurse Whether or not to also include text files in subfolders of `path`. A logical scalar. Enabling this option may result in many API calls and
+#'   thus produce a significant delay.
+#'
+#' @return A named character vector of length equal to the number of files found under `rev:path` with the file paths as names and the file contents as
+#'   values.
+#' @family gh
+#' @export
+#'
+#' @examples
+#' yay::gh_text_files(path = "tests",
+#'                    owner = "salim-b",
+#'                    name = "pal") |>
+#'   str()
+#' 
+#' # you have to opt-in into directory recursion
+#' yay::gh_text_files(path = "tests",
+#'                    owner = "salim-b",
+#'                    name = "pal",
+#'                    recurse = TRUE) |>
+#'   str()
+gh_text_files <- function(path,
+                          owner,
+                          name,
+                          rev = "HEAD",
+                          recurse = FALSE) {
+  gh_dir_ls(path = path,
+            owner = owner,
+            name = name,
+            rev = rev,
+            recurse = recurse,
+            incl_dirs = FALSE) %>%
+    magrittr::set_names(x = .,
+                        value = .) |>
+    purrr::map(gh_text_file,
+               owner = owner,
+               name = name,
+               rev = rev) |>
+    purrr::compact() |>
+    unlist()
+}
+
+#' List files and directories in a GitHub repository
+#'
+#' Lists file and directory names found under
+#' [`rev:path`](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem) in a GitHub repository via
+#' [GitHub's GraphQL API v4](https://docs.github.com/en/graphql/overview/about-the-graphql-api).
+#'
+#' `r md_gh_pat`
+#'
+#' @param path Path from the repository's root to the desired directory. A [path][fs::fs_path] or character scalar.
+#' @param owner Repository owner's GitHub user or organization name. A character scalar.
+#' @param name Repository name. A character scalar.
+#' @param rev [Git revision expression](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem)
+#'   matching the desired Git tree object, e.g. a branch name or another symbolic reference like `"HEAD@{yesterday}"` or `"HEAD~10"`. A character scalar.
+#' @param recurse Whether or not to recurse into subdirectories of `path`.
+#' @param incl_dirs Whether or not to list directories (and subdirectories if `recurse = TRUE`).
+#' @param incl_files Whether or not to list files (also inside subdirectories if `recurse = TRUE`).
+#'
+#' @return A character vector of paths from the repository root to the files and subdirectories found under `rev:path`.
+#' @family gh
+#' @export
+#'
+#' @examples
+#' # you can opt-out from directory recursion
+#' yay::gh_dir_ls(owner = "salim-b",
+#'                name = "pal",
+#'                recurse = FALSE) |>
+#'   pal::cat_lines()
+#'
+#' # you can list only files in a directory
+#' yay::gh_dir_ls(path = "tests",
+#'                owner = "salim-b",
+#'                name = "pal",
+#'                incl_dirs = FALSE) |>
+#'   pal::cat_lines()
+#'
+#' # or you can list only directories in a directory
+#' yay::gh_dir_ls(path = "tests",
+#'                owner = "salim-b",
+#'                name = "pal",
+#'                incl_files = FALSE) |>
+#'   pal::cat_lines()
+gh_dir_ls <- function(path = "",
+                      owner,
+                      name,
+                      rev = "HEAD",
+                      recurse = TRUE,
+                      incl_dirs = TRUE,
+                      incl_files = TRUE) {
+  
+  rlang::check_installed("gh",
+                         reason = reason_pkg_required_gh)
+  path <- checkmate::assert_string(path) %>% normalize_tree_path()
+  checkmate::assert_string(owner)
+  checkmate::assert_string(name)
+  checkmate::assert_string(rev)
+  checkmate::assert_flag(recurse)
+  checkmate::assert_flag(incl_dirs)
+  checkmate::assert_flag(incl_files)
+  
+  entries <-
+    gh::gh_gql(query = 'query($name:String!, $owner:String!, $expression:String!) {
+                          repository(name: $name, owner: $owner) {
+                            object(expression: $expression) {
+                              ... on Tree {
+                                entries {
+                                  path
+                                  type
+                                }
+                              }
+                            }
+                          }
+                        }',
+               variables = list(name = name,
+                                owner = owner,
+                                expression = glue::glue("{rev}:{path}"))) |>
+    purrr::pluck("data", "repository", "object", "entries")
+  
+  dirs <-
+    entries |>
+    purrr::keep(\(x) x$type == "tree") |>
+    purrr::map_depth(.depth = 1L,
+                     .f = \(x) purrr::pluck(x, "path")) |>
+    purrr::list_c(ptype = character())
+  
+  result <-
+    entries |>
+    purrr::keep(\(x) x$type %in% c("blob"[incl_files], "tree"[incl_dirs])) |>
+    purrr::map_depth(.depth = 1L,
+                     .f = \(x) purrr::pluck(x, "path")) |>
+    purrr::list_c(ptype = character())
+  
+  if (recurse && length(dirs) > 0L) {
+    
+    result <-
+      dirs |>
+      purrr::map(\(x) gh_dir_ls(path = x,
+                                owner = owner,
+                                name = name,
+                                rev = rev,
+                                recurse = TRUE,
+                                incl_dirs = incl_dirs,
+                                incl_files = incl_files)) |>
+      purrr::list_c(ptype = character()) |>
+      c(result)
+  }
+  
+  sort(result)
 }
 
 #' Replace matched patterns in strings _verbosely_
