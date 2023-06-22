@@ -12,8 +12,8 @@ A delightful mix of convenience functions designed to put a smile on your face d
 Useful links:
 \itemize{
   \item \url{https://yay.rpkg.dev}
-  \item \url{https://gitlab.com/salim_b/r/pkgs/yay}
-  \item Report bugs at \url{https://gitlab.com/salim_b/r/pkgs/yay/issues}
+  \item \url{https://gitlab.com/rpkg.dev/yay}
+  \item Report bugs at \url{https://gitlab.com/rpkg.dev/yay/issues}
 }
 
 }

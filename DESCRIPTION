@@ -7,8 +7,8 @@ Authors@R:
 Description: A delightful mix of convenience functions designed to put a
     smile on your face during typical R workflows.
 License: AGPL (>= 3)
-URL: https://yay.rpkg.dev, https://gitlab.com/salim_b/r/pkgs/yay
-BugReports: https://gitlab.com/salim_b/r/pkgs/yay/issues
+URL: https://yay.rpkg.dev, https://gitlab.com/rpkg.dev/yay
+BugReports: https://gitlab.com/rpkg.dev/yay/issues
 Depends: 
     R (>= 4.1)
 Imports: 
@@ -40,8 +40,8 @@ Suggests:
     xopen (>= 1.0.0),
     yesno (>= 0.1.2)
 Remotes:
-    gitlab::salim_b/r/pkgs/pal,
-    gitlab::salim_b/r/pkgs/pkgsnip
+    gitlab::rpkg.dev/pal,
+    gitlab::rpkg.dev/pkgsnip
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
