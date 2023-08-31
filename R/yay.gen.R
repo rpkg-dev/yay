@@ -77,7 +77,7 @@ normalize_tree_path <- function(path) {
 
 #' Regular expression patterns and replacements for text normalization
 #'
-#' @format `r pkgsnip::return_label("data")`
+#' @format `r pkgsnip::return_lbl("tibble")`
 #' @family regex
 #' @seealso String normalization functions: [str_normalize()] [str_normalize_file()]
 #'
@@ -89,7 +89,7 @@ normalize_tree_path <- function(path) {
 
 #' Regular expression patterns and replacements for file normalization
 #'
-#' @format `r pkgsnip::return_label("data")`
+#' @format `r pkgsnip::return_lbl("tibble")`
 #' @family regex
 #' @seealso String normalization functions: [str_normalize()] [str_normalize_file()]
 #'
@@ -363,7 +363,7 @@ open_as_tmp_spreadsheet <- function(x,
 #' @param branch The name of the Git branch to which the static website files are to be committed. A character scalar or `NULL`. If `NULL`, defaults to the
 #'   currently checked out branch of the repository `to_path` belongs to.
 #' @param commit_msg The Git commit message used for the deployment. A character scalar.
-#' @param quiet `r pkgsnip::param_label("quiet")`
+#' @param quiet `r pkgsnip::param_lbl("quiet")`
 #'
 #' @return A vector of paths to the deployed files/folders, invisibly.
 #' @family gitrepo
@@ -1093,7 +1093,7 @@ str_replace_verbose_single_info <- function(string,
 #' @param path Paths to the text files. A character vector.
 #' @param process_line_by_line Whether each line in a file should be treated as a separate string or the whole file as one single string. While the latter is 
 #'   more performant, you probably want the former if you're using `"^"` or `"$"` in your `pattern`s.
-#' @param eol `r pkgsnip::param_label("eol") %>% stringr::str_replace("(\\.)", "\\1 Only relevant if \x60process_line_by_line = TRUE\x60.")`
+#' @param eol `r pkgsnip::param_lbl("eol") %>% stringr::str_replace("(\\.)", "\\1 Only relevant if \x60process_line_by_line = TRUE\x60.")`
 #' @param show_rel_path Whether or not to display file `path`s as relative from the current working directory. If `FALSE`, absolute paths are displayed. Only
 #'   relevant if `verbose = TRUE`.
 #' @param run_dry Whether or not to show replacements on the console only, without actually modifying any files. Implies `verbose = TRUE`.
