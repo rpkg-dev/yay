@@ -11,6 +11,9 @@ cf. <https://github.com/tidyverse/magrittr/issues/29#issuecomment-74313262>
 
 ```{r}
 utils::globalVariables(names = c(".",
+                                 # tidyselect fns
+                                 "everything",
+                                 # other
                                  "end",
                                  "i_pattern",
                                  "minus",
@@ -38,6 +41,7 @@ paths_to_keep <- c("netlify.toml",
                    ".gitmodules",
                    ".gitsigners",
                    ".htaccess",
+                   ".hvm",
                    ".well-known")
 ```
 
@@ -46,6 +50,36 @@ paths_to_keep <- c("netlify.toml",
 ```{r}
 md_gh_pat <- paste0("Works for both public and private repositories, for the latter you just need to set up a sufficiently authorized [GitHub Personal Access ",
                     "Token (PAT)][gh::gh_token].")
+```
+
+### `netlify_*`
+
+```{r}
+netlify_dns_record_cols <-
+  tibble::tribble(
+    ~col,       ~type,
+    "type",     "character",
+    "hostname", "character",
+    "value",    "character",
+    "ttl",      "integer",
+    "priority", "integer",
+    "weight",   "integer",
+    "port",     "integer",
+    "flag",     "integer",
+    "tag",      "character"
+  )
+
+# cf. https://docs.netlify.com/domains-https/netlify-dns/dns-records/#supported-record-types
+# NOTE: A/AAAA are actually NETLIFY/6 and give HTTP 401 Unauthorized, thus excluded
+netlify_dns_record_types <-
+  c("ALIAS",
+    "CAA",
+    "CNAME",
+    "MX",
+    "NS",
+    "SPF",
+    "SRV",
+    "TXT")
 ```
 
 ### `reason_pkg_required_*`
@@ -753,6 +787,116 @@ TODO:
 
 -   Create a function titled `Load R script(s) as a package` based upon [this StackOverflow answer](https://stackoverflow.com/a/15794201/7196903).
 
+## Netlify
+
+### `netlify_dns_records_set`
+
+```{r}
+#' Set Netlify DNS records
+#'
+#' Sets DNS records on Netlify for the specified `domain` using the
+#' [`createDnsRecord`](https://open-api.netlify.com/#tag/dnsZone/operation/createDnsRecord) endpoint of [Netlify's REST
+#' API](https://docs.netlify.com/api/get-started/). DNS `records` must be provided as a dataframe/tibble with the columns
+#' `r pal::as_md_vals(netlify_dns_record_cols$col) |> cli::ansi_collapse(last = " and ")`. Further columns are silently ignored.
+#'
+#' Supported are the DNS record types `netlify_dns_record_types |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. `A` and
+#' `AAAA` (or `NETLIFY` and `NETLIFY6`, respectively) cannot be set via the API and must be configured via [Netlify's web
+#' interface](https://app.netlify.com/).
+#'
+#' @inheritParams pal::req_cached
+#' @param domain The domain name to set DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.
+#' @param records A dataframe/tibble with the columns
+#'   `r pal::as_md_vals(netlify_dns_record_cols$col) |> cli::ansi_collapse(last = " and ")`. Further columns are silently ignored.
+#' @param token Personal access token used for authentication.
+#'
+#' @return A list of response objects, invisibly.
+#' @family netlify
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tibble::tribble(
+#'   ~type,   ~hostname,            ~value,           ~ttl, ~priority, ~weight, ~port, ~flag, ~tag,
+#'   "CAA",   "my.site",            "letsencrypt.org", 3600L, NA,      NA,      NA,    NA,    NA,
+#'   "CNAME", "autoconfig",         "mailbox.org",     3600L, NA,      NA,      NA,    NA,    NA,
+#'   "MX",    "my.site",            "mxext1.mailbox.org", 3600L, NA,   NA,      NA,    NA,    NA,
+#'   "SRV",   "_hkps._tcp.my.site", "pgp.mailbox.org",    3600L, 1L,   1L,      443L,  NA,    NA,
+#'   "TXT",   "_mta-sts",           "v=STSv1; id=001",    3600L, NA,   NA,      NA,    NA,    NA) |>
+#'   yay::netlify_dns_records_set(domain = "my.site",
+#'                                token  = "XYZ1234")}
+netlify_dns_records_set <- function(domain,
+                                    records,
+                                    token,
+                                    max_tries = 3L) {
+  checkmate::assert_string(domain,
+                           pattern = "\\w+\\.\\w+(\\.\\w+)*")
+  checkmate::assert_data_frame(records,
+                               row.names = "unique")
+  missing_col_names <- setdiff(netlify_dns_record_cols$col,
+                               colnames(records))
+  # ensure all required cols are present
+  if (length(missing_col_names) > 0L) {
+    cli::cli_abort("{.arg records} is missing the following required columns: {.var {missing_col_names}}")
+  }
+  # ensure no required fields are missing
+  purrr::walk(netlify_dns_record_cols$col[1:3],
+              \(x) {
+                if (any(is.na(records[[x]]))) {
+                  cli::cli_abort("Column {.var {x}} in {.arg records} can't have missings.")
+                }
+              })
+  # ensure record types are valid
+  checkmate::assert_subset(records$type,
+                           choices = netlify_dns_record_types)
+  checkmate::assert_string(token)
+  rlang::check_installed(pkg = "httr",
+                         reason = pal::reason_pkg_required())
+  
+  zone_id <- stringr::str_replace_all(string = domain,
+                                      pattern = "\\.",
+                                      replacement = "_")
+  
+  pal::cli_progress_step_quick(msg = "Setting {.val {nrow(records)}} DNS record{?s} on Netlify for domain {.field {domain}}")
+  
+  records |>
+    # coerce to target types
+    dplyr::mutate(dplyr::across(.cols = everything(),
+                                .fns = \(x) {
+                                  .Primitive(paste0("as.",
+                                                    netlify_dns_record_cols$type[netlify_dns_record_cols$col == dplyr::cur_column()]))(x)
+                                })) |>
+    purrr::pmap(\(type,
+                  hostname,
+                  value,
+                  ttl,
+                  priority,
+                  weight,
+                  port,
+                  flag,
+                  tag,
+                  ...) {
+      
+      httr2::request(base_url = glue::glue("https://api.netlify.com/api/v1/dns_zones/{zone_id}/dns_records/")) |>
+        httr2::req_method(method = "POST") |>
+        httr2::req_headers(Authorization = paste0("Bearer ", token),
+                           `Content-Type` = "application/json") |>
+        httr2::req_body_json(purrr::discard(list(type = type,
+                                                 hostname = hostname,
+                                                 value = value,
+                                                 ttl = ttl,
+                                                 priority = priority,
+                                                 weight = weight,
+                                                 port = port,
+                                                 flag = flag,
+                                                 tag = tag),
+                                            is.na)) |>
+        httr2::req_retry(max_tries = max_tries) |>
+        httr2::req_perform()
+    }) |>
+    invisible()
+}
+```
+
 ## Extending other R packages
 
 ### DESCRIPTION
@@ -1316,10 +1460,7 @@ str_replace_file <- function(path,
                                       fs::path_rel(path),
                                       fs::path_abs(path))
                   
-                  status_msg <- "Processing file {.file {path_show}}{unicode_ellipsis}"
-                  cli::cli_progress_step(msg = status_msg,
-                                         msg_done = paste(status_msg, "done"),
-                                         msg_failed = paste(status_msg, "failed"))
+                  pal::cli_progress_step_quick("Processing file {.file {path_show}}{unicode_ellipsis}")
                 }
                 
                 # perform replacement

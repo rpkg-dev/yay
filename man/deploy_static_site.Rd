@@ -33,6 +33,7 @@ this includes the following files and directories:
 \item \code{".gitmodules"}
 \item \code{".gitsigners"}
 \item \code{".htaccess"}
+\item \code{".hvm"}
 \item \code{".well-known"}
 }}
 
