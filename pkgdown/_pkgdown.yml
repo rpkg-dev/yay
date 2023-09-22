@@ -30,7 +30,10 @@ reference:
   - deploy_static_site
   - deploy_pkgdown_site
 - title: Netlify
-- contents: netlify_dns_records_set
+- contents:
+  - netlify_dns_records_get
+  - netlify_dns_records_set
+  - netlify_dns_records_delete
 - title: Extending other R packages
   desc: These functions closely follow the API of existing packages, but are usually
     out of scope for direct inclusion in them.
