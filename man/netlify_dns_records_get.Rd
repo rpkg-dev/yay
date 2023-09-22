@@ -23,7 +23,23 @@ Retrieves DNS records from Netlify for the specified \code{domain} using the
 \examples{
 \dontrun{
 yay::netlify_dns_records_get(domain = "my.site",
-                             token = Sys.getenv("NETLIFY_PAT"))}
+                             token = Sys.getenv("NETLIFY_PAT"))
+
+# to write the "settable" record keys to a TOML file `dns_records.toml` with a `records` table
+# NOTE that the CLI tool `jsontoml` is required for this: https://github.com/pelletier/go-toml/
+yay::netlify_dns_records_get(domain = "my.site",
+                             token = Sys.getenv("NETLIFY_PAT")) |>
+  dplyr::select(
+    all_of(yay:::netlify_dns_record_cols$key[yay:::netlify_dns_record_cols$settable])
+  ) |>
+  list(records = _) |>
+  jsonlite::toJSON(auto_unbox = TRUE,
+                   pretty = TRUE) |>
+  system2(input = _,
+          stdout = TRUE,
+          command = "jsontoml") |>
+  _[-1L] |>
+  brio::write_lines(path = "dns_records.toml")}
 }
 \seealso{
 Other Netlify functions:

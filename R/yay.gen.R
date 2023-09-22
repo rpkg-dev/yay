@@ -729,7 +729,23 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 #' @examples
 #' \dontrun{
 #' yay::netlify_dns_records_get(domain = "my.site",
-#'                              token = Sys.getenv("NETLIFY_PAT"))}
+#'                              token = Sys.getenv("NETLIFY_PAT"))
+#'
+#' # to write the "settable" record keys to a TOML file `dns_records.toml` with a `records` table
+#' # NOTE that the CLI tool `jsontoml` is required for this: https://github.com/pelletier/go-toml/
+#' yay::netlify_dns_records_get(domain = "my.site",
+#'                              token = Sys.getenv("NETLIFY_PAT")) |>
+#'   dplyr::select(
+#'     all_of(yay:::netlify_dns_record_cols$key[yay:::netlify_dns_record_cols$settable])
+#'   ) |>
+#'   list(records = _) |>
+#'   jsonlite::toJSON(auto_unbox = TRUE,
+#'                    pretty = TRUE) |>
+#'   system2(input = _,
+#'           stdout = TRUE,
+#'           command = "jsontoml") |>
+#'   _[-1L] |>
+#'   brio::write_lines(path = "dns_records.toml")}
 netlify_dns_records_get <- function(domain,
                                     token,
                                     max_tries = 3L) {
@@ -907,7 +923,7 @@ netlify_dns_records_set <- function(records,
 #'                                 records = "xyz123",
 #'                                 token = Sys.getenv("NETLIFY_PAT"))
 #' 
-#' # The output of `netlify_dns_records_get()` can be directly feed. To delete all (!) records:
+#' # The output of `netlify_dns_records_get()` can directly be fed. To delete all (!) records:
 #' yay::netlify_dns_records_get(domain = "my.site",
 #'                              token = Sys.getenv("NETLIFY_PAT")) |>
 #'   dplyr::filter(!managed) |>

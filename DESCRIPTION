@@ -10,7 +10,7 @@ License: AGPL (>= 3)
 URL: https://yay.rpkg.dev, https://gitlab.com/rpkg.dev/yay
 BugReports: https://gitlab.com/rpkg.dev/yay/issues
 Depends: 
-    R (>= 4.1)
+    R (>= 4.2)
 Imports: 
     checkmate (>= 2.0.0),
     cli (>= 3.0.0),
@@ -31,6 +31,7 @@ Suggests:
     gert (>= 1.2.0),
     gh (>= 1.4.0),
     httr2 (>= 0.2.3),
+    jsonlite (>= 1.8.7),
     pkgdown (>= 2.0.7),
     pkgsnip (>= 0.0.9037),
     readr (>= 1.4.0),

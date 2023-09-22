@@ -34,7 +34,7 @@ yay::netlify_dns_records_delete(domain = "my.site",
                                 records = "xyz123",
                                 token = Sys.getenv("NETLIFY_PAT"))
 
-# The output of `netlify_dns_records_get()` can be directly feed. To delete all (!) records:
+# The output of `netlify_dns_records_get()` can directly be fed. To delete all (!) records:
 yay::netlify_dns_records_get(domain = "my.site",
                              token = Sys.getenv("NETLIFY_PAT")) |>
   dplyr::filter(!managed) |>
