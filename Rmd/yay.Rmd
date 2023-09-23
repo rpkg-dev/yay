@@ -855,7 +855,8 @@ netlify_dns_records_get <- function(domain,
     purrr::map(purrr::compact) |>
     purrr::map_dfr(tibble::as_tibble_row) |>
     # canonicalize key order
-    dplyr::relocate(any_of(netlify_dns_record_cols$key))
+    dplyr::relocate(any_of(netlify_dns_record_cols$key)) |>
+    dplyr::arrange(type, hostname, value)
 }
 ```
 
@@ -981,7 +982,8 @@ netlify_dns_records_set <- function(records,
         purrr::compact() |>
         tibble::as_tibble_row() |>
         # canonicalize key order
-        dplyr::relocate(any_of(netlify_dns_record_cols$key))
+        dplyr::relocate(any_of(netlify_dns_record_cols$key)) |>
+        dplyr::arrange(type, hostname, value)
     }) |>
     purrr::list_rbind() |>
     invisible()
@@ -998,9 +1000,8 @@ netlify_dns_records_set <- function(records,
 #' API](https://docs.netlify.com/api/get-started/). DNS `records` must be provided as either a character vector of record identifiers or a dataframe/tibble with
 #' an `id` column. Further columns are silently ignored.
 #'
-#' Supported are the DNS record types `r netlify_dns_record_types |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. `A` and
-#' `AAAA` (or `NETLIFY` and `NETLIFY6`, respectively) cannot be deleted via the API, but must be configured via [Netlify's web
-#' interface](https://app.netlify.com/) instead.
+#' Supported are the DNS record types `r netlify_dns_record_types |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. `A` and `AAAA` (or `NETLIFY`
+#' and `NETLIFY6`, respectively) cannot be deleted via the API, but must be configured via [Netlify's web interface](https://app.netlify.com/) instead.
 #'
 #' @inheritParams netlify_dns_records_set
 #' @param records DNS records to delete. A character vector of record identifiers or a dataframe/tibble with an `id` column. Further columns are silently

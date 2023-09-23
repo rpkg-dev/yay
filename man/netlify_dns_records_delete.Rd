@@ -25,8 +25,8 @@ Deletes DNS records on Netlify for the specified \code{domain} using the
 an \code{id} column. Further columns are silently ignored.
 }
 \details{
-Supported are the DNS record types \code{ALIAS}, \code{CAA}, \code{CNAME}, \code{MX}, \code{NS}, \code{SPF}, \code{SRV} and \code{TXT}. \code{A} and
-\code{AAAA} (or \code{NETLIFY} and \code{NETLIFY6}, respectively) cannot be deleted via the API, but must be configured via \href{https://app.netlify.com/}{Netlify's web interface} instead.
+Supported are the DNS record types \code{ALIAS}, \code{CAA}, \code{CNAME}, \code{MX}, \code{NS}, \code{SPF}, \code{SRV} and \code{TXT}. \code{A} and \code{AAAA} (or \code{NETLIFY}
+and \code{NETLIFY6}, respectively) cannot be deleted via the API, but must be configured via \href{https://app.netlify.com/}{Netlify's web interface} instead.
 }
 \examples{
 \dontrun{
