@@ -16,6 +16,7 @@ utils::globalVariables(names = c(".",
                                  "everything",
                                  # other
                                  "end",
+                                 "hostname",
                                  "i_pattern",
                                  "key",
                                  "minus",
@@ -24,7 +25,9 @@ utils::globalVariables(names = c(".",
                                  "replacement",
                                  "settable",
                                  "start",
-                                 "status"))
+                                 "status",
+                                 "type",
+                                 "value"))
 ```
 
 ## Constants
@@ -821,16 +824,23 @@ TODO:
 #' # NOTE that the CLI tool `jsontoml` is required for this: https://github.com/pelletier/go-toml/
 #' yay::netlify_dns_records_get(domain = "my.site",
 #'                              token = Sys.getenv("NETLIFY_PAT")) |>
+#'   # remove records which can't be handled via API
+#'   dplyr::filter(!managed) |>
+#'   # remove Netlify-specific cols which aren't not "settable"
 #'   dplyr::select(
-#'     all_of(yay:::netlify_dns_record_cols$key[yay:::netlify_dns_record_cols$settable])
+#'     any_of(yay:::netlify_dns_record_cols$key[yay:::netlify_dns_record_cols$settable])
 #'   ) |>
+#'   # convert to target list structure
 #'   list(records = _) |>
+#'   # convert to JSON
 #'   jsonlite::toJSON(auto_unbox = TRUE,
 #'                    pretty = TRUE) |>
+#'   # convert JSON to TOML via external CLI
 #'   system2(input = _,
 #'           stdout = TRUE,
 #'           command = "jsontoml") |>
 #'   _[-1L] |>
+#'   # write TOML to file
 #'   brio::write_lines(path = "dns_records.toml")}
 netlify_dns_records_get <- function(domain,
                                     token,
