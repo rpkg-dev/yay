@@ -382,7 +382,7 @@ show_diff <- function(x,
 ```{r}
 #' Open as temporary spreadsheet
 #'
-#' Writes an \R object -- usually tabular data like a dataframe or [tibble][tibble::tibble()] -- to a temporary spreadsheet and subsequently opens that
+#' Writes an \R object – usually tabular data like a dataframe or [tibble][tibble::tibble()] – to a temporary spreadsheet and subsequently opens that
 #' spreadsheet in the system's default application using [xopen::xopen()]. The latter is usually equivalent to double-clicking on the file in a file browser.
 #'
 #' @param x A dataframe or [tibble][tibble::tibble()], or something coercible to.

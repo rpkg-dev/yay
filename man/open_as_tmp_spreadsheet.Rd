@@ -24,7 +24,7 @@ open_as_tmp_spreadsheet(x, format = c("csv", "xlsx"), ..., quiet = TRUE)
 \code{x} invisibly.
 }
 \description{
-Writes an \R object -- usually tabular data like a dataframe or \link[tibble:tibble]{tibble} -- to a temporary spreadsheet and subsequently opens that
+Writes an \R object – usually tabular data like a dataframe or \link[tibble:tibble]{tibble} – to a temporary spreadsheet and subsequently opens that
 spreadsheet in the system's default application using \code{\link[xopen:xopen]{xopen::xopen()}}. The latter is usually equivalent to double-clicking on the file in a file browser.
 }
 \examples{
