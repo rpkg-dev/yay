@@ -8,8 +8,8 @@ netlify_dns_records_set(records, domain, token, max_tries = 3L)
 }
 \arguments{
 \item{records}{DNS records. A dataframe/tibble with the columns
-\code{"type"}, \code{"hostname"}, \code{"value"}, \code{"ttl"}, \code{"priority"}, \code{"weight"}, \code{"port"}, \code{"flag"} and \code{"tag"}. Further columns are silently
-ignored.}
+\code{"type"}, \code{"hostname"}, \code{"value"}, \code{"ttl"}, \code{"priority"}, \code{"weight"}, \code{"port"}, \code{"flag"} and \code{"tag"}. The first three columns are
+mandatory, columns not listed here are silently ignored.}
 
 \item{domain}{Domain name to set DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.}
 

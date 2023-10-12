@@ -740,7 +740,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 #'                              token = Sys.getenv("NETLIFY_PAT")) |>
 #'   # remove records which can't be handled via API
 #'   dplyr::filter(!managed) |>
-#'   # remove Netlify-specific cols which aren't not "settable"
+#'   # remove Netlify-specific cols which aren't "settable"
 #'   dplyr::select(
 #'     any_of(yay:::netlify_dns_record_cols$key[yay:::netlify_dns_record_cols$settable])
 #'   ) |>
@@ -762,7 +762,7 @@ netlify_dns_records_get <- function(domain,
   checkmate::assert_string(domain,
                            pattern = "\\w+\\.\\w+(\\.\\w+)*")
   checkmate::assert_string(token)
-  rlang::check_installed(pkg = "httr",
+  rlang::check_installed(pkg = "httr2",
                          reason = pal::reason_pkg_required())
   
   zone_id <- stringr::str_replace_all(string = domain,
@@ -797,8 +797,8 @@ netlify_dns_records_get <- function(domain,
 #'
 #' @inheritParams pal::req_cached
 #' @param records DNS records. A dataframe/tibble with the columns
-#'   `r netlify_dns_record_cols |> dplyr::filter(settable) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. Further columns are silently
-#'   ignored.
+#'   `r netlify_dns_record_cols |> dplyr::filter(settable) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. The first three columns are
+#'   mandatory, columns not listed here are silently ignored.
 #' @param domain Domain name to set DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.
 #' @param token Personal access token used for authentication.
 #'
@@ -832,11 +832,8 @@ netlify_dns_records_set <- function(records,
   checkmate::assert_data_frame(records,
                                row.names = "unique")
   # ensure all required cols are present
-  missing_col_names <-
-    netlify_dns_record_cols |>
-    dplyr::filter(settable) %$%
-    key |>
-    setdiff(colnames(records))
+  missing_col_names <- setdiff(c("type", "hostname", "value"),
+                               colnames(records))
   
   if (length(missing_col_names) > 0L) {
     cli::cli_abort("{.arg records} is missing the following required columns: {.var {missing_col_names}}")
@@ -844,7 +841,7 @@ netlify_dns_records_set <- function(records,
   # ensure no required fields are missing
   purrr::walk(c("type", "hostname", "value"),
               \(x) {
-                if (any(is.na(records[[x]]))) {
+                if (anyNA(records[[x]])) {
                   cli::cli_abort("Column {.var {x}} in {.arg records} can't have missings.")
                 }
               })
@@ -854,8 +851,19 @@ netlify_dns_records_set <- function(records,
   checkmate::assert_string(domain,
                            pattern = "\\w+\\.\\w+(\\.\\w+)*")
   checkmate::assert_string(token)
-  rlang::check_installed(pkg = "httr",
+  rlang::check_installed(pkg = "httr2",
                          reason = pal::reason_pkg_required())
+  
+  # complement missing optional columns
+  records <-
+    netlify_dns_record_cols |>
+    dplyr::filter(settable) %$%
+    key |>
+    setdiff(colnames(records)) |>
+    purrr::map(\(x) tibble::as_tibble_col(x = NA,
+                                          column_name = x)) |>
+    purrr::list_cbind() |>
+    dplyr::cross_join(x = records)
   
   zone_id <- stringr::str_replace_all(string = domain,
                                       pattern = "\\.",
@@ -865,7 +873,7 @@ netlify_dns_records_set <- function(records,
   
   records |>
     # coerce to target types
-    dplyr::mutate(dplyr::across(.cols = everything(),
+    dplyr::mutate(dplyr::across(.cols = any_of(netlify_dns_record_cols$key),
                                 .fns = \(x) {
                                   .Primitive(paste0("as.",
                                                     netlify_dns_record_cols$type[netlify_dns_record_cols$key == dplyr::cur_column()]))(x)
@@ -960,7 +968,7 @@ netlify_dns_records_delete <- function(records,
   checkmate::assert_string(domain,
                            pattern = "\\w+\\.\\w+(\\.\\w+)*")
   checkmate::assert_string(token)
-  rlang::check_installed(pkg = "httr",
+  rlang::check_installed(pkg = "httr2",
                          reason = pal::reason_pkg_required())
   
   zone_id <- stringr::str_replace_all(string = domain,

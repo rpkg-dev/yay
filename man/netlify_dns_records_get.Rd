@@ -31,7 +31,7 @@ yay::netlify_dns_records_get(domain = "my.site",
                              token = Sys.getenv("NETLIFY_PAT")) |>
   # remove records which can't be handled via API
   dplyr::filter(!managed) |>
-  # remove Netlify-specific cols which aren't not "settable"
+  # remove Netlify-specific cols which aren't "settable"
   dplyr::select(
     any_of(yay:::netlify_dns_record_cols$key[yay:::netlify_dns_record_cols$settable])
   ) |>
