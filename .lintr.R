@@ -9,6 +9,7 @@ linters <- linters_with_defaults(absolute_path_linter             = absolute_pat
                                  assignment_linter                = assignment_linter(allow_cascading_assign = FALSE,
                                                                                       allow_pipe_assign = TRUE),
                                  boolean_arithmetic_linter        = boolean_arithmetic_linter(),
+                                 brace_linter                     = brace_linter(allow_single_line = TRUE),
                                  class_equals_linter              = class_equals_linter(),
                                  conjunct_test_linter             = conjunct_test_linter(allow_filter = "always"),
                                  consecutive_assertion_linter     = consecutive_assertion_linter(),
