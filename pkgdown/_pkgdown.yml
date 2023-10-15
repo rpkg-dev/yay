@@ -53,3 +53,5 @@ reference:
   - str_replace_file
   - str_normalize
   - str_normalize_file
+- subtitle: zoterro
+- contents: zotero_write_bib

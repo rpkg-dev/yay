@@ -1759,3 +1759,85 @@ str_normalize_file <- function(path,
                      run_dry = run_dry)
 }
 ```
+
+### zoterro
+
+#### `zotero_write_bib`
+
+```{r}
+#' Write Zotero library to bibliography file
+#'
+#' Writes a file of the chosen bibliography `format` to `path` with items belonging to a Zotero user or group library, optionally limited to a specific
+#' collection. Also writes a text file with suffix `.version` alongside `path` which stores the [Zotero library
+#' version number](https://www.zotero.org/support/dev/web_api/v3/syncing) and allows for efficient caching.
+#' 
+#' If the Zotero library's content hasn't changed since the last export, nothing will be written to `path` and the performed API request will be significantly
+#' faster. See section *Caching* in [zoterro::zotero_api()] for further details.
+#'
+#' @inheritParams zoterro::write_bib
+#' @param lib_id Zotero user or group library identifier. An object as returned by [zoterro::zotero_user_id()] or [zoterro::zotero_group_id()].
+#' @param path Path to write the bibliography file to. A character scalar.
+#' @param force Whether or not to enforce overwriting the bibliography file regardless of actual changes to the Zotero library since the last export.
+#' @param show_progress `r pkgsnip::param_lbl("show_progress")`
+#'
+#' @return `path`, invisibly.
+#' @family zotero
+#' @export
+zotero_write_bib <- function(lib_id,
+                             path,
+                             collection_key = NULL,
+                             incl_children = FALSE,
+                             format = "csljson",
+                             force = FALSE,
+                             show_progress = TRUE) {
+
+  checkmate::assert_flag(incl_children)
+  checkmate::assert_flag(force)
+  checkmate::assert_flag(show_progress)
+  reason_pkg_required_fn <- pal::reason_pkg_required()
+  rlang::check_installed("brio",
+                         reason = reason_pkg_required_fn)
+  rlang::check_installed("zoterro",
+                         reason = reason_pkg_required_fn)
+  
+  if (show_progress) {
+    pal::cli_progress_step_quick(msg = paste0("Updating bibliography file with ",
+                                              ifelse(incl_children,
+                                                     "all",
+                                                     "top-level"),
+                                              " items from the Zotero ",
+                                              ifelse(is.null(collection_key),
+                                                     "",
+                                                     "collection {.val {collection_key}} in the "),
+                                              "library with ID {.val {lib_id}}"))
+  }
+
+  bib_version_last <- NULL
+  path_bib_version <- fs::path_ext_set(path,
+                                       ext = "version")
+
+  if (!force && fs::file_exists(path_bib_version)) {
+    bib_version_last <-
+      path_bib_version %>%
+      brio::read_file() %>%
+      stringr::str_trim() %>%
+      as.integer()
+  }
+
+  bib_version_current <-
+    zoterro::write_bib(collection_key = collection_key,
+                       incl_children = incl_children,
+                       path = path,
+                       format = format,
+                       modified_since = bib_version_last,
+                       user = lib_id) %>%
+    attr(which = "version")
+
+  if (force || length(bib_version_current)) {
+    brio::write_lines(text = bib_version_current,
+                      path = path_bib_version)
+  }
+
+  invisible(path)
+}
+```
