@@ -16,7 +16,7 @@ show_diff(
   max_diffs = 10L,
   diff_text = "{x_lbl} is different from {y_lbl}",
   ask_text = "Do you wish to display the changes in tabular diff format?",
-  caption = "{x_lbl} vs. {y_lbl}",
+  caption = "{x_lbl} → {y_lbl}",
   ...
 )
 }
@@ -27,8 +27,8 @@ show_diff(
 
 \item{ignore_order}{Whether or not to ignore the order of columns and rows.}
 
-\item{ignore_col_types}{Whether or not to distinguish similar column types. Currently, if set to \code{TRUE}, this will convert factor to character and integer to
-double before comparison.}
+\item{ignore_col_types}{Whether or not to distinguish similar column types. Currently, if set to \code{TRUE}, this will convert factors to characters and integers
+to doubles before the comparison.}
 
 \item{ids}{A character vector of column names that make up a \href{https://en.wikipedia.org/wiki/Primary_key}{primary key}, if known. If \code{NULL}, heuristics are
 used to find a decent key (or a set of decent keys).}

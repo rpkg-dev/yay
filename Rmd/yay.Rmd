@@ -250,7 +250,7 @@ show_diff <- function(x,
                       max_diffs = 10L,
                       diff_text = "{x_lbl} is different from {y_lbl}",
                       ask_text = "Do you wish to display the changes in tabular diff format?",
-                      caption = "{x_lbl} vs. {y_lbl}",
+                      caption = "{x_lbl} \u2192 {y_lbl}",
                       ...) {
   
   checkmate::assert_character(ids,
