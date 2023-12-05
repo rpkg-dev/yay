@@ -953,7 +953,9 @@ netlify_dns_records_set <- function(records,
     purrr::map(\(x) tibble::as_tibble_col(x = NA,
                                           column_name = x)) |>
     purrr::list_cbind() |>
-    dplyr::cross_join(x = records)
+    pal::when(ncol(.) > 0L ~ dplyr::cross_join(x = records,
+                                               y = .),
+              ~ records)
   
   zone_id <- stringr::str_replace_all(string = domain,
                                       pattern = "\\.",
