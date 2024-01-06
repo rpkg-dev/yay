@@ -2,7 +2,7 @@
 # See `README.md#r-markdown-format` for more information on the literate programming approach used applying the R Markdown format.
 
 # yay: Delightful Convenience Functions
-# Copyright (C) 2023 Salim Brüggemann
+# Copyright (C) 2024 Salim Brüggemann
 # 
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free
 # Software Foundation, either version 3 of the License, or any later version.
@@ -1385,10 +1385,10 @@ str_replace_verbose_single_info <- function(string,
                                         excerpt_end %<>% pal::escape_lf()
                                         
                                         # assemble info msgs
-                                        tibble::tibble(minus = pal::as_string(cli::col_red("-"), " ", cli::bg_black(excerpt_begin),
-                                                                              cli::style_strikethrough(bg_red_dark(pattern_asis)), cli::bg_black(excerpt_end)),
-                                                       plus = pal::as_string(cli::col_green("+"), " ", cli::bg_black(excerpt_begin), bg_green_dark(replacement),
-                                                                             cli::bg_black(excerpt_end)))
+                                        tibble::tibble(minus = pal::as_str(cli::col_red("-"), " ", cli::bg_black(excerpt_begin),
+                                                                           cli::style_strikethrough(bg_red_dark(pattern_asis)), cli::bg_black(excerpt_end)),
+                                                       plus = pal::as_str(cli::col_green("+"), " ", cli::bg_black(excerpt_begin), bg_green_dark(replacement),
+                                                                          cli::bg_black(excerpt_end)))
                                       })
                     })
 }
