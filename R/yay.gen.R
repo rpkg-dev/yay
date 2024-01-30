@@ -84,34 +84,32 @@ unicode_ellipsis <- "\u2026"
 clean_git_dir <- function(path,
                           exclude_paths = paths_to_keep,
                           repo = path) {
-  
   fs::dir_ls(path = path,
              all = TRUE,
-             type = "directory") %>%
-    setdiff(fs::path(path, c(exclude_paths,
-                             ".git"))) %>%
+             type = "directory") |>
+    setdiff(fs::path(path, c(exclude_paths, ".git"))) |>
     purrr::walk(fs::dir_delete)
   
   fs::dir_ls(path = path,
              all = TRUE,
-             type = "file") %>%
-    setdiff(fs::path(path, exclude_paths)) %>%
+             type = "file") |>
+    setdiff(fs::path(path, exclude_paths)) |>
     purrr::walk(fs::file_delete)
   
   gert::git_status(repo = repo,
-                   staged = FALSE) %>%
+                   staged = FALSE) |>
     dplyr::filter(status == "deleted"
                   & fs::path_has_parent(path = file,
                                         parent = fs::path_rel(path = path,
                                                               start = repo))) %$%
-    file %>%
+    file |>
     gert::git_add(repo = repo)
 }
 
 normalize_tree_path <- function(path) {
   
-  checkmate::assert_string(path) %>%
-    fs::path_norm() %>%
+  checkmate::assert_string(path) |>
+    fs::path_norm() |>
     stringr::str_remove(pattern = "^\\.{0,2}(/|$)")
 }
 
@@ -181,9 +179,9 @@ normalize_tree_path <- function(path) {
 #' \dontrun{
 #' library(magrittr)
 #' 
-#' mtcars %>%
+#' mtcars |>
 #'   dplyr::mutate(dplyr::across(c(cyl, gear),
-#'                               ~ dplyr::if_else(. > 4, . * 2, .))) %>%
+#'                               \(x) dplyr::if_else(x > 4, x * 2, x))) |>
 #'   yay::show_diff(mtcars)}
 show_diff <- function(x,
                       y,
@@ -243,7 +241,7 @@ show_diff <- function(x,
     
     caption %<>% purrr::reduce(.x = 1:n_backtick,
                                .init = .,
-                               .f = function(string, i) {
+                               .f = \(string, i) {
                                  
                                  stringr::str_replace(string = string,
                                                       pattern = "`",
@@ -465,29 +463,28 @@ deploy_static_site <- function(from_path,
                      type = "directory",
                      all = TRUE)
   
-  dirs %>% purrr::walk2(.y =
-                          dirs %>%
-                          fs::path_rel(start = from_path) %>%
-                          fs::path(to_path, .),
-                        .f = fs::dir_copy,
-                        overwrite = TRUE)
+  purrr::walk2(.x = dirs,
+               .y = fs::path(to_path, fs::path_rel(path = dirs,
+                                                   start = from_path)),
+               .f = \(x) fs::dir_copy(path = x,
+                                      overwrite = TRUE))
   
   files <- fs::dir_ls(path = from_path,
                       type = "file",
                       all = TRUE)
   
-  files %>% purrr::walk(fs::file_copy,
-                        new_path = to_path,
-                        overwrite = TRUE)
-  
+  purrr::walk(files,
+              \(x) fs::file_copy(path = x,
+                                 new_path = to_path,
+                                 overwrite = TRUE))
   # commit and push files
   staged <-
-    c(dirs, files) %>%
+    c(dirs, files) |>
     fs::path_rel(start = from_path) %>%
     fs::path(fs::path_rel(path = to_path,
                           start = repo),
-             .) %>%
-    fs::path_norm() %>%
+             .) |>
+    fs::path_norm() |>
     gert::git_add(repo = repo)
   
   if (nrow(staged)) {
@@ -595,7 +592,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
   
   # get pkg's pkgdown config
   override <-
-    use_dev_build %>%
+    use_dev_build |>
     pal::when(isTRUE(.) ~ list(development = list(mode = "devel")),
               isFALSE(.) ~ list(development = list(mode = "release")),
               ~ list())
@@ -669,29 +666,28 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                      all = TRUE,
                      invert = TRUE)
   
-  dirs %>% purrr::walk2(.y =
-                          dirs %>%
-                          fs::path_rel(start = config$dst_path) %>%
-                          fs::path(to_path, .),
-                        .f = fs::dir_copy,
-                        overwrite = TRUE)
+  purrr::walk2(.x = dirs,
+               .y = fs::path(to_path, fs::path_rel(path = dirs,
+                                                   start = config$dst_path)),
+               .f = \(x) fs::dir_copy(path = x,
+                                      overwrite = TRUE))
   
   files <- fs::dir_ls(path = config$dst_path,
                       type = "file",
                       all = TRUE)
   
-  files %>% purrr::walk(fs::file_copy,
-                        new_path = to_path,
-                        overwrite = TRUE)
-  
+  purrr::walk(files,
+              \(x) fs::file_copy(path = files,
+                                 new_path = to_path,
+                                 overwrite = TRUE))
   # commit and push files
   staged <-
-    c(dirs, files) %>%
+    c(dirs, files) |>
     fs::path_rel(start = config$dst_path) %>%
     fs::path(fs::path_rel(path = to_path,
                           start = repo),
-             .) %>%
-    fs::path_norm() %>%
+             .) |>
+    fs::path_norm() |>
     gert::git_add(repo = repo)
   
   if (nrow(staged)) {
@@ -992,6 +988,120 @@ netlify_dns_records_delete <- function(records,
   invisible(records)
 }
 
+#' List files and directories in a GitHub repository
+#'
+#' Lists file and directory names found under
+#' [`rev:path`](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem) in a GitHub repository via
+#' [GitHub's GraphQL API v4](https://docs.github.com/en/graphql/overview/about-the-graphql-api).
+#'
+#' `r md_gh_pat`
+#'
+#' Note that an empty character vector is returned in case `path` is invalid or no file/directory exists underneath `path`.
+#'
+#' @param path Path to a directory, relative to the repository root. A character scalar.
+#' @param owner Repository owner's GitHub user or organization name. A character scalar.
+#' @param name Repository name. A character scalar.
+#' @param rev [Git revision expression](https://git-scm.com/docs/revisions#_specifying_revisions) matching the desired Git tree object, e.g. a branch or tag
+#'   name or another symbolic reference like `"HEAD@{yesterday}"` or `"HEAD~10"`. A character scalar.
+#' @param recurse Whether or not to recurse into subdirectories of `path`.
+#' @param incl_dirs Whether or not to list directories (and subdirectories if `recurse = TRUE`).
+#' @param incl_files Whether or not to list files (also inside subdirectories if `recurse = TRUE`).
+#'
+#' @return A character vector of paths to the files and subdirectories found under `rev:path`, relative to the repository root.
+#' @family gh
+#' @export
+#'
+#' @examples
+#' # you can opt-out from directory recursion
+#' yay::gh_dir_ls(owner = "salim-b",
+#'                name = "pal",
+#'                recurse = FALSE) |>
+#'   pal::cat_lines()
+#'
+#' # you can list only files in a directory
+#' yay::gh_dir_ls(path = "tests",
+#'                owner = "salim-b",
+#'                name = "pal",
+#'                incl_dirs = FALSE) |>
+#'   pal::cat_lines()
+#'
+#' # or you can list only directories in a directory
+#' yay::gh_dir_ls(path = "tests",
+#'                owner = "salim-b",
+#'                name = "pal",
+#'                incl_files = FALSE) |>
+#'   pal::cat_lines()
+gh_dir_ls <- function(path = "/",
+                      owner,
+                      name,
+                      rev = "HEAD",
+                      recurse = TRUE,
+                      incl_dirs = TRUE,
+                      incl_files = TRUE) {
+  
+  rlang::check_installed("gh",
+                         reason = reason_pkg_required_gh)
+  checkmate::assert_string(path)
+  checkmate::assert_string(owner)
+  checkmate::assert_string(name)
+  checkmate::assert_string(rev)
+  checkmate::assert_flag(recurse)
+  checkmate::assert_flag(incl_dirs)
+  checkmate::assert_flag(incl_files)
+  
+  path_norm <- normalize_tree_path(path)
+  
+  entries <-
+    gh::gh_gql(query = 'query($name:String!, $owner:String!, $expression:String!) {
+                          repository(name: $name, owner: $owner) {
+                            object(expression: $expression) {
+                              ... on Tree {
+                                entries {
+                                  path
+                                  type
+                                }
+                              }
+                            }
+                          }
+                        }',
+               variables = list(name = name,
+                                owner = owner,
+                                expression = glue::glue("{rev}:{path_norm}"))) |>
+    purrr::pluck("data", "repository", "object", "entries") %||%
+    list()
+  
+  dirs <-
+    entries |>
+    purrr::keep(\(x) x$type == "tree") |>
+    purrr::map_depth(.depth = 1L,
+                     .f = \(x) purrr::pluck(x, "path")) |>
+    purrr::list_c(ptype = character())
+  
+  result <-
+    entries |>
+    purrr::keep(\(x) x$type %in% c("blob"[incl_files], "tree"[incl_dirs])) |>
+    purrr::map_depth(.depth = 1L,
+                     .f = \(x) purrr::pluck(x, "path")) |>
+    purrr::list_c(ptype = character())
+  
+  if (recurse && length(dirs) > 0L) {
+    
+    result <-
+      dirs |>
+      purrr::map(\(x) gh_dir_ls(path = x,
+                                owner = owner,
+                                name = name,
+                                rev = rev,
+                                recurse = TRUE,
+                                incl_dirs = incl_dirs,
+                                incl_files = incl_files)) |>
+      purrr::list_c(ptype = character()) |>
+      c(result)
+  }
+  
+  sort(result)
+}
+
 #' Read in a text file from a GitHub repository
 #'
 #' Downloads the text file under the specified path from a GitHub repository via [GitHub's GraphQL API
@@ -1004,8 +1114,10 @@ netlify_dns_records_delete <- function(records,
 #' `path`.
 #'
 #' @inheritParams gh_dir_ls
+#' @param path Path to a directory, relative to the repository root. A character scalar.
 #'
-#' @return A character scalar, or an empty character vector in case no text file is found under `rev:path`.
+#' @return A character scalar, or an empty character vector in case no text file is found under
+#'   [`rev:path`](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem).
 #' @family gh
 #' @export
 #'
@@ -1059,9 +1171,9 @@ gh_text_file <- function(path,
 #'
 #' @inherit gh_text_file details
 #'
-#' @inheritParams gh_dir_ls
-#' @param recurse Whether or not to also include text files in subfolders of `path`. A logical scalar. Enabling this option may result in many API calls and
-#'   thus produce a significant delay.
+#' @inheritParams gh_text_file
+#' @param recurse Whether or not to also include text files in subfolders of `path`. Enabling this option may result in many API calls and thus produce a
+#'   significant delay.
 #'
 #' @return A named character vector of length equal to the number of files found under `rev:path` with the file paths as names and the file contents as
 #'   values.
@@ -1099,115 +1211,6 @@ gh_text_files <- function(path,
                rev = rev) |>
     purrr::compact() |>
     unlist()
-}
-
-#' List files and directories in a GitHub repository
-#'
-#' Lists file and directory names found under
-#' [`rev:path`](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem) in a GitHub repository via
-#' [GitHub's GraphQL API v4](https://docs.github.com/en/graphql/overview/about-the-graphql-api).
-#'
-#' `r md_gh_pat`
-#'
-#' @param path Path from the repository's root to the desired directory. A [path][fs::fs_path] or character scalar.
-#' @param owner Repository owner's GitHub user or organization name. A character scalar.
-#' @param name Repository name. A character scalar.
-#' @param rev [Git revision expression](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem)
-#'   matching the desired Git tree object, e.g. a branch name or another symbolic reference like `"HEAD@{yesterday}"` or `"HEAD~10"`. A character scalar.
-#' @param recurse Whether or not to recurse into subdirectories of `path`.
-#' @param incl_dirs Whether or not to list directories (and subdirectories if `recurse = TRUE`).
-#' @param incl_files Whether or not to list files (also inside subdirectories if `recurse = TRUE`).
-#'
-#' @return A character vector of paths from the repository root to the files and subdirectories found under `rev:path`.
-#' @family gh
-#' @export
-#'
-#' @examples
-#' # you can opt-out from directory recursion
-#' yay::gh_dir_ls(owner = "salim-b",
-#'                name = "pal",
-#'                recurse = FALSE) |>
-#'   pal::cat_lines()
-#'
-#' # you can list only files in a directory
-#' yay::gh_dir_ls(path = "tests",
-#'                owner = "salim-b",
-#'                name = "pal",
-#'                incl_dirs = FALSE) |>
-#'   pal::cat_lines()
-#'
-#' # or you can list only directories in a directory
-#' yay::gh_dir_ls(path = "tests",
-#'                owner = "salim-b",
-#'                name = "pal",
-#'                incl_files = FALSE) |>
-#'   pal::cat_lines()
-gh_dir_ls <- function(path = "",
-                      owner,
-                      name,
-                      rev = "HEAD",
-                      recurse = TRUE,
-                      incl_dirs = TRUE,
-                      incl_files = TRUE) {
-  
-  rlang::check_installed("gh",
-                         reason = reason_pkg_required_gh)
-  path <- checkmate::assert_string(path) %>% normalize_tree_path()
-  checkmate::assert_string(owner)
-  checkmate::assert_string(name)
-  checkmate::assert_string(rev)
-  checkmate::assert_flag(recurse)
-  checkmate::assert_flag(incl_dirs)
-  checkmate::assert_flag(incl_files)
-  
-  entries <-
-    gh::gh_gql(query = 'query($name:String!, $owner:String!, $expression:String!) {
-                          repository(name: $name, owner: $owner) {
-                            object(expression: $expression) {
-                              ... on Tree {
-                                entries {
-                                  path
-                                  type
-                                }
-                              }
-                            }
-                          }
-                        }',
-               variables = list(name = name,
-                                owner = owner,
-                                expression = glue::glue("{rev}:{path}"))) |>
-    purrr::pluck("data", "repository", "object", "entries")
-  
-  dirs <-
-    entries |>
-    purrr::keep(\(x) x$type == "tree") |>
-    purrr::map_depth(.depth = 1L,
-                     .f = \(x) purrr::pluck(x, "path")) |>
-    purrr::list_c(ptype = character())
-  
-  result <-
-    entries |>
-    purrr::keep(\(x) x$type %in% c("blob"[incl_files], "tree"[incl_dirs])) |>
-    purrr::map_depth(.depth = 1L,
-                     .f = \(x) purrr::pluck(x, "path")) |>
-    purrr::list_c(ptype = character())
-  
-  if (recurse && length(dirs) > 0L) {
-    
-    result <-
-      dirs |>
-      purrr::map(\(x) gh_dir_ls(path = x,
-                                owner = owner,
-                                name = name,
-                                rev = rev,
-                                recurse = TRUE,
-                                incl_dirs = incl_dirs,
-                                incl_files = incl_files)) |>
-      purrr::list_c(ptype = character()) |>
-      c(result)
-  }
-  
-  sort(result)
 }
 
 #' Replace matched patterns in strings _verbosely_
@@ -1292,21 +1295,21 @@ str_replace_verbose <- function(string,
       msgs <-
         str_replace_verbose_single_info(string = string_changed,
                                         pattern = pattern[i],
-                                        n_context_chrs = n_context_chrs) %>%
+                                        n_context_chrs = n_context_chrs) |>
         dplyr::mutate(i_pattern = i) %>%
         dplyr::bind_rows(msgs, .)
       
       string_changed %<>% stringr::str_replace_all(pattern = pattern[i])
     }
     
-    msgs %>%
-      dplyr::group_by(minus, plus) %>%
+    msgs |>
       # we need to reframe instead of summarize since there can be 0 rows in the result
       dplyr::reframe(i_pattern = pal::safe_min(i_pattern),
-                     n = dplyr::n()) %>%
+                     n = dplyr::n(),
+                     .by = c(minus, plus)) |>
       # since reframing can change row order, we need to restore the original order
-      dplyr::arrange(i_pattern) %>%
-      purrr::pwalk(function(minus, plus, i_pattern, n) {
+      dplyr::arrange(i_pattern) |>
+      purrr::pwalk(\(minus, plus, i_pattern, n) {
         
         # using string interpolation ensures `{` and `}` are escaped, cf. ?cli::`inline-markup`
         cat(n, "\u00D7 ", minus, "\n",
@@ -1343,15 +1346,15 @@ str_replace_verbose_single_info <- function(string,
   replacement <- pal::escape_lf(as.character(pattern))
   
   stringr::str_locate_all(string = string,
-                          pattern = names(pattern)) %>%
+                          pattern = names(pattern)) |>
     purrr::map2_dfr(.y = string,
-                    .f = function(positions, string) {
+                    .f = \(positions, string) {
                       
                       positions %<>% dplyr::as_tibble() %>% dplyr::filter(start <= end)
                       
                       purrr::map2_dfr(.x = positions$start,
                                       .y = positions$end,
-                                      .f = function(start, end) {
+                                      .f = \(start, end) {
                                         
                                         # reduce to `string` excerpt of +/- `n_context_chrs`
                                         ## determine if we prune
@@ -1360,19 +1363,21 @@ str_replace_verbose_single_info <- function(string,
                                         
                                         ## extract excerpt
                                         ### begin (part before `pattern`)
-                                        excerpt_begin <- string %>% stringr::str_sub(start = ifelse(prune_start,
-                                                                                                    start - n_context_chrs,
-                                                                                                    1L),
-                                                                                     end = start - 1L)
+                                        excerpt_begin <- stringr::str_sub(string = string,
+                                                                          start = ifelse(prune_start,
+                                                                                         start - n_context_chrs,
+                                                                                         1L),
+                                                                          end = start - 1L)
                                         ### the `pattern` as-is, i.e. without regex syntax
-                                        pattern_asis <- string %>% stringr::str_sub(start = start,
-                                                                                    end = end)
-                                        
+                                        pattern_asis <- stringr::str_sub(string = string,
+                                                                         start = start,
+                                                                         end = end)
                                         ### end (part after `pattern`)
-                                        excerpt_end <- string %>% stringr::str_sub(start = end + 1L,
-                                                                                   end = ifelse(prune_end,
-                                                                                                end + n_context_chrs,
-                                                                                                -1L))
+                                        excerpt_end <- stringr::str_sub(string = string,
+                                                                        start = end + 1L,
+                                                                        end = ifelse(prune_end,
+                                                                                     end + n_context_chrs,
+                                                                                     -1L))
                                         
                                         # replace excerpt start/end with ellipsis dots (pruned to whole words if appropriate)
                                         if (prune_start) excerpt_begin %<>% paste0(unicode_ellipsis, .)
@@ -1409,7 +1414,7 @@ str_replace_verbose_single_info <- function(string,
 #' @param path Paths to the text files. A character vector.
 #' @param process_line_by_line Whether each line in a file should be treated as a separate string or the whole file as one single string. While the latter is 
 #'   more performant, you probably want the former if you're using `"^"` or `"$"` in your `pattern`s.
-#' @param eol `r pkgsnip::param_lbl("eol") %>% stringr::str_replace("(\\.)", "\\1 Only relevant if \x60process_line_by_line = TRUE\x60.")`
+#' @param eol `r pkgsnip::param_lbl("eol") |> stringr::str_replace(stringr::fixed("."), ". Only relevant if \x60process_line_by_line = TRUE\x60.")`
 #' @param show_rel_path Whether or not to display file `path`s as relative from the current working directory. If `FALSE`, absolute paths are displayed. Only
 #'   relevant if `verbose = TRUE`.
 #' @param run_dry Whether or not to show replacements on the console only, without actually modifying any files. Implies `verbose = TRUE`.
@@ -1445,7 +1450,7 @@ str_replace_file <- function(path,
   }
   
   purrr::walk(.x = path,
-              .f = function(path) {
+              .f = \(path) {
                 
                 # print file progress info
                 if (verbose) {
@@ -1506,10 +1511,10 @@ str_normalize <- function(string,
                           rules = yay::regex_text_normalization,
                           n_context_chrs = 20L,
                           verbose = TRUE) {
-  rules %>%
+  rules |>
     tidyr::unnest_longer(col = pattern) %$%
     magrittr::set_names(x = replacement,
-                        value = pattern) %>%
+                        value = pattern) |>
     str_replace_verbose(string = string,
                         n_context_chrs = n_context_chrs,
                         verbose = verbose)
@@ -1546,10 +1551,10 @@ str_normalize_file <- function(path,
                                process_line_by_line = FALSE,
                                n_context_chrs = 20L,
                                verbose = TRUE) {
-  rules %>%
+  rules |>
     tidyr::unnest_longer(col = pattern) %$%
     magrittr::set_names(x = replacement,
-                        value = pattern) %>%
+                        value = pattern) |>
     str_replace_file(path = path,
                      n_context_chrs = n_context_chrs,
                      process_line_by_line = process_line_by_line,
@@ -1610,9 +1615,9 @@ zotero_write_bib <- function(lib_id,
 
   if (!force && fs::file_exists(path_bib_version)) {
     bib_version_last <-
-      path_bib_version %>%
-      brio::read_file() %>%
-      stringr::str_trim() %>%
+      path_bib_version |>
+      brio::read_file() |>
+      stringr::str_trim() |>
       as.integer()
   }
 
@@ -1622,7 +1627,7 @@ zotero_write_bib <- function(lib_id,
                        path = path,
                        format = format,
                        modified_since = bib_version_last,
-                       user = lib_id) %>%
+                       user = lib_id) |>
     attr(which = "version")
 
   if (force || length(bib_version_current)) {

@@ -41,9 +41,9 @@ reference:
   desc: Extending the [**gh**](https://gh.r-lib.org/) package, leveraging [GitHub's
     GraphQL API](https://docs.github.com/en/graphql).
 - contents:
+  - gh_dir_ls
   - gh_text_file
   - gh_text_files
-  - gh_dir_ls
 - subtitle: stringr
   desc: |-
     Extending the [**stringr**](https://stringr.tidyverse.org/) package, that in turn is built on top of the [stringi](https://stringi.gagolewski.com/) package,

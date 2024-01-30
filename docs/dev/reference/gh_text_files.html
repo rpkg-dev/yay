@@ -60,7 +60,7 @@ contents as values.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>path</dt>
-<dd><p>Path from the repository's root to the desired directory. A <a href="https://fs.r-lib.org/reference/fs_path.html" class="external-link">path</a> or character scalar.</p></dd>
+<dd><p>Path to a directory, relative to the repository root. A character scalar.</p></dd>
 
 
 <dt>owner</dt>
@@ -72,13 +72,13 @@ contents as values.</p>
 
 
 <dt>rev</dt>
-<dd><p><a href="https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem" class="external-link">Git revision expression</a>
-matching the desired Git tree object, e.g. a branch name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code>"HEAD~10"</code>. A character scalar.</p></dd>
+<dd><p><a href="https://git-scm.com/docs/revisions#_specifying_revisions" class="external-link">Git revision expression</a> matching the desired Git tree object, e.g. a branch or tag
+name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code>"HEAD~10"</code>. A character scalar.</p></dd>
 
 
 <dt>recurse</dt>
-<dd><p>Whether or not to also include text files in subfolders of <code>path</code>. A logical scalar. Enabling this option may result in many API calls and
-thus produce a significant delay.</p></dd>
+<dd><p>Whether or not to also include text files in subfolders of <code>path</code>. Enabling this option may result in many API calls and thus produce a
+significant delay.</p></dd>
 
 </dl></div>
     <div class="section level2">

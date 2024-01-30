@@ -54,7 +54,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>path</dt>
-<dd><p>Path from the repository's root to the desired directory. A <a href="https://fs.r-lib.org/reference/fs_path.html" class="external-link">path</a> or character scalar.</p></dd>
+<dd><p>Path to a directory, relative to the repository root. A character scalar.</p></dd>
 
 
 <dt>owner</dt>
@@ -66,15 +66,16 @@
 
 
 <dt>rev</dt>
-<dd><p><a href="https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem" class="external-link">Git revision expression</a>
-matching the desired Git tree object, e.g. a branch name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code>"HEAD~10"</code>. A character scalar.</p></dd>
+<dd><p><a href="https://git-scm.com/docs/revisions#_specifying_revisions" class="external-link">Git revision expression</a> matching the desired Git tree object, e.g. a branch or tag
+name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code>"HEAD~10"</code>. A character scalar.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A character scalar, or an empty character vector in case no text file is found under <code>rev:path</code>.</p>
+<p>A character scalar, or an empty character vector in case no text file is found under
+<a href="https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem" class="external-link"><code>rev:path</code></a>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

@@ -76,9 +76,9 @@ therein won't be displayed:
 \dontrun{
 library(magrittr)
 
-mtcars \%>\%
+mtcars |>
   dplyr::mutate(dplyr::across(c(cyl, gear),
-                              ~ dplyr::if_else(. > 4, . * 2, .))) \%>\%
+                              \(x) dplyr::if_else(x > 4, x * 2, x))) |>
   yay::show_diff(mtcars)}
 }
 \seealso{

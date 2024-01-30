@@ -5,7 +5,7 @@
 \title{List files and directories in a GitHub repository}
 \usage{
 gh_dir_ls(
-  path = "",
+  path = "/",
   owner,
   name,
   rev = "HEAD",
@@ -15,14 +15,14 @@ gh_dir_ls(
 )
 }
 \arguments{
-\item{path}{Path from the repository's root to the desired directory. A \link[fs:fs_path]{path} or character scalar.}
+\item{path}{Path to a directory, relative to the repository root. A character scalar.}
 
 \item{owner}{Repository owner's GitHub user or organization name. A character scalar.}
 
 \item{name}{Repository name. A character scalar.}
 
-\item{rev}{\href{https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem}{Git revision expression}
-matching the desired Git tree object, e.g. a branch name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD~10"}. A character scalar.}
+\item{rev}{\href{https://git-scm.com/docs/revisions#_specifying_revisions}{Git revision expression} matching the desired Git tree object, e.g. a branch or tag
+name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD~10"}. A character scalar.}
 
 \item{recurse}{Whether or not to recurse into subdirectories of \code{path}.}
 
@@ -31,7 +31,7 @@ matching the desired Git tree object, e.g. a branch name or another symbolic ref
 \item{incl_files}{Whether or not to list files (also inside subdirectories if \code{recurse = TRUE}).}
 }
 \value{
-A character vector of paths from the repository root to the files and subdirectories found under \code{rev:path}.
+A character vector of paths to the files and subdirectories found under \code{rev:path}, relative to the repository root.
 }
 \description{
 Lists file and directory names found under
@@ -40,6 +40,8 @@ Lists file and directory names found under
 }
 \details{
 Works for both public and private repositories, for the latter you just need to set up a sufficiently authorized \link[gh:gh_token]{GitHub Personal Access Token (PAT)}.
+
+Note that an empty character vector is returned in case \code{path} is invalid or no file/directory exists underneath \code{path}.
 }
 \examples{
 # you can opt-out from directory recursion
@@ -64,7 +66,7 @@ yay::gh_dir_ls(path = "tests",
 }
 \seealso{
 Other GitHub functions:
-\code{\link{gh_text_files}()},
-\code{\link{gh_text_file}()}
+\code{\link{gh_text_file}()},
+\code{\link{gh_text_files}()}
 }
 \concept{gh}

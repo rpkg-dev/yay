@@ -70,8 +70,8 @@ yay::str_replace_verbose(string = input,
 }
 \seealso{
 Other string functions:
-\code{\link{str_normalize_file}()},
 \code{\link{str_normalize}()},
+\code{\link{str_normalize_file}()},
 \code{\link{str_replace_file}()}
 }
 \concept{string}

@@ -7,17 +7,17 @@
 gh_text_files(path, owner, name, rev = "HEAD", recurse = FALSE)
 }
 \arguments{
-\item{path}{Path from the repository's root to the desired directory. A \link[fs:fs_path]{path} or character scalar.}
+\item{path}{Path to a directory, relative to the repository root. A character scalar.}
 
 \item{owner}{Repository owner's GitHub user or organization name. A character scalar.}
 
 \item{name}{Repository name. A character scalar.}
 
-\item{rev}{\href{https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem}{Git revision expression}
-matching the desired Git tree object, e.g. a branch name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD~10"}. A character scalar.}
+\item{rev}{\href{https://git-scm.com/docs/revisions#_specifying_revisions}{Git revision expression} matching the desired Git tree object, e.g. a branch or tag
+name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD~10"}. A character scalar.}
 
-\item{recurse}{Whether or not to also include text files in subfolders of \code{path}. A logical scalar. Enabling this option may result in many API calls and
-thus produce a significant delay.}
+\item{recurse}{Whether or not to also include text files in subfolders of \code{path}. Enabling this option may result in many API calls and thus produce a
+significant delay.}
 }
 \value{
 A named character vector of length equal to the number of files found under \code{rev:path} with the file paths as names and the file contents as

@@ -55,7 +55,7 @@ GitHub's GraphQL API v4."><meta name="twitter:card" content="summary"><meta name
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gh_dir_ls</span><span class="op">(</span></span>
-<span>  path <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"/"</span>,</span>
 <span>  <span class="va">owner</span>,</span>
 <span>  <span class="va">name</span>,</span>
 <span>  rev <span class="op">=</span> <span class="st">"HEAD"</span>,</span>
@@ -68,7 +68,7 @@ GitHub's GraphQL API v4."><meta name="twitter:card" content="summary"><meta name
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>path</dt>
-<dd><p>Path from the repository's root to the desired directory. A <a href="https://fs.r-lib.org/reference/fs_path.html" class="external-link">path</a> or character scalar.</p></dd>
+<dd><p>Path to a directory, relative to the repository root. A character scalar.</p></dd>
 
 
 <dt>owner</dt>
@@ -80,8 +80,8 @@ GitHub's GraphQL API v4."><meta name="twitter:card" content="summary"><meta name
 
 
 <dt>rev</dt>
-<dd><p><a href="https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem" class="external-link">Git revision expression</a>
-matching the desired Git tree object, e.g. a branch name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code>"HEAD~10"</code>. A character scalar.</p></dd>
+<dd><p><a href="https://git-scm.com/docs/revisions#_specifying_revisions" class="external-link">Git revision expression</a> matching the desired Git tree object, e.g. a branch or tag
+name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code>"HEAD~10"</code>. A character scalar.</p></dd>
 
 
 <dt>recurse</dt>
@@ -100,17 +100,18 @@ matching the desired Git tree object, e.g. a branch name or another symbolic ref
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A character vector of paths from the repository root to the files and subdirectories found under <code>rev:path</code>.</p>
+<p>A character vector of paths to the files and subdirectories found under <code>rev:path</code>, relative to the repository root.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Works for both public and private repositories, for the latter you just need to set up a sufficiently authorized <a href="https://gh.r-lib.org/reference/gh_token.html" class="external-link">GitHub Personal Access Token (PAT)</a>.</p>
+<p>Note that an empty character vector is returned in case <code>path</code> is invalid or no file/directory exists underneath <code>path</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other GitHub functions:
-<code><a href="gh_text_files.html">gh_text_files</a>()</code>,
-<code><a href="gh_text_file.html">gh_text_file</a>()</code></p></div>
+<code><a href="gh_text_file.html">gh_text_file</a>()</code>,
+<code><a href="gh_text_files.html">gh_text_files</a>()</code></p></div>
     </div>
 
     <div class="section level2">

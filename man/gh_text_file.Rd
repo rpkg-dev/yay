@@ -7,17 +7,18 @@
 gh_text_file(path, owner, name, rev = "HEAD")
 }
 \arguments{
-\item{path}{Path from the repository's root to the desired directory. A \link[fs:fs_path]{path} or character scalar.}
+\item{path}{Path to a directory, relative to the repository root. A character scalar.}
 
 \item{owner}{Repository owner's GitHub user or organization name. A character scalar.}
 
 \item{name}{Repository name. A character scalar.}
 
-\item{rev}{\href{https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem}{Git revision expression}
-matching the desired Git tree object, e.g. a branch name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD~10"}. A character scalar.}
+\item{rev}{\href{https://git-scm.com/docs/revisions#_specifying_revisions}{Git revision expression} matching the desired Git tree object, e.g. a branch or tag
+name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD~10"}. A character scalar.}
 }
 \value{
-A character scalar, or an empty character vector in case no text file is found under \code{rev:path}.
+A character scalar, or an empty character vector in case no text file is found under
+\href{https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem}{\code{rev:path}}.
 }
 \description{
 Downloads the text file under the specified path from a GitHub repository via \href{https://docs.github.com/en/graphql/overview/about-the-graphql-api}{GitHub's GraphQL API v4} and returns its content as a string.

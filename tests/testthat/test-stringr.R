@@ -1,5 +1,4 @@
-# Extending other R packages ----
-## str_replace_file ----
+# str_replace_file ----
 test_that("`str_replace_file()` basically works", {
 
   before <- c('"Tulips are not durable, ',
