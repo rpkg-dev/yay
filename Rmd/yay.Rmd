@@ -18,6 +18,8 @@ utils::globalVariables(names = c(".",
                                  "end",
                                  "hostname",
                                  "i_pattern",
+                                 "is_draft",
+                                 "is_pre_release",
                                  "key",
                                  "minus",
                                  "pattern",
@@ -27,7 +29,8 @@ utils::globalVariables(names = c(".",
                                  "start",
                                  "status",
                                  "type",
-                                 "value"))
+                                 "value",
+                                 "version_nr"))
 ```
 
 ## Constants
@@ -36,19 +39,13 @@ utils::globalVariables(names = c(".",
 this_pkg <- utils::packageName()
 ```
 
-### `paths_to_keep`
+### `cols_*`
 
 ```{r}
-paths_to_keep <- c("netlify.toml",
-                   "robots.txt",
-                   "_headers",
-                   "_redirects",
-                   ".gitignore",
-                   ".gitmodules",
-                   ".gitsigners",
-                   ".htaccess",
-                   ".hvm",
-                   ".well-known")
+cols_gh_releases <- c("version_nr",
+                      "is_pre_release",
+                      "is_draft",
+                      "release_id")
 ```
 
 ### `md_*`
@@ -90,6 +87,21 @@ netlify_dns_record_types <-
     "SPF",
     "SRV",
     "TXT")
+```
+
+### `paths_to_keep`
+
+```{r}
+paths_to_keep <- c("netlify.toml",
+                   "robots.txt",
+                   "_headers",
+                   "_redirects",
+                   ".gitignore",
+                   ".gitmodules",
+                   ".gitsigners",
+                   ".htaccess",
+                   ".hvm",
+                   ".well-known")
 ```
 
 ### `reason_pkg_required_*`
@@ -134,6 +146,37 @@ clean_git_dir <- function(path,
                                                               start = repo))) %$%
     file |>
     gert::git_add(repo = repo)
+}
+```
+
+### `extract_vrsn_nr`
+
+```{r}
+extract_vrsn_nr <- function(x) {
+  
+  pattern_vrsn <- "\\d+(\\.\\d+)*"
+  version_nr <- stringr::str_extract(string = x$tag_name,
+                                     pattern = pattern_vrsn)
+  
+  # fall back to parsing name field
+  if (is.na(version_nr)) {
+    version_nr <- stringr::str_extract(string = x$name,
+                                       pattern = pattern_vrsn)
+  }
+  
+  as.numeric_version(version_nr)
+}
+```
+
+### `gh_release_as_tibble`
+
+```{r}
+gh_release_as_tibble <- function(x) {
+  
+  tibble::tibble(version_nr = extract_vrsn_nr(x),
+                 is_pre_release = x$prerelease,
+                 is_draft = x$draft,
+                 release_id = x$id)
 }
 ```
 
@@ -289,7 +332,7 @@ show_diff <- function(x,
   # generate HTML caption
   caption %<>% glue::glue()
   n_backtick <- stringr::str_count(caption,
-                                   pattern = "`")
+                                   pattern = stringr::fixed("`"))
   
   if (n_backtick) {
     
@@ -298,7 +341,7 @@ show_diff <- function(x,
                                .f = \(string, i) {
                                  
                                  stringr::str_replace(string = string,
-                                                      pattern = "`",
+                                                      pattern = stringr::fixed("`"),
                                                       replacement = ifelse(i %% 2L == 0L,
                                                                            "</code>",
                                                                            "<code>"))
@@ -683,14 +726,14 @@ deploy_pkgdown_site <- function(pkg_path = ".",
                                        overwrite = TRUE)) {
     if (is.null(arg_to_path)) {
       if (is.null(getOption("yay.local_pkgdown_deploy_paths")[config$package])) {
-        if (!is.null(getOption("yay.default_local_pkgdown_deploy_parent_path"))) {
-          cli::cli_abort(paste0("The R option {.field yay.default_local_pkgdown_deploy_parent_path} is set, but not to a valid filesystem path",
-                                " with write access. Current option value: {.path {to_path_parent}}"))
-        } else {
+        if (is.null(getOption("yay.default_local_pkgdown_deploy_parent_path"))) {
           cli::cli_abort(paste0("Either set {.arg to_path} directly to a valid filesystem path or provide the path in the R option {.field ",
                                 "yay.local_pkgdown_deploy_paths} as a named character vector of the form {.code c({config$package} = ",
                                 "\"/path/to/local_git_repo\")}. Another alternative is to set a default parent path in the R option {.field ",
                                 "yay.default_local_pkgdown_deploy_parent_path}. See {.code ?yay::deploy_pkgdown_site} for details."))
+        } else {
+          cli::cli_abort(paste0("The R option {.field yay.default_local_pkgdown_deploy_parent_path} is set, but not to a valid filesystem path",
+                                " with write access. Current option value: {.path {to_path_parent}}"))
         }
       } else {
         cli::cli_abort(paste0("The R option {.field yay.local_pkgdown_deploy_paths[\"{config$package}\"]} is set, but not to a valid ",
@@ -848,7 +891,7 @@ netlify_dns_records_get <- function(domain,
                          reason = pal::reason_pkg_required())
   
   zone_id <- stringr::str_replace_all(string = domain,
-                                      pattern = "\\.",
+                                      pattern = stringr::fixed("."),
                                       replacement = "_")
   
   httr2::request(base_url = glue::glue("https://api.netlify.com/api/v1/dns_zones/{zone_id}/dns_records/")) |>
@@ -954,7 +997,7 @@ netlify_dns_records_set <- function(records,
               ~ records)
   
   zone_id <- stringr::str_replace_all(string = domain,
-                                      pattern = "\\.",
+                                      pattern = stringr::fixed("."),
                                       replacement = "_")
   
   pal::cli_progress_step_quick(msg = "Setting {.val {nrow(records)}} DNS record{?s} on Netlify for domain {.field {domain}}")
@@ -1064,7 +1107,7 @@ netlify_dns_records_delete <- function(records,
                          reason = pal::reason_pkg_required())
   
   zone_id <- stringr::str_replace_all(string = domain,
-                                      pattern = "\\.",
+                                      pattern = stringr::fixed("."),
                                       replacement = "_")
   
   pal::cli_progress_step_quick(msg = "Deleting {.val {length(records)}} DNS record{?s} on Netlify for domain {.field {domain}}")
@@ -1119,7 +1162,8 @@ NOTES:
 
 #### DESCRIPTION
 
-Extending the [**gh**](https://gh.r-lib.org/) package, leveraging [GitHub's GraphQL API](https://docs.github.com/en/graphql).
+Extending the [**gh**](https://gh.r-lib.org/) package, leveraging GitHub's [RESTful](https://docs.github.com/en/rest) and
+[GraphQL](https://docs.github.com/en/graphql) APIs.
 
 #### `gh_dir_ls`
 
@@ -1128,15 +1172,15 @@ Extending the [**gh**](https://gh.r-lib.org/) package, leveraging [GitHub's Grap
 #'
 #' Lists file and directory names found under
 #' [`rev:path`](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem) in a GitHub repository via
-#' [GitHub's GraphQL API v4](https://docs.github.com/en/graphql/overview/about-the-graphql-api).
+#' [GitHub's GraphQL API](https://docs.github.com/en/graphql/overview/about-the-graphql-api).
 #'
 #' `r md_gh_pat`
 #'
 #' Note that an empty character vector is returned in case `path` is invalid or no file/directory exists underneath `path`.
 #'
-#' @param path Path to a directory, relative to the repository root. A character scalar.
 #' @param owner Repository owner's GitHub user or organization name. A character scalar.
 #' @param name Repository name. A character scalar.
+#' @param path Path to a directory, relative to the repository root. A character scalar.
 #' @param rev [Git revision expression](https://git-scm.com/docs/revisions#_specifying_revisions) matching the desired Git tree object, e.g. a branch or tag
 #'   name or another symbolic reference like `"HEAD@{yesterday}"` or `"HEAD~10"`. A character scalar.
 #' @param recurse Whether or not to recurse into subdirectories of `path`.
@@ -1155,21 +1199,21 @@ Extending the [**gh**](https://gh.r-lib.org/) package, leveraging [GitHub's Grap
 #'   pal::cat_lines()
 #'
 #' # you can list only files in a directory
-#' yay::gh_dir_ls(path = "tests",
-#'                owner = "salim-b",
+#' yay::gh_dir_ls(owner = "salim-b",
 #'                name = "pal",
+#'                path = "tests",
 #'                incl_dirs = FALSE) |>
 #'   pal::cat_lines()
 #'
 #' # or you can list only directories in a directory
-#' yay::gh_dir_ls(path = "tests",
-#'                owner = "salim-b",
+#' yay::gh_dir_ls(owner = "salim-b",
 #'                name = "pal",
+#'                path = "tests",
 #'                incl_files = FALSE) |>
 #'   pal::cat_lines()
-gh_dir_ls <- function(path = "/",
-                      owner,
+gh_dir_ls <- function(owner,
                       name,
+                      path = ".",
                       rev = "HEAD",
                       recurse = TRUE,
                       incl_dirs = TRUE,
@@ -1177,9 +1221,9 @@ gh_dir_ls <- function(path = "/",
   
   rlang::check_installed("gh",
                          reason = reason_pkg_required_gh)
-  checkmate::assert_string(path)
   checkmate::assert_string(owner)
   checkmate::assert_string(name)
+  checkmate::assert_string(path)
   checkmate::assert_string(rev)
   checkmate::assert_flag(recurse)
   checkmate::assert_flag(incl_dirs)
@@ -1224,9 +1268,9 @@ gh_dir_ls <- function(path = "/",
     
     result <-
       dirs |>
-      purrr::map(\(x) gh_dir_ls(path = x,
-                                owner = owner,
+      purrr::map(\(x) gh_dir_ls(owner = owner,
                                 name = name,
+                                path = x,
                                 rev = rev,
                                 recurse = TRUE,
                                 incl_dirs = incl_dirs,
@@ -1246,8 +1290,8 @@ Inspiration: <https://gist.github.com/Integralist/9482061#gistcomment-2750049>
 ```{r}
 #' Read in a text file from a GitHub repository
 #'
-#' Downloads the text file under the specified path from a GitHub repository via [GitHub's GraphQL API
-#' v4](https://docs.github.com/en/graphql/overview/about-the-graphql-api) and returns its content as a string.
+#' Downloads the text file under the specified path from a GitHub repository via [GitHub's GraphQL
+#' API](https://docs.github.com/en/graphql/overview/about-the-graphql-api) and returns its content as a string.
 #'
 #' @details
 #' `r md_gh_pat`
@@ -1256,7 +1300,7 @@ Inspiration: <https://gist.github.com/Integralist/9482061#gistcomment-2750049>
 #' `path`.
 #'
 #' @inheritParams gh_dir_ls
-#' @param path Path to a directory, relative to the repository root. A character scalar.
+#' @param path Path to a file, relative to the repository root. A character scalar.
 #'
 #' @return A character scalar, or an empty character vector in case no text file is found under
 #'   [`rev:path`](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem).
@@ -1264,22 +1308,24 @@ Inspiration: <https://gist.github.com/Integralist/9482061#gistcomment-2750049>
 #' @export
 #'
 #' @examples
-#' yay::gh_text_file(path = "pal.Rproj",
-#'                   owner = "salim-b",
+#' yay::gh_text_file(owner = "salim-b",
 #'                   name = "pal",
+#'                   path = "pal.Rproj",
 #'                   rev = "HEAD~2") |>
 #'   cat()
-gh_text_file <- function(path,
-                         owner,
+gh_text_file <- function(owner,
                          name,
+                         path,
                          rev = "HEAD") {
   
   rlang::check_installed("gh",
                          reason = reason_pkg_required_gh)
-  path <- checkmate::assert_string(path) |> normalize_tree_path()
   checkmate::assert_string(owner)
   checkmate::assert_string(name)
+  checkmate::assert_string(path)
   checkmate::assert_string(rev)
+  
+  path %<>% normalize_tree_path()
   
   result <- gh::gh_gql(query = 'query ($name: String!, $owner: String!, $expression: String!) {
                         repository(name: $name, owner: $owner) {
@@ -1311,54 +1357,142 @@ Inspiration: <https://gist.github.com/MichaelCurrin/6777b91e6374cdb5662b64b82490
 #' Read in text files from a GitHub repository
 #'
 #' @description
-#' Downloads all text files under the specified path from a GitHub repository via [GitHub's GraphQL API
-#' v4](https://docs.github.com/en/graphql/overview/about-the-graphql-api) and returns a named character vector with the file paths as names and the file
+#' Downloads all text files under the specified path from a GitHub repository via [GitHub's GraphQL
+#' API](https://docs.github.com/en/graphql/overview/about-the-graphql-api) and returns a named character vector with the file paths as names and the file
 #' contents as values.
 #'
 #' This is a simple convenience function combining [gh_dir_ls()] and [gh_text_file()]. 
 #'
 #' @inherit gh_text_file details
 #'
-#' @inheritParams gh_text_file
+#' @inheritParams gh_dir_ls
 #' @param recurse Whether or not to also include text files in subfolders of `path`. Enabling this option may result in many API calls and thus produce a
 #'   significant delay.
 #'
-#' @return A named character vector of length equal to the number of files found under `rev:path` with the file paths as names and the file contents as
-#'   values.
+#' @return A named character vector of length equal to the number of files found under `rev:path` with the file paths as names and the file contents as values.
 #' @family gh
 #' @export
 #'
 #' @examples
-#' yay::gh_text_files(path = "tests",
-#'                    owner = "salim-b",
-#'                    name = "pal") |>
+#' yay::gh_text_files(owner = "salim-b",
+#'                    name = "pal",
+#'                    path = "tests") |>
 #'   str()
 #' 
 #' # you have to opt-in into directory recursion
-#' yay::gh_text_files(path = "tests",
-#'                    owner = "salim-b",
+#' yay::gh_text_files(owner = "salim-b",
 #'                    name = "pal",
+#'                    path = "tests",
 #'                    recurse = TRUE) |>
 #'   str()
-gh_text_files <- function(path,
-                          owner,
+gh_text_files <- function(owner,
                           name,
+                          path = ".",
                           rev = "HEAD",
                           recurse = FALSE) {
-  gh_dir_ls(path = path,
-            owner = owner,
+  
+  gh_dir_ls(owner = owner,
             name = name,
+            path = path,
             rev = rev,
             recurse = recurse,
             incl_dirs = FALSE) %>%
     magrittr::set_names(x = .,
                         value = .) |>
-    purrr::map(gh_text_file,
-               owner = owner,
-               name = name,
-               rev = rev) |>
+    purrr::map(\(x) gh_text_file(owner = owner,
+                                 name = name,
+                                 path = x,
+                                 rev = rev)) |>
     purrr::compact() |>
     unlist()
+}
+```
+
+#### `gh_releases`
+
+```{r}
+#' List releases from GitHub repository
+#'
+#' Uses [gh::gh()] to fetch all available [releases](https://docs.github.com/repositories/releasing-projects-on-github) of the specified GitHub repository
+#' via [GitHub's REST API](https://docs.github.com/en/rest/releases/releases#list-releases) and returns them as a [tibble][tibble::tbl_df] containing the
+#' columns `r pal::enum_str(cols_gh_releases, wrap = "\x60")`.
+#'
+#' @param owner GitHub repository owner (GitHub user or organisation). A character scalar.
+#' @param name Repository name. A character scalar.
+#' @param n Number of releases to return. A positive integer or `Inf`. If `Inf`, all releases are returned, otherwise only the most recent `n` releases. Note
+#'   that requesting many releases may result in multiple GitHub API calls, which can take a considerable amount of time.
+#' @param incl_pre_releases Whether or not to include pre-releases in the result. Pre-releases are usually not deemed ready for production and may be unstable.
+#'   For more information, see the [GitHub Docs](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository).
+#' @param incl_drafts Whether or not to include draft releases in the result. For more information, see the [GitHub
+#'   Docs](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository).
+#'
+#' @return `r pkgsnip::param_lbl(id = "tibble_cols", cols = cols_gh_releases)`
+#' @family gh
+#' @export
+#'
+#' @examples
+#' yay::gh_releases(owner = "jgm",
+#'                  name = "pandoc",
+#'                  n = 3L)
+gh_releases <- function(owner,
+                        name,
+                        n = Inf,
+                        incl_pre_releases = FALSE,
+                        incl_drafts = FALSE) {
+  
+  checkmate::assert_string(owner)
+  checkmate::assert_string(name)
+  pal::assert_inf_count(n)
+  checkmate::assert_flag(incl_pre_releases)
+  checkmate::assert_flag(incl_drafts)
+  rlang::check_installed("gh",
+                         reason = pal::reason_pkg_required())
+  
+  gh::gh(endpoint = "/repos/{owner}/{name}/releases", # nolint
+         owner = owner,
+         name = name,
+         .method = "GET",
+         .limit = n) |>
+    purrr::keep(.p = \(x) if (incl_pre_releases) TRUE else isFALSE(x$prerelease)) |>
+    purrr::keep(.p = \(x) if (incl_drafts) TRUE else isFALSE(x$draft)) |>
+    purrr::map(gh_release_as_tibble) |>
+    purrr::list_rbind() |>
+    dplyr::arrange(dplyr::desc(version_nr),
+                   is_pre_release,
+                   is_draft)
+}
+```
+
+#### `gh_release_latest`
+
+```{r}
+#' Get latest release from GitHub repository
+#'
+#' Uses [gh::gh()] to fetch the latest [GitHub release](https://docs.github.com/repositories/releasing-projects-on-github) of the specified GitHub repository
+#' via [GitHub's REST API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release) and returns it as a [numeric version][numeric_version()].
+#'
+#' @inheritParams gh_releases
+#'
+#' @return `r pkgsnip::param_lbl("num_vrsn")`
+#' @family gh
+#' @export
+#'
+#' @examples
+#' yay::gh_release_latest(owner = "jgm",
+#'                        name = "pandoc")
+gh_release_latest <- function(owner,
+                              name) {
+  
+  checkmate::assert_string(owner)
+  checkmate::assert_string(name)
+  rlang::check_installed("gh",
+                         reason = pal::reason_pkg_required())
+  
+  gh::gh(endpoint = "/repos/{owner}/{name}/releases/latest", # nolint
+         owner = owner,
+         name = name,
+         .method = "GET") |>
+    gh_release_as_tibble()
 }
 ```
 

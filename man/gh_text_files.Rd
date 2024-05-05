@@ -4,14 +4,14 @@
 \alias{gh_text_files}
 \title{Read in text files from a GitHub repository}
 \usage{
-gh_text_files(path, owner, name, rev = "HEAD", recurse = FALSE)
+gh_text_files(owner, name, path = ".", rev = "HEAD", recurse = FALSE)
 }
 \arguments{
-\item{path}{Path to a directory, relative to the repository root. A character scalar.}
-
 \item{owner}{Repository owner's GitHub user or organization name. A character scalar.}
 
 \item{name}{Repository name. A character scalar.}
+
+\item{path}{Path to a directory, relative to the repository root. A character scalar.}
 
 \item{rev}{\href{https://git-scm.com/docs/revisions#_specifying_revisions}{Git revision expression} matching the desired Git tree object, e.g. a branch or tag
 name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD~10"}. A character scalar.}
@@ -20,11 +20,10 @@ name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD
 significant delay.}
 }
 \value{
-A named character vector of length equal to the number of files found under \code{rev:path} with the file paths as names and the file contents as
-values.
+A named character vector of length equal to the number of files found under \code{rev:path} with the file paths as names and the file contents as values.
 }
 \description{
-Downloads all text files under the specified path from a GitHub repository via \href{https://docs.github.com/en/graphql/overview/about-the-graphql-api}{GitHub's GraphQL API v4} and returns a named character vector with the file paths as names and the file
+Downloads all text files under the specified path from a GitHub repository via \href{https://docs.github.com/en/graphql/overview/about-the-graphql-api}{GitHub's GraphQL API} and returns a named character vector with the file paths as names and the file
 contents as values.
 
 This is a simple convenience function combining \code{\link[=gh_dir_ls]{gh_dir_ls()}} and \code{\link[=gh_text_file]{gh_text_file()}}.
@@ -36,21 +35,23 @@ Note that nothing is returned in case of a \href{https://en.wikipedia.org/wiki/B
 \code{path}.
 }
 \examples{
-yay::gh_text_files(path = "tests",
-                   owner = "salim-b",
-                   name = "pal") |>
+yay::gh_text_files(owner = "salim-b",
+                   name = "pal",
+                   path = "tests") |>
   str()
 
 # you have to opt-in into directory recursion
-yay::gh_text_files(path = "tests",
-                   owner = "salim-b",
+yay::gh_text_files(owner = "salim-b",
                    name = "pal",
+                   path = "tests",
                    recurse = TRUE) |>
   str()
 }
 \seealso{
 Other GitHub functions:
 \code{\link{gh_dir_ls}()},
+\code{\link{gh_release_latest}()},
+\code{\link{gh_releases}()},
 \code{\link{gh_text_file}()}
 }
 \concept{gh}

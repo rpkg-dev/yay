@@ -38,12 +38,15 @@ reference:
   desc: These functions closely follow the API of existing packages, but are usually
     out of scope for direct inclusion in them.
 - subtitle: gh
-  desc: Extending the [**gh**](https://gh.r-lib.org/) package, leveraging [GitHub's
-    GraphQL API](https://docs.github.com/en/graphql).
+  desc: |-
+    Extending the [**gh**](https://gh.r-lib.org/) package, leveraging GitHub's [RESTful](https://docs.github.com/en/rest) and
+    [GraphQL](https://docs.github.com/en/graphql) APIs.
 - contents:
   - gh_dir_ls
   - gh_text_file
   - gh_text_files
+  - gh_releases
+  - gh_release_latest
 - subtitle: stringr
   desc: |-
     Extending the [**stringr**](https://stringr.tidyverse.org/) package, that in turn is built on top of the [stringi](https://stringi.gagolewski.com/) package,

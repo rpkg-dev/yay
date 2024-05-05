@@ -8,7 +8,7 @@ modifying any files. Set run_dry = FALSE to apply the changes."><meta name="twit
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">yay</a>
 
@@ -23,10 +23,9 @@ modifying any files. Set run_dry = FALSE to apply the changes."><meta name="twit
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-      </ul><form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
-
-      <ul class="navbar-nav"><li class="nav-item">
+      </ul><ul class="navbar-nav"><li><form class="form-inline" role="search">
+<input type="search" class="form-control" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json"></form></li>
+<li class="nav-item">
   <a class="external-link nav-link" href="https://gitlab.com/rpkg.dev/yay/" aria-label="gitlab">
     <span class="fab fa fab fa-gitlab fa-lg"></span>
      
@@ -119,13 +118,13 @@ more performant, you probably want the former if you're using <code>"^"</code> o
 <span class="r-in"><span>              mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">yay</span><span class="fu">::</span><span class="va"><a href="regex_file_normalization.html">regex_file_normalization</a></span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">category</span> <span class="op">==</span> <span class="st">"posix"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">category</span> <span class="op">==</span> <span class="st">"posix"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">yay</span><span class="fu">::</span><span class="fu">str_normalize_file</span><span class="op">(</span>path <span class="op">=</span> <span class="va">temp_file</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running in dry mode. Set `run_dry = FALSE` to actually modify any files.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Processing file <span style="color: #0000BB;">../../../../../../../../../tmp/RtmpN8uvHW/file690f94ad33d03</span>……</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Processing file <a href="file:///home/salim/Code/own/rpkg.dev/yay/docs/dev/reference/../../../../../../../../../tmp/Rtmpf1pWnU/file21639495a00"><span style="color: #0000BB;">../../../../../../../../../tmp/Rtmpf1pWnU/file21639495a00</span></a>……</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1× <span style="color: #BB0000;">-</span> <span style="background-color: #000000;">…TINYFORMAT_H_INCLUDE</span><span style="background-color: #5F0000; text-decoration: line-through;">D</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #00BB00;">+</span> <span style="background-color: #000000;">…TINYFORMAT_H_INCLUDE</span><span style="background-color: #005F00;">\1\n</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Processing file <span style="color: #0000BB;">../../../../../../../../../tmp/RtmpN8uvHW/file690f94ad33d03</span>…… done <span style="color: #B2B2B2;">[48ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Processing file <a href="file:///home/salim/Code/own/rpkg.dev/yay/docs/dev/reference/../../../../../../../../../tmp/Rtmpf1pWnU/file21639495a00"><span style="color: #0000BB;">../../../../../../../../../tmp/Rtmpf1pWnU/file21639495a00</span></a>…… done <span style="color: #B2B2B2;">[57ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
@@ -134,11 +133,11 @@ more performant, you probably want the former if you're using <code>"^"</code> o
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Salim Brüggemann.</p>
+  <p>Developed by Salim Brüggemann.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
 </div>
 
     </footer></div>

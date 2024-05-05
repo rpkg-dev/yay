@@ -8,7 +8,7 @@ getDnsRecords endpoint of Netlify's REST API."><meta name="twitter:card" content
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">yay</a>
 
@@ -23,10 +23,9 @@ getDnsRecords endpoint of Netlify's REST API."><meta name="twitter:card" content
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-      </ul><form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
-
-      <ul class="navbar-nav"><li class="nav-item">
+      </ul><ul class="navbar-nav"><li><form class="form-inline" role="search">
+<input type="search" class="form-control" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json"></form></li>
+<li class="nav-item">
   <a class="external-link nav-link" href="https://gitlab.com/rpkg.dev/yay/" aria-label="gitlab">
     <span class="fab fa fab fa-gitlab fa-lg"></span>
      
@@ -92,9 +91,9 @@ getDnsRecords endpoint of Netlify's REST API."><meta name="twitter:card" content
 <span class="r-in"><span><span class="fu">yay</span><span class="fu">::</span><span class="fu">netlify_dns_records_get</span><span class="op">(</span>domain <span class="op">=</span> <span class="st">"my.site"</span>,</span></span>
 <span class="r-in"><span>                             token <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NETLIFY_PAT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="co"># remove records which can't be handled via API</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">managed</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">managed</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="co"># remove Netlify-specific cols which aren't "settable"</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu">any_of</span><span class="op">(</span><span class="fu">yay</span><span class="fu">:::</span><span class="va">netlify_dns_record_cols</span><span class="op">$</span><span class="va">key</span><span class="op">[</span><span class="fu">yay</span><span class="fu">:::</span><span class="va">netlify_dns_record_cols</span><span class="op">$</span><span class="va">settable</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="co"># convert to target list structure</span></span></span>
@@ -116,11 +115,11 @@ getDnsRecords endpoint of Netlify's REST API."><meta name="twitter:card" content
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Salim Brüggemann.</p>
+  <p>Developed by Salim Brüggemann.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
 </div>
 
     </footer></div>

@@ -5,9 +5,9 @@
 \title{List files and directories in a GitHub repository}
 \usage{
 gh_dir_ls(
-  path = "/",
   owner,
   name,
+  path = ".",
   rev = "HEAD",
   recurse = TRUE,
   incl_dirs = TRUE,
@@ -15,11 +15,11 @@ gh_dir_ls(
 )
 }
 \arguments{
-\item{path}{Path to a directory, relative to the repository root. A character scalar.}
-
 \item{owner}{Repository owner's GitHub user or organization name. A character scalar.}
 
 \item{name}{Repository name. A character scalar.}
+
+\item{path}{Path to a directory, relative to the repository root. A character scalar.}
 
 \item{rev}{\href{https://git-scm.com/docs/revisions#_specifying_revisions}{Git revision expression} matching the desired Git tree object, e.g. a branch or tag
 name or another symbolic reference like \code{"HEAD@{yesterday}"} or \code{"HEAD~10"}. A character scalar.}
@@ -36,7 +36,7 @@ A character vector of paths to the files and subdirectories found under \code{re
 \description{
 Lists file and directory names found under
 \href{https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem}{\code{rev:path}} in a GitHub repository via
-\href{https://docs.github.com/en/graphql/overview/about-the-graphql-api}{GitHub's GraphQL API v4}.
+\href{https://docs.github.com/en/graphql/overview/about-the-graphql-api}{GitHub's GraphQL API}.
 }
 \details{
 Works for both public and private repositories, for the latter you just need to set up a sufficiently authorized \link[gh:gh_token]{GitHub Personal Access Token (PAT)}.
@@ -51,21 +51,23 @@ yay::gh_dir_ls(owner = "salim-b",
   pal::cat_lines()
 
 # you can list only files in a directory
-yay::gh_dir_ls(path = "tests",
-               owner = "salim-b",
+yay::gh_dir_ls(owner = "salim-b",
                name = "pal",
+               path = "tests",
                incl_dirs = FALSE) |>
   pal::cat_lines()
 
 # or you can list only directories in a directory
-yay::gh_dir_ls(path = "tests",
-               owner = "salim-b",
+yay::gh_dir_ls(owner = "salim-b",
                name = "pal",
+               path = "tests",
                incl_files = FALSE) |>
   pal::cat_lines()
 }
 \seealso{
 Other GitHub functions:
+\code{\link{gh_release_latest}()},
+\code{\link{gh_releases}()},
 \code{\link{gh_text_file}()},
 \code{\link{gh_text_files}()}
 }
