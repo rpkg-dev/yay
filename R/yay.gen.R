@@ -36,10 +36,10 @@ utils::globalVariables(names = c(".",
 
 this_pkg <- utils::packageName()
 
-cols_gh_releases <- c("version_nr",
+cols_gh_releases <- c("id",
+                      "version_nr",
                       "is_pre_release",
-                      "is_draft",
-                      "release_id")
+                      "is_draft")
 
 md_gh_pat <- paste0("Works for both public and private repositories, for the latter you just need to set up a sufficiently authorized [GitHub Personal Access ",
                     "Token (PAT)][gh::gh_token].")
@@ -121,7 +121,7 @@ extract_vrsn_nr <- function(x) {
                                      pattern = pattern_vrsn)
   
   # fall back to parsing name field
-  if (is.na(version_nr)) {
+  if (length(version_nr) == 0L || is.na(version_nr)) {
     version_nr <- stringr::str_extract(string = x$name,
                                        pattern = pattern_vrsn)
   }
@@ -131,10 +131,10 @@ extract_vrsn_nr <- function(x) {
 
 gh_release_as_tibble <- function(x) {
   
-  tibble::tibble(version_nr = extract_vrsn_nr(x),
+  tibble::tibble(id = x$id,
+                 version_nr = extract_vrsn_nr(x),
                  is_pre_release = x$prerelease,
-                 is_draft = x$draft,
-                 release_id = x$id)
+                 is_draft = x$draft)
 }
 
 normalize_tree_path <- function(path) {

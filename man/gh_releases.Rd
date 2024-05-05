@@ -26,12 +26,12 @@ For more information, see the \href{https://docs.github.com/en/repositories/rele
 \item{incl_drafts}{Whether or not to include draft releases in the result. For more information, see the \href{https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository}{GitHub Docs}.}
 }
 \value{
-A \link[tibble:tbl_df-class]{tibble} with the columns \code{version_nr}, \code{is_pre_release}, \code{is_draft}, and \code{release_id}.
+A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{version_nr}, \code{is_pre_release}, and \code{is_draft}.
 }
 \description{
 Uses \code{\link[gh:gh]{gh::gh()}} to fetch all available \href{https://docs.github.com/repositories/releasing-projects-on-github}{releases} of the specified GitHub repository
 via \href{https://docs.github.com/en/rest/releases/releases#list-releases}{GitHub's REST API} and returns them as a \link[tibble:tbl_df-class]{tibble} containing the
-columns \code{version_nr}, \code{is_pre_release}, \code{is_draft} and \code{release_id}.
+columns \code{id}, \code{version_nr}, \code{is_pre_release} and \code{is_draft}.
 }
 \examples{
 yay::gh_releases(owner = "jgm",

@@ -2,7 +2,7 @@ pandoc: 3.1.13
 pkgdown: 2.0.9.9000
 pkgdown_sha: e407acece26815c3c776effba39bffde68382142
 articles: {}
-last_built: 2024-05-05T21:31Z
+last_built: 2024-05-05T21:43Z
 urls:
   reference: https://yay.rpkg.dev/reference
   article: https://yay.rpkg.dev/articles
