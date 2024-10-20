@@ -5,7 +5,8 @@
 #' ```{r, echo = FALSE}
 #' pal::print_pkg_config(this_pkg)
 #' ```
-#'#' @keywords internal
+#'
+#' @keywords internal
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #' @importFrom magrittr %T>%
