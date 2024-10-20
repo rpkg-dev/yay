@@ -32,7 +32,8 @@ Suggests:
     gh (>= 1.4.0),
     httr2 (>= 0.2.3),
     jsonlite (>= 1.8.7),
-    pkgdown (>= 2.0.7),
+    pkgdown (>= 2.0.9.9000),
+    pkgdown.tpl (>= 0.0.9000),
     pkgsnip (>= 0.0.9037),
     readr (>= 1.4.0),
     roxygen2 (>= 7.1.1),
@@ -46,9 +47,10 @@ Remotes:
     github::edwindj/daff,
     github::salim-b/zoterro@interim-merge,
     gitlab::rpkg.dev/pal,
+    gitlab::rpkg.dev/pkgdown.tpl,
     gitlab::rpkg.dev/pkgsnip
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1.9000
+RoxygenNote: 7.3.2.9000
