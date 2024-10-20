@@ -49,6 +49,13 @@ pkgsnip::md_snip(id = "usage_notice") %>%
   pal::cat_lines()
 ```
 
+## Package configuration
+
+```{r}
+#| label: pkg-config
+#| child: !expr pkgsnip::snip_path("pkg-config-notice.Rmd")
+```
+
 ## Development
 
 ### R Markdown format
