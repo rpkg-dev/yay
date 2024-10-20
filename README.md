@@ -30,11 +30,11 @@ remotes::install_gitlab(repo = "rpkg.dev/yay")
 Some of yay’s functionality is controlled via package-specific global configuration which can either be set via [R options](https://rdrr.io/r/base/options.html) or [environment variables](https://en.wikipedia.org/wiki/Environment_variable) (the former take precedence). This configuration includes:
 
 ::: table-wide
-| **Description**                                                                                                                                                                                            | **R option**                 | **Environment variable**       | **Default value** |
-|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------|:-------------------------------|:------------------|
-| [Netlify.com personal access token](https://docs.netlify.com/api/get-started/#authentication) used for authentication in the [`netlify_*()` functions](https://yay.rpkg.dev/reference/index.html#netlify). | `yay.netlify_token`          | `R_YAY_NETLIFY_TOKEN`          |                   |
-| [Porkbun.com API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in the [`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun).           | `yay.porkbun_api_key`        | `R_YAY_PORKBUN_API_KEY`        |                   |
-| [Porkbun.com secret API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in the [`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun).    | `yay.porkbun_secret_api_key` | `R_YAY_PORKBUN_SECRET_API_KEY` |                   |
+| **Description**                                                                                                                                                                                        | **R option**                 | **Environment variable**       | **Default value** |
+|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------|:-------------------------------|:------------------|
+| [Netlify personal access token](https://docs.netlify.com/api/get-started/#authentication) used for authentication in the [`netlify_*()` functions](https://yay.rpkg.dev/reference/index.html#netlify). | `yay.netlify_token`          | `R_YAY_NETLIFY_TOKEN`          |                   |
+| [Porkbun API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in the [`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun).           | `yay.porkbun_api_key`        | `R_YAY_PORKBUN_API_KEY`        |                   |
+| [Porkbun secret API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in the [`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun).    | `yay.porkbun_secret_api_key` | `R_YAY_PORKBUN_SECRET_API_KEY` |                   |
 :::
 
 ## Development

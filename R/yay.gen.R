@@ -941,18 +941,17 @@ netlify_dns_records_get <- function(domain,
 #' Sets DNS records on Netlify for the specified `domain` using the
 #' [`createDnsRecord`](https://open-api.netlify.com/#tag/dnsZone/operation/createDnsRecord) endpoint of [Netlify's RESTful
 #' API](https://docs.netlify.com/api/get-started/). DNS `records` must be provided as a dataframe/tibble with the columns
-#' `r cols_dns_records_netlify |> dplyr::filter(is_standard) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. Further columns are silently
-#' ignored.
+#' `r cols_dns_records_netlify |> dplyr::filter(is_standard) %$% key |> pal::enum_str(wrap = "\x60")`. Further columns are silently ignored.
 #'
 #' Supported are the DNS record types `r dns_record_types$netlify |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. Netlify's own custom record
 #' types `NETLIFY` and `NETLIFY6` cannot be altered via the API and must be configured via [Netlify's web interface](https://app.netlify.com/).
 #'
 #' @inheritParams pal::req_cached
 #' @param records DNS records. A dataframe/tibble with the columns
-#'   `r cols_dns_records_netlify |> dplyr::filter(is_standard) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. The first three columns are
-#'   mandatory, columns not listed here are silently ignored.
+#'   `r cols_dns_records_netlify |> dplyr::filter(is_standard) %$% key |> pal::enum_str(wrap = "\x60")`. The first three columns are mandatory, columns not
+#'   listed here are silently ignored.
 #' @param domain Domain name to set DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.
-#' @param token Personal access token used for authentication.
+#' @param token [Netlify personal access token](https://docs.netlify.com/api/get-started/#authentication) used for authentication. A character scalar.
 #'
 #' @return The newly set DNS records.
 #' `r pkgsnip::param_lbl("tibble_cols", cols = cols_dns_records_netlify$key, as_sentence = FALSE) |> pal::capitalize_first()`, invisibly.
@@ -1097,8 +1096,8 @@ netlify_dns_records_delete <- function(records,
 #'
 #' @inheritParams pal::req_cached
 #' @param domain Domain name to retrieve DNS records for. A character scalar.
-#' @param api_key Porkbun.com API key. A character scalar.
-#' @param secret_api_key Porkbun.com secret API key. A character scalar.
+#' @param api_key [Porkbun API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication. A character scalar.
+#' @param secret_api_key [Porkbun secret API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication. A character scalar.
 #'
 #' @return  `r pkgsnip::param_lbl("tibble_cols", cols = cols_dns_records_porkbun$key)`
 #' @family porkbun
@@ -1182,16 +1181,20 @@ porkbun_dns_records_get <- function(domain,
 
 #' Set Porkbun DNS records
 #'
-#' Retrieves DNS records from Porkbun for the specified `domain` using the
+#' @description
+#' Sets DNS records on Porkbun for the specified `domain` using the
 #' [`/api/json/v3/dns/create/{domain}`](https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record) endpoint of Porkbun's API. DNS `records` must be
-#' provided as a dataframe/tibble with the columns
-#' `r cols_dns_records_porkbun |> dplyr::filter(is_standard) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. Further columns are
-#' silently ignored.
+#' provided as a dataframe/tibble with the columns `r cols_dns_records_porkbun |> dplyr::filter(is_standard) %$% key |> pal::enum_str(wrap = "\x60")`. Further
+#' columns are silently ignored.
 #'
+#' @details
 #' Supported are the DNS record types `r dns_record_types$porkbun |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`.
 #'
 #' @inheritParams porkbun_dns_records_get
 #' @inheritParams netlify_dns_records_set
+#' @param records DNS records. A dataframe/tibble with the columns
+#'   `r cols_dns_records_porkbun |> dplyr::filter(is_standard) %$% key |> pal::enum_str(wrap = "\x60")`. The first three columns are mandatory, columns not
+#'   listed here are silently ignored.
 #' @param domain Domain name to set DNS records for. A character scalar.
 #'
 #' @return A character vector of created record identifiers, invisibly.

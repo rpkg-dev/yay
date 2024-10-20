@@ -28,15 +28,15 @@ pkg_config <-
                  require = logical(),
                  description = character()) |>
   tibble::add_row(key = "netlify_token",
-                  description = paste0("[Netlify.com personal access token](https://docs.netlify.com/api/get-started/#authentication) used for authentication ",
+                  description = paste0("[Netlify personal access token](https://docs.netlify.com/api/get-started/#authentication) used for authentication ",
                                        "in the [`netlify_*()` functions](https://yay.rpkg.dev/reference/index.html#netlify)."),
                   require = TRUE) |>
   tibble::add_row(key = "porkbun_api_key",
-                  description = paste0("[Porkbun.com API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in the ",
+                  description = paste0("[Porkbun API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in the ",
                                        "[`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun)."),
                   require = TRUE) |>
   tibble::add_row(key = "porkbun_secret_api_key",
-                  description = paste0("[Porkbun.com secret API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in ",
+                  description = paste0("[Porkbun secret API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in ",
                                        "the [`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun)."),
                   require = TRUE)
 ```

@@ -14,9 +14,9 @@ porkbun_dns_records_get(
 \arguments{
 \item{domain}{Domain name to retrieve DNS records for. A character scalar.}
 
-\item{api_key}{Porkbun.com API key. A character scalar.}
+\item{api_key}{\href{https://porkbun.com/api/json/v3/documentation#Authentication}{Porkbun API key} used for authentication. A character scalar.}
 
-\item{secret_api_key}{Porkbun.com secret API key. A character scalar.}
+\item{secret_api_key}{\href{https://porkbun.com/api/json/v3/documentation#Authentication}{Porkbun secret API key} used for authentication. A character scalar.}
 
 \item{max_tries}{Maximum number of attempts to retry in case of an HTTP error. An integerish scalar.}
 }

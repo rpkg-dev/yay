@@ -17,7 +17,7 @@ ignored.}
 
 \item{domain}{Domain name to delete DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.}
 
-\item{token}{Personal access token used for authentication.}
+\item{token}{\href{https://docs.netlify.com/api/get-started/#authentication}{Netlify personal access token} used for authentication. A character scalar.}
 
 \item{max_tries}{Maximum number of attempts to retry in case of an HTTP error. An integerish scalar.}
 }

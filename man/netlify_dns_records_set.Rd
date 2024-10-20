@@ -13,12 +13,12 @@ netlify_dns_records_set(
 }
 \arguments{
 \item{records}{DNS records. A dataframe/tibble with the columns
-\code{"type"}, \code{"hostname"}, \code{"value"}, \code{"ttl"}, \code{"priority"}, \code{"weight"}, \code{"port"}, \code{"flag"} and \code{"tag"}. The first three columns are
-mandatory, columns not listed here are silently ignored.}
+\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag} and \code{tag}. The first three columns are mandatory, columns not
+listed here are silently ignored.}
 
 \item{domain}{Domain name to set DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.}
 
-\item{token}{Personal access token used for authentication.}
+\item{token}{\href{https://docs.netlify.com/api/get-started/#authentication}{Netlify personal access token} used for authentication. A character scalar.}
 
 \item{max_tries}{Maximum number of attempts to retry in case of an HTTP error. An integerish scalar.}
 }
@@ -29,8 +29,7 @@ A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{dns_zone_
 \description{
 Sets DNS records on Netlify for the specified \code{domain} using the
 \href{https://open-api.netlify.com/#tag/dnsZone/operation/createDnsRecord}{\code{createDnsRecord}} endpoint of \href{https://docs.netlify.com/api/get-started/}{Netlify's RESTful API}. DNS \code{records} must be provided as a dataframe/tibble with the columns
-\code{"type"}, \code{"hostname"}, \code{"value"}, \code{"ttl"}, \code{"priority"}, \code{"weight"}, \code{"port"}, \code{"flag"} and \code{"tag"}. Further columns are silently
-ignored.
+\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag} and \code{tag}. Further columns are silently ignored.
 }
 \details{
 Supported are the DNS record types \code{A}, \code{AAAA}, \code{ALIAS}, \code{CAA}, \code{CNAME}, \code{MX}, \code{NS}, \code{SPF}, \code{SRV} and \code{TXT}. Netlify's own custom record
