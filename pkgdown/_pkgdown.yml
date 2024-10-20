@@ -15,10 +15,17 @@ reference:
   - deploy_static_site
   - deploy_pkgdown_site
 - title: Netlify
+  desc: Functions to work with [Netlify's RESTful API](https://docs.netlify.com/api/get-started/).
 - contents:
   - netlify_dns_records_get
   - netlify_dns_records_set
   - netlify_dns_records_delete
+- title: Porkbun
+  desc: Functions to work with [Porkbun's API](https://porkbun.com/api/json/v3/documentation).
+- contents:
+  - porkbun_dns_records_get
+  - porkbun_dns_records_set
+  - porkbun_dns_records_delete
 - title: Extending other R packages
   desc: These functions closely follow the API of existing packages, but are usually
     out of scope for direct inclusion in them.

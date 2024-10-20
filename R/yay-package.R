@@ -1,4 +1,11 @@
-#' @keywords internal
+#' @section Package configuration:
+#'
+#' `r pkgsnip::md_snip(id = "pkg_config", pkg = utils::packageName())`
+#'
+#' ```{r, echo = FALSE}
+#' pal::print_pkg_config(this_pkg)
+#' ```
+#'#' @keywords internal
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #' @importFrom magrittr %T>%

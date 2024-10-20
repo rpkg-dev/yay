@@ -17,6 +17,7 @@ utils::globalVariables(names = c(".",
                                  "any_of",
                                  "everything",
                                  # other
+                                 "content",
                                  "end",
                                  "hostname",
                                  "i_pattern",
@@ -27,7 +28,7 @@ utils::globalVariables(names = c(".",
                                  "pattern",
                                  "plus",
                                  "replacement",
-                                 "settable",
+                                 "is_standard",
                                  "start",
                                  "status",
                                  "type",
@@ -36,43 +37,74 @@ utils::globalVariables(names = c(".",
 
 this_pkg <- utils::packageName()
 
+ptype_dns_records <- tibble::tibble(type = character(),
+                                    hostname = character(),
+                                    value = character(),
+                                    ttl = integer(),
+                                    priority = integer(),
+                                    weight = integer(),
+                                    port = integer(),
+                                    flag = integer(),
+                                    tag = character(),
+                                    target = character())
+
 cols_gh_releases <- c("id",
                       "version_nr",
                       "is_pre_release",
                       "is_draft")
+cols_dns_records <-
+  ptype_dns_records |>
+  purrr::imap(\(val, key) tibble::tibble(key = key,
+                                         is_standard = TRUE,
+                                         type = ifelse(key %in% c("ttl", "priority", "weight", "port", "flag"),
+                                                       "integer",
+                                                       "character"))) |>
+  purrr::list_rbind()
+
+cols_dns_records_netlify <-
+  tibble::tribble(
+    ~key,          ~type,       ~is_standard,
+    "id",          "character", FALSE,
+    "dns_zone_id", "character", FALSE,
+    "site_id",     "character", FALSE,
+    "managed",     "logical",   FALSE
+  ) %>%
+  dplyr::bind_rows(cols_dns_records) |>
+  # Netlify does not support `HTTPS` and `SVCB` record types
+  dplyr::filter(key != "target")
+
+cols_dns_records_porkbun <-
+  cols_dns_records |>
+  tibble::add_row(key = "id",
+                  type = "character",
+                  is_standard = FALSE,
+                  .before = 1L)
 
 md_gh_pat <- paste0("Works for both public and private repositories, for the latter you just need to set up a sufficiently authorized [GitHub Personal Access ",
                     "Token (PAT)][gh::gh_token].")
 
-netlify_dns_record_cols <-
-  tibble::tribble(
-    ~key,          ~type,       ~settable,
-    "id",          "character", FALSE,
-    "dns_zone_id", "character", FALSE,
-    "site_id",     "character", FALSE,
-    "managed",     "logical",   FALSE,
-    "type",        "character", TRUE,
-    "hostname",    "character", TRUE,
-    "value",       "character", TRUE,
-    "ttl",         "integer",   TRUE,
-    "priority",    "integer",   TRUE,
-    "weight",      "integer",   TRUE,
-    "port",        "integer",   TRUE,
-    "flag",        "integer",   TRUE,
-    "tag",         "character", TRUE
-  )
-
-# cf. https://docs.netlify.com/domains-https/netlify-dns/dns-records/#supported-record-types
-# NOTE: A/AAAA are actually NETLIFY/6 and give HTTP 401 Unauthorized, thus excluded
-netlify_dns_record_types <-
-  c("ALIAS",
-    "CAA",
-    "CNAME",
-    "MX",
-    "NS",
-    "SPF",
-    "SRV",
-    "TXT")
+dns_record_types <- list(netlify = c("A",
+                                     "AAAA",
+                                     "ALIAS",
+                                     "CAA",
+                                     "CNAME",
+                                     "MX",
+                                     "NS",
+                                     "SPF",
+                                     "SRV",
+                                     "TXT"),
+                         porkbun = c("A",
+                                     "AAAA",
+                                     "ALIAS",
+                                     "CAA",
+                                     "CNAME",
+                                     "HTTPS",
+                                     "MX",
+                                     "NS",
+                                     "SRV",
+                                     "SVCB",
+                                     "TLSA",
+                                     "TXT"))
 
 paths_to_keep <- c("netlify.toml",
                    "robots.txt",
@@ -88,6 +120,78 @@ paths_to_keep <- c("netlify.toml",
 reason_pkg_required_gh <- "for yay's `gh_*()` functions, but is not installed."
 
 unicode_ellipsis <- "\u2026"
+
+as_dns_records <- function(records,
+                           registrar) {
+  
+  checkmate::assert_data_frame(records,
+                               row.names = "unique")
+  checkmate::assert_subset(records$type,
+                           choices = dns_record_types[[registrar]])
+  
+  # ensure all required cols are present
+  missing_col_names <- setdiff(c("type", "hostname", "value"),
+                               colnames(records))
+  
+  if (length(missing_col_names) > 0L) {
+    cli::cli_abort("{.arg records} is missing the following required columns: {.var {missing_col_names}}",
+                   .frame = parent.frame(2L))
+  }
+  
+  # ensure no required fields are missing
+  purrr::walk(c("type", "hostname", "value"),
+              \(x) {
+                if (anyNA(records[[x]])) {
+                  cli::cli_abort("Column {.var {x}} in {.arg records} can't have missings.",
+                                 .frame = parent.frame(2L))
+                }
+              })
+  
+  cols_dns_records_registrar <- get(paste0("cols_dns_records_", registrar))
+  
+  # complement missing optional columns
+  records <-
+    cols_dns_records_registrar |>
+    dplyr::filter(is_standard) %$%
+    key |>
+    setdiff(colnames(records)) |>
+    purrr::map(\(x) tibble::as_tibble_col(x = NA,
+                                          column_name = x)) |>
+    purrr::list_cbind() |>
+    pal::when(ncol(.) > 0L ~ dplyr::cross_join(x = records,
+                                               y = .),
+              ~ records)
+  
+  # coerce to target types
+  records |>
+    dplyr::mutate(dplyr::across(.cols = any_of(cols_dns_records_registrar$key),
+                                .fns = \(x) {
+                                  .Primitive(paste0("as.", cols_dns_records_registrar$type[cols_dns_records_registrar$key == dplyr::cur_column()]))(x)
+                                }))
+}
+
+as_dns_record_ids <- function(records) {
+  
+  if (is.character(records)) {
+    checkmate::assert_character(records,
+                                any.missing = FALSE)
+  } else {
+    checkmate::assert_data_frame(records,
+                                 row.names = "unique")
+    # ensure all required cols are present
+    if (!("id" %in% colnames(records))) {
+      cli::cli_abort("{.arg records} is missing an {.var id} column.")
+    }
+    
+    records %<>% dplyr::pull("id")
+  }
+}
+
+assert_domain <- function(domain) {
+  
+  checkmate::assert_string(domain,
+                           pattern = "\\w+\\.\\w+(\\.\\w+)*")
+}
 
 clean_git_dir <- function(path,
                           exclude_paths = paths_to_keep,
@@ -142,6 +246,32 @@ normalize_tree_path <- function(path) {
   checkmate::assert_string(path) |>
     fs::path_norm() |>
     stringr::str_remove(pattern = "^\\.{0,2}(/|$)")
+}
+
+perform_porkbun_req <- function(url,
+                                data = NULL,
+                                api_key = pal::pkg_config_val("porkbun_api_key"),
+                                secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+                                max_tries = 3L) {
+  checkmate::assert_list(data,
+                         any.missing = FALSE,
+                         names = "strict",
+                         null.ok = TRUE)
+  checkmate::assert_string(api_key)
+  checkmate::assert_string(secret_api_key)
+  checkmate::assert_count(max_tries,
+                          positive = TRUE)
+  
+  httr2::request(base_url = url) |>
+    httr2::req_method(method = "POST") |>
+    httr2::req_body_json(list(apikey = api_key,
+                              secretapikey = secret_api_key)) |>
+    httr2::req_body_json_modify(!!!data) |>
+    httr2::req_user_agent(string = "yay R package (https://yay.rpkg.dev)") |>
+    httr2::req_retry(max_tries = max_tries) |>
+    httr2::req_error(body = \(resp) httr2::resp_body_json(resp)$message) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 }
 
 #' Regular expression patterns and replacements for text normalization
@@ -746,31 +876,27 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 #' Get Netlify DNS records
 #'
 #' Retrieves DNS records from Netlify for the specified `domain` using the
-#' [`getDnsRecords`](https://open-api.netlify.com/#tag/dnsZone/operation/getDnsRecords) endpoint of [Netlify's REST
+#' [`getDnsRecords`](https://open-api.netlify.com/#tag/dnsZone/operation/getDnsRecords) endpoint of [Netlify's RESTful
 #' API](https://docs.netlify.com/api/get-started/). 
 #'
 #' @inheritParams netlify_dns_records_set
 #' @param domain Domain name to retrieve DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.
 #'
-#' @return `r pkgsnip::param_lbl("tibble_cols", cols = netlify_dns_record_cols$key)`
+#' @return `r pkgsnip::param_lbl("tibble_cols", cols = cols_dns_records_netlify$key)`
 #' @family netlify
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' yay::netlify_dns_records_get(domain = "my.site",
-#'                              token = Sys.getenv("NETLIFY_PAT"))
+#' yay::netlify_dns_records_get(domain = "my.site")
 #'
-#' # to write the "settable" record keys to a TOML file `dns_records.toml` with a `records` table
+#' # to write "portable" record keys to a TOML file `dns_records.toml` with a `records` table
 #' # NOTE that the CLI tool `jsontoml` is required for this: https://github.com/pelletier/go-toml/
-#' yay::netlify_dns_records_get(domain = "my.site",
-#'                              token = Sys.getenv("NETLIFY_PAT")) |>
+#' yay::netlify_dns_records_get(domain = "my.site") |>
 #'   # remove records which can't be handled via API
 #'   dplyr::filter(!managed) |>
-#'   # remove Netlify-specific cols which aren't "settable"
-#'   dplyr::select(
-#'     any_of(yay:::netlify_dns_record_cols$key[yay:::netlify_dns_record_cols$settable])
-#'   ) |>
+#'   # remove Netlify-specific cols
+#'   dplyr::select(any_of(yay:::cols_dns_records$key)) |>
 #'   # convert to target list structure
 #'   list(records = _) |>
 #'   # convert to JSON
@@ -780,17 +906,17 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 #'   system2(input = _,
 #'           stdout = TRUE,
 #'           command = "jsontoml") |>
+#'   # remove leading newline
 #'   _[-1L] |>
 #'   # write TOML to file
 #'   brio::write_lines(path = "dns_records.toml")}
 netlify_dns_records_get <- function(domain,
-                                    token,
+                                    token = pal::pkg_config_val("netlify_token"),
                                     max_tries = 3L) {
-  checkmate::assert_string(domain,
-                           pattern = "\\w+\\.\\w+(\\.\\w+)*")
+  assert_domain(domain)
   checkmate::assert_string(token)
-  rlang::check_installed(pkg = "httr2",
-                         reason = pal::reason_pkg_required())
+  checkmate::assert_count(max_tries,
+                          positive = TRUE)
   
   zone_id <- stringr::str_replace_all(string = domain,
                                       pattern = stringr::fixed("."),
@@ -806,31 +932,30 @@ netlify_dns_records_get <- function(domain,
     purrr::map(purrr::compact) |>
     purrr::map_dfr(tibble::as_tibble_row) |>
     # canonicalize key order
-    dplyr::relocate(any_of(netlify_dns_record_cols$key)) |>
+    dplyr::relocate(any_of(cols_dns_records_netlify$key)) |>
     dplyr::arrange(type, hostname, value)
 }
 
 #' Set Netlify DNS records
 #'
 #' Sets DNS records on Netlify for the specified `domain` using the
-#' [`createDnsRecord`](https://open-api.netlify.com/#tag/dnsZone/operation/createDnsRecord) endpoint of [Netlify's REST
+#' [`createDnsRecord`](https://open-api.netlify.com/#tag/dnsZone/operation/createDnsRecord) endpoint of [Netlify's RESTful
 #' API](https://docs.netlify.com/api/get-started/). DNS `records` must be provided as a dataframe/tibble with the columns
-#' `r netlify_dns_record_cols |> dplyr::filter(settable) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. Further columns are silently
+#' `r cols_dns_records_netlify |> dplyr::filter(is_standard) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. Further columns are silently
 #' ignored.
 #'
-#' Supported are the DNS record types `r netlify_dns_record_types |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. `A` and
-#' `AAAA` (or `NETLIFY` and `NETLIFY6`, respectively) cannot be set via the API and must be configured via [Netlify's web
-#' interface](https://app.netlify.com/).
+#' Supported are the DNS record types `r dns_record_types$netlify |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. Netlify's own custom record
+#' types `NETLIFY` and `NETLIFY6` cannot be altered via the API and must be configured via [Netlify's web interface](https://app.netlify.com/).
 #'
 #' @inheritParams pal::req_cached
 #' @param records DNS records. A dataframe/tibble with the columns
-#'   `r netlify_dns_record_cols |> dplyr::filter(settable) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. The first three columns are
+#'   `r cols_dns_records_netlify |> dplyr::filter(is_standard) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. The first three columns are
 #'   mandatory, columns not listed here are silently ignored.
 #' @param domain Domain name to set DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.
 #' @param token Personal access token used for authentication.
 #'
-#' @return The newly set DNS records. `r pkgsnip::param_lbl("tibble_cols", cols = netlify_dns_record_cols$key, as_sentence = FALSE) |> pal::capitalize_first()`,
-#'   invisibly.
+#' @return The newly set DNS records.
+#' `r pkgsnip::param_lbl("tibble_cols", cols = cols_dns_records_netlify$key, as_sentence = FALSE) |> pal::capitalize_first()`, invisibly.
 #' @family netlify
 #' @export
 #'
@@ -843,56 +968,22 @@ netlify_dns_records_get <- function(domain,
 #'   "MX",    "my.site",            "mxext1.mailbox.org", 3600L, NA,   NA,      NA,    NA,    NA,
 #'   "SRV",   "_hkps._tcp.my.site", "pgp.mailbox.org",    3600L, 1L,   1L,      443L,  NA,    NA,
 #'   "TXT",   "_mta-sts",           "v=STSv1; id=001",    3600L, NA,   NA,      NA,    NA,    NA) |>
-#'   yay::netlify_dns_records_set(domain = "my.site",
-#'                                token  = "XYZ1234")
+#'   yay::netlify_dns_records_set(domain = "my.site")
 #'                                
 #' # to use a TOML file that defines a `records` table as input:
 #' pal::toml_read("dns_records.toml")$records |>
 #'   purrr::map_dfr(tibble::as_tibble_row) |>
-#'   yay::netlify_dns_records_set(domain = "my.site",
-#'                                token  = Sys.getenv("NETLIFY_PAT"))}
+#'   yay::netlify_dns_records_set(domain = "my.site")}
 netlify_dns_records_set <- function(records,
                                     domain,
-                                    token,
+                                    token = pal::pkg_config_val("netlify_token"),
                                     max_tries = 3L) {
   
-  checkmate::assert_data_frame(records,
-                               row.names = "unique")
-  # ensure all required cols are present
-  missing_col_names <- setdiff(c("type", "hostname", "value"),
-                               colnames(records))
-  
-  if (length(missing_col_names) > 0L) {
-    cli::cli_abort("{.arg records} is missing the following required columns: {.var {missing_col_names}}")
-  }
-  # ensure no required fields are missing
-  purrr::walk(c("type", "hostname", "value"),
-              \(x) {
-                if (anyNA(records[[x]])) {
-                  cli::cli_abort("Column {.var {x}} in {.arg records} can't have missings.")
-                }
-              })
-  # ensure record types are valid
-  checkmate::assert_subset(records$type,
-                           choices = netlify_dns_record_types)
-  checkmate::assert_string(domain,
-                           pattern = "\\w+\\.\\w+(\\.\\w+)*")
+  records %<>% as_dns_records(registrar = "netlify")
+  assert_domain(domain)
   checkmate::assert_string(token)
-  rlang::check_installed(pkg = "httr2",
-                         reason = pal::reason_pkg_required())
-  
-  # complement missing optional columns
-  records <-
-    netlify_dns_record_cols |>
-    dplyr::filter(settable) %$%
-    key |>
-    setdiff(colnames(records)) |>
-    purrr::map(\(x) tibble::as_tibble_col(x = NA,
-                                          column_name = x)) |>
-    purrr::list_cbind() |>
-    pal::when(ncol(.) > 0L ~ dplyr::cross_join(x = records,
-                                               y = .),
-              ~ records)
+  checkmate::assert_count(max_tries,
+                          positive = TRUE)
   
   zone_id <- stringr::str_replace_all(string = domain,
                                       pattern = stringr::fixed("."),
@@ -901,60 +992,53 @@ netlify_dns_records_set <- function(records,
   pal::cli_progress_step_quick(msg = "Setting {.val {nrow(records)}} DNS record{?s} on Netlify for domain {.field {domain}}")
   
   records |>
-    # coerce to target types
-    dplyr::mutate(dplyr::across(.cols = any_of(netlify_dns_record_cols$key),
-                                .fns = \(x) {
-                                  .Primitive(paste0("as.",
-                                                    netlify_dns_record_cols$type[netlify_dns_record_cols$key == dplyr::cur_column()]))(x)
-                                })) |>
-    purrr::pmap(\(type,
-                  hostname,
-                  value,
-                  ttl,
-                  priority,
-                  weight,
-                  port,
-                  flag,
-                  tag,
-                  ...) {
-      
-      httr2::request(base_url = glue::glue("https://api.netlify.com/api/v1/dns_zones/{zone_id}/dns_records/")) |>
-        httr2::req_method(method = "POST") |>
-        httr2::req_headers(Authorization = paste0("Bearer ", token),
-                           `Content-Type` = "application/json") |>
-        httr2::req_body_json(purrr::discard(list(type = type,
-                                                 hostname = hostname,
-                                                 value = value,
-                                                 ttl = ttl,
-                                                 priority = priority,
-                                                 weight = weight,
-                                                 port = port,
-                                                 flag = flag,
-                                                 tag = tag),
-                                            is.na)) |>
-        httr2::req_retry(max_tries = max_tries) |>
-        httr2::req_perform() |>
-        httr2::resp_body_json() |>
-        # remove empty keys
-        purrr::compact() |>
-        tibble::as_tibble_row() |>
-        # canonicalize key order
-        dplyr::relocate(any_of(netlify_dns_record_cols$key)) |>
-        dplyr::arrange(type, hostname, value)
-    }) |>
+    purrr::pmap(.progress = TRUE,
+                .f = \(type,
+                       hostname,
+                       value,
+                       ttl,
+                       priority,
+                       weight,
+                       port,
+                       flag,
+                       tag,
+                       ...) {
+                  
+                  httr2::request(base_url = glue::glue("https://api.netlify.com/api/v1/dns_zones/{zone_id}/dns_records/")) |>
+                    httr2::req_method(method = "POST") |>
+                    httr2::req_headers(Authorization = paste0("Bearer ", token),
+                                       `Content-Type` = "application/json") |>
+                    httr2::req_body_json(purrr::discard(list(type = type,
+                                                             hostname = hostname,
+                                                             value = value,
+                                                             ttl = ttl,
+                                                             priority = priority,
+                                                             weight = weight,
+                                                             port = port,
+                                                             flag = flag,
+                                                             tag = tag),
+                                                        is.na)) |>
+                    httr2::req_retry(max_tries = max_tries) |>
+                    httr2::req_perform() |>
+                    httr2::resp_body_json() |>
+                    # remove empty keys
+                    purrr::compact() |>
+                    tibble::as_tibble_row() |>
+                    # canonicalize key order
+                    dplyr::relocate(any_of(cols_dns_records_netlify$key)) |>
+                    dplyr::arrange(type, hostname, value)
+                }) |>
     purrr::list_rbind() |>
     invisible()
 }
 
 #' Delete Netlify DNS records
 #'
-#' Deletes DNS records on Netlify for the specified `domain` using the
-#' [`deleteDnsRecord`](https://open-api.netlify.com/#tag/dnsZone/operation/deleteDnsRecord) endpoint of [Netlify's REST
-#' API](https://docs.netlify.com/api/get-started/). DNS `records` must be provided as either a character vector of record identifiers or a dataframe/tibble with
-#' an `id` column. Further columns are silently ignored.
+#' Deletes DNS records on Netlify for the specified `domain` using the [`deleteDnsRecord`](https://open-api.netlify.com/#tag/dnsZone/operation/deleteDnsRecord)
+#' endpoint of [Netlify's RESTful API](https://docs.netlify.com/api/get-started/). DNS `records` must be provided as either a character vector of DNS record
+#' identifiers or a dataframe/tibble with an `id` column. Further columns are silently ignored.
 #'
-#' Supported are the DNS record types `r netlify_dns_record_types |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. `A` and `AAAA` (or `NETLIFY`
-#' and `NETLIFY6`, respectively) cannot be deleted via the API, but must be configured via [Netlify's web interface](https://app.netlify.com/) instead.
+#' @inherit netlify_dns_records_set details
 #'
 #' @inheritParams netlify_dns_records_set
 #' @param records DNS records to delete. A character vector of record identifiers or a dataframe/tibble with an `id` column. Further columns are silently
@@ -968,37 +1052,22 @@ netlify_dns_records_set <- function(records,
 #' @examples
 #' \dontrun{
 #' yay::netlify_dns_records_delete(domain = "my.site",
-#'                                 records = "xyz123",
-#'                                 token = Sys.getenv("NETLIFY_PAT"))
+#'                                 records = "xyz123")
 #' 
 #' # The output of `netlify_dns_records_get()` can directly be fed. To delete all (!) records:
-#' yay::netlify_dns_records_get(domain = "my.site",
-#'                              token = Sys.getenv("NETLIFY_PAT")) |>
+#' yay::netlify_dns_records_get(domain = "my.site") |>
 #'   dplyr::filter(!managed) |>
-#'   yay::netlify_dns_records_delete(domain = "my.site",
-#'                                   token = Sys.getenv("NETLIFY_PAT"))}
+#'   yay::netlify_dns_records_delete(domain = "my.site")}
 netlify_dns_records_delete <- function(records,
                                        domain,
-                                       token,
+                                       token = pal::pkg_config_val("netlify_token"),
                                        max_tries = 3L) {
-  if (is.character(records)) {
-    checkmate::assert_character(records,
-                                any.missing = FALSE)
-  } else {
-    checkmate::assert_data_frame(records,
-                                 row.names = "unique")
-    # ensure all required cols are present
-    if (!("id" %in% colnames(records))) {
-      cli::cli_abort("{.arg records} is missing an {.var id} column.")
-    }
-    
-    records %<>% .$id
-  }
+  records %<>% as_dns_record_ids()
   checkmate::assert_string(domain,
                            pattern = "\\w+\\.\\w+(\\.\\w+)*")
   checkmate::assert_string(token)
-  rlang::check_installed(pkg = "httr2",
-                         reason = pal::reason_pkg_required())
+  checkmate::assert_count(max_tries,
+                          positive = TRUE)
   
   zone_id <- stringr::str_replace_all(string = domain,
                                       pattern = stringr::fixed("."),
@@ -1007,14 +1076,240 @@ netlify_dns_records_delete <- function(records,
   pal::cli_progress_step_quick(msg = "Deleting {.val {length(records)}} DNS record{?s} on Netlify for domain {.field {domain}}")
   
   records |>
-    purrr::walk(\(dns_record_id) {
+    purrr::walk(.progress = TRUE,
+                .f = \(dns_record_id) {
+                  
+                  httr2::request(base_url = glue::glue("https://api.netlify.com/api/v1/dns_zones/{zone_id}/dns_records/{dns_record_id}")) |>
+                    httr2::req_method(method = "DELETE") |>
+                    httr2::req_headers(Authorization = paste0("Bearer ", token)) |>
+                    httr2::req_retry(max_tries = max_tries) |>
+                    httr2::req_perform()
+                })
+  
+  invisible(records)
+}
+
+#' Get Porkbun DNS records
+#'
+#' Retrieves DNS records from Porkbun for the specified `domain` using the
+#' [`/api/json/v3/dns/retrieve/{domain}`](https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain%20or%20ID) endpoint of Porkbun's
+#' API.
+#'
+#' @inheritParams pal::req_cached
+#' @param domain Domain name to retrieve DNS records for. A character scalar.
+#' @param api_key Porkbun.com API key. A character scalar.
+#' @param secret_api_key Porkbun.com secret API key. A character scalar.
+#'
+#' @return  `r pkgsnip::param_lbl("tibble_cols", cols = cols_dns_records_porkbun$key)`
+#' @family porkbun
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' yay::porkbun_dns_records_get(domain = "my.site")
+#'
+#' # to write "portable" record keys to a TOML file `dns_records.toml` with a `records` table
+#' # NOTE that the CLI tool `jsontoml` is required for this: https://github.com/pelletier/go-toml/
+#' yay::porkbun_dns_records_get(domain = "my.site") |>
+#'   # remove Porkbun-specific cols
+#'   dplyr::select(any_of(yay:::cols_dns_records$key)) |>
+#'   # convert to target list structure
+#'   list(records = _) |>
+#'   # convert to JSON
+#'   jsonlite::toJSON(auto_unbox = TRUE,
+#'                    pretty = TRUE) |>
+#'   # convert JSON to TOML via external CLI
+#'   system2(input = _,
+#'           stdout = TRUE,
+#'           command = "jsontoml") |>
+#'   # remove leading newline
+#'   _[-1L] |>
+#'   # write TOML to file
+#'   brio::write_lines(path = "dns_records.toml")}
+porkbun_dns_records_get <- function(domain,
+                                    api_key = pal::pkg_config_val("porkbun_api_key"),
+                                    secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+                                    max_tries = 3L) {
+  assert_domain(domain)
+  
+  perform_porkbun_req(url = glue::glue("https://api.porkbun.com/api/json/v3/dns/retrieve/{domain}"),
+                      api_key = api_key,
+                      secret_api_key = secret_api_key,
+                      max_tries = max_tries) |>
+    purrr::chuck("records") |>
+    purrr::map(\(x) {
       
-      httr2::request(base_url = glue::glue("https://api.netlify.com/api/v1/dns_zones/{zone_id}/dns_records/{dns_record_id}")) |>
-        httr2::req_method(method = "DELETE") |>
-        httr2::req_headers(Authorization = paste0("Bearer ", token)) |>
-        httr2::req_retry(max_tries = max_tries) |>
-        httr2::req_perform()
-    })
+      x$value <- switch(EXPR  = x$type,
+                        CAA   = {
+                          fields <- stringr::str_split_1(x$content, " ")
+                          x$flag <- fields[1L]
+                          x$tag <- fields[2L]
+                          fields[3L]
+                        },
+                        HTTPS = {
+                          fields <- stringr::str_split_1(x$content, " ")
+                          x$prio <- fields[1L]
+                          x$target <- fields[2L]
+                          fields[3L]
+                        },
+                        SRV   = {
+                          fields <- stringr::str_split_1(x$content, " ")
+                          x$weight <- fields[1L]
+                          x$port <- fields[2L]
+                          fields[3L]
+                        },
+                        SVCB  = {
+                          fields <- stringr::str_split_1(x$content, " ")
+                          x$prio <- fields[1L]
+                          x$target <- fields[2L]
+                          fields[3L]
+                        },
+                        x$content)
+      tibble::as_tibble_row(purrr::compact(x))
+    }) |>
+    purrr::list_rbind() |>
+    dplyr::select(-any_of("content")) |>
+    dplyr::rename_with(.cols = everything(),
+                       .fn = \(x) dplyr::case_match(x,
+                                                    "name" ~ "hostname",
+                                                    "prio" ~ "priority",
+                                                    .default = x)) |>
+    # canonicalize key order
+    dplyr::relocate(any_of(cols_dns_records_porkbun$key)) %>%
+    dplyr::arrange(!!!rlang::syms(intersect(c("type", "hostname", "value"),
+                                            colnames(.))))
+}
+
+#' Set Porkbun DNS records
+#'
+#' Retrieves DNS records from Porkbun for the specified `domain` using the
+#' [`/api/json/v3/dns/create/{domain}`](https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record) endpoint of Porkbun's API. DNS `records` must be
+#' provided as a dataframe/tibble with the columns
+#' `r cols_dns_records_porkbun |> dplyr::filter(is_standard) %$% key |> pal::as_md_vals() |> cli::ansi_collapse(last = " and ")`. Further columns are
+#' silently ignored.
+#'
+#' Supported are the DNS record types `r dns_record_types$porkbun |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`.
+#'
+#' @inheritParams porkbun_dns_records_get
+#' @inheritParams netlify_dns_records_set
+#' @param domain Domain name to set DNS records for. A character scalar.
+#'
+#' @return A character vector of created record identifiers, invisibly.
+#' @family porkbun
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tibble::tribble(
+#'   ~type,   ~hostname,          ~value,           ~ttl, ~priority, ~weight, ~port, ~flag, ~tag,
+#'   "CAA",   "my.site",          "letsencrypt.org", 3600L, NA,      NA,      NA,    0L,    "issue",
+#'   "CNAME", "autoconfig",       "mailbox.org",     3600L, NA,      NA,      NA,    NA,    NA,
+#'   "MX",    "my.site",          "mxext1.mailbox.org", 3600L, NA,   NA,      NA,    NA,    NA,
+#'   "SRV",   "_hkps._tcp.my.site", "pgp.mailbox.org",    3600L, 1L,   1L,      443L,  NA,    NA,
+#'   "TXT",   "_mta-sts",           "v=STSv1; id=001",    3600L, NA,   NA,      NA,    NA,    NA) |>
+#'   yay::porkbun_dns_records_set(domain = "my.site")
+#'                                
+#' # to use a TOML file that defines a `records` table as input:
+#' pal::toml_read("dns_records.toml")$records |>
+#'   purrr::map_dfr(tibble::as_tibble_row) |>
+#'   yay::porkbun_dns_records_set(domain = "my.site")}
+porkbun_dns_records_set <- function(records,
+                                    domain,
+                                    api_key = pal::pkg_config_val("porkbun_api_key"),
+                                    secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+                                    max_tries = 3L) {
+  
+  records %<>% as_dns_records(registrar = "porkbun")
+  assert_domain(domain)
+  
+  pal::cli_progress_step_quick(msg = "Setting {.val {nrow(records)}} DNS record{?s} on Porkbun for domain {.field {domain}}")
+  
+  records |>
+    purrr::pmap_int(.progress = TRUE,
+                    .f = \(type,
+                           hostname,
+                           value,
+                           ttl,
+                           priority,
+                           weight,
+                           port,
+                           flag,
+                           tag,
+                           target,
+                           ...) {
+                      
+                      # handle root domain properly
+                      hostname %<>% stringr::str_remove(pattern = paste0(stringr::str_escape(domain), "$"))
+                      
+                      # assemble type-specific content
+                      content <- switch(EXPR  = type,
+                                        CAA   = paste(flag, tag, value),
+                                        HTTPS = paste(priority, target, value),
+                                        SRV   = paste(weight, port, value),
+                                        SVCB  = paste(priority, target, value),
+                                        value)
+                      
+                      # priority must be either absent or set via `content` for most record types
+                      if (!(type %in% c("MX", "SRV"))) {
+                        priority <- NA_character_
+                      }
+                      
+                      perform_porkbun_req(url = glue::glue("https://api.porkbun.com/api/json/v3/dns/create/{domain}"),
+                                          data = purrr::discard(list(name = hostname,
+                                                                     type = type,
+                                                                     content = content,
+                                                                     ttl = ttl,
+                                                                     prio = priority),
+                                                                is.na),
+                                          api_key = api_key,
+                                          secret_api_key = secret_api_key,
+                                          max_tries = max_tries) |>
+                        purrr::chuck("id")
+                    }) |>
+    invisible()
+}
+
+#' Delete Porkbun DNS records
+#'
+#' Deletes DNS records on Porkbun for the specified `domain` using the
+#' [`/api/json/v3/dns/delete/{domain}/{dns_record_id}`](https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record%20by%20Domain%20and%20ID) endpoint
+#' of Porkbun's API. DNS `records` must be provided as either a character vector of DNS record identifiers or a dataframe/tibble with an `id` column. Further
+#' columns are silently ignored.
+#'
+#' @inheritParams porkbun_dns_records_set
+#' @param domain Domain name to delete DNS records for. A character scalar.
+#'
+#' @return A character vector of deleted record identifiers, invisibly.
+#' @family porkbun
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' yay::porkbun_dns_records_delete(domain = "my.site",
+#'                                 records = "xyz123")
+#' 
+#' # The output of `netlify_dns_records_get()` can directly be fed. To delete all (!) non-NS records:
+#' yay::porkbun_dns_records_get(domain = "my.site") |>
+#'   dplyr::filter(type != "NS") |>
+#'   yay::porkbun_dns_records_delete(domain = "my.site")}
+porkbun_dns_records_delete <- function(records,
+                                       domain,
+                                       api_key = pal::pkg_config_val("porkbun_api_key"),
+                                       secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+                                       max_tries = 3L) {
+  records %<>% as_dns_record_ids()
+  
+  pal::cli_progress_step_quick(msg = "Deleting {.val {length(records)}} DNS record{?s} on Netlify for domain {.field {domain}}")
+  
+  records |>
+    purrr::walk(.progress = TRUE,
+                .f = \(dns_record_id) {
+                  
+                  perform_porkbun_req(url = glue::glue("https://api.porkbun.com/api/json/v3/dns/delete/{domain}/{dns_record_id}"),
+                                      api_key = api_key,
+                                      secret_api_key = secret_api_key,
+                                      max_tries = max_tries)
+                })
   
   invisible(records)
 }
@@ -1249,7 +1544,7 @@ gh_text_files <- function(owner,
 #' List releases from GitHub repository
 #'
 #' Uses [gh::gh()] to fetch all available [releases](https://docs.github.com/repositories/releasing-projects-on-github) of the specified GitHub repository
-#' via [GitHub's REST API](https://docs.github.com/en/rest/releases/releases#list-releases) and returns them as a [tibble][tibble::tbl_df] containing the
+#' via [GitHub's RESTful API](https://docs.github.com/en/rest/releases/releases#list-releases) and returns them as a [tibble][tibble::tbl_df] containing the
 #' columns `r pal::enum_str(cols_gh_releases, wrap = "\x60")`.
 #'
 #' @param owner GitHub repository owner (GitHub user or organisation). A character scalar.
@@ -1300,7 +1595,8 @@ gh_releases <- function(owner,
 #' Get latest release from GitHub repository
 #'
 #' Uses [gh::gh()] to fetch the latest [GitHub release](https://docs.github.com/repositories/releasing-projects-on-github) of the specified GitHub repository
-#' via [GitHub's REST API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release) and returns it as a [numeric version][numeric_version()].
+#' via [GitHub's RESTful API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release) and returns it as a [numeric
+#' version][numeric_version()].
 #'
 #' @inheritParams gh_releases
 #'
