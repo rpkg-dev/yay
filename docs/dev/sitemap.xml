@@ -1,78 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://yay.rpkg.dev/dev/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/index.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/deploy_pkgdown_site.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/deploy_static_site.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/gh_dir_ls.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/gh_release_latest.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/gh_releases.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/gh_text_file.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/gh_text_files.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/netlify_dns_records_delete.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/netlify_dns_records_get.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/netlify_dns_records_set.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/open_as_tmp_spreadsheet.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/regex_file_normalization.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/regex_text_normalization.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/show_diff.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/str_normalize.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/str_normalize_file.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/str_replace_file.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/str_replace_verbose.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/yay-package.html</loc>
-  </url>
-  <url>
-    <loc>https://yay.rpkg.dev/dev/reference/zotero_write_bib.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://yay.rpkg.dev/dev/LICENSE.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/authors.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/index.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/deploy_pkgdown_site.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/deploy_static_site.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/gh_dir_ls.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/gh_release_latest.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/gh_releases.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/gh_text_file.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/gh_text_files.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/index.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/netlify_dns_records_delete.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/netlify_dns_records_get.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/netlify_dns_records_set.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/open_as_tmp_spreadsheet.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/porkbun_dns_records_delete.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/porkbun_dns_records_get.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/porkbun_dns_records_set.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/regex_file_normalization.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/regex_text_normalization.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/show_diff.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/str_normalize.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/str_normalize_file.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/str_replace_file.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/str_replace_verbose.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/yay-package.html</loc></url>
+<url><loc>https://yay.rpkg.dev/dev/reference/zotero_write_bib.html</loc></url>
 </urlset>
+

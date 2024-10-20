@@ -4,7 +4,12 @@
 \alias{netlify_dns_records_set}
 \title{Set Netlify DNS records}
 \usage{
-netlify_dns_records_set(records, domain, token, max_tries = 3L)
+netlify_dns_records_set(
+  records,
+  domain,
+  token = pal::pkg_config_val("netlify_token"),
+  max_tries = 3L
+)
 }
 \arguments{
 \item{records}{DNS records. A dataframe/tibble with the columns
@@ -18,18 +23,18 @@ mandatory, columns not listed here are silently ignored.}
 \item{max_tries}{Maximum number of attempts to retry in case of an HTTP error. An integerish scalar.}
 }
 \value{
-The newly set DNS records. A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{dns_zone_id}, \code{site_id}, \code{managed}, \code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, and \code{tag},
-invisibly.
+The newly set DNS records.
+A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{dns_zone_id}, \code{site_id}, \code{managed}, \code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, and \code{tag}, invisibly.
 }
 \description{
 Sets DNS records on Netlify for the specified \code{domain} using the
-\href{https://open-api.netlify.com/#tag/dnsZone/operation/createDnsRecord}{\code{createDnsRecord}} endpoint of \href{https://docs.netlify.com/api/get-started/}{Netlify's REST API}. DNS \code{records} must be provided as a dataframe/tibble with the columns
+\href{https://open-api.netlify.com/#tag/dnsZone/operation/createDnsRecord}{\code{createDnsRecord}} endpoint of \href{https://docs.netlify.com/api/get-started/}{Netlify's RESTful API}. DNS \code{records} must be provided as a dataframe/tibble with the columns
 \code{"type"}, \code{"hostname"}, \code{"value"}, \code{"ttl"}, \code{"priority"}, \code{"weight"}, \code{"port"}, \code{"flag"} and \code{"tag"}. Further columns are silently
 ignored.
 }
 \details{
-Supported are the DNS record types \code{ALIAS}, \code{CAA}, \code{CNAME}, \code{MX}, \code{NS}, \code{SPF}, \code{SRV} and \code{TXT}. \code{A} and
-\code{AAAA} (or \code{NETLIFY} and \code{NETLIFY6}, respectively) cannot be set via the API and must be configured via \href{https://app.netlify.com/}{Netlify's web interface}.
+Supported are the DNS record types \code{A}, \code{AAAA}, \code{ALIAS}, \code{CAA}, \code{CNAME}, \code{MX}, \code{NS}, \code{SPF}, \code{SRV} and \code{TXT}. Netlify's own custom record
+types \code{NETLIFY} and \code{NETLIFY6} cannot be altered via the API and must be configured via \href{https://app.netlify.com/}{Netlify's web interface}.
 }
 \examples{
 \dontrun{
@@ -40,14 +45,12 @@ tibble::tribble(
   "MX",    "my.site",            "mxext1.mailbox.org", 3600L, NA,   NA,      NA,    NA,    NA,
   "SRV",   "_hkps._tcp.my.site", "pgp.mailbox.org",    3600L, 1L,   1L,      443L,  NA,    NA,
   "TXT",   "_mta-sts",           "v=STSv1; id=001",    3600L, NA,   NA,      NA,    NA,    NA) |>
-  yay::netlify_dns_records_set(domain = "my.site",
-                               token  = "XYZ1234")
+  yay::netlify_dns_records_set(domain = "my.site")
                                
 # to use a TOML file that defines a `records` table as input:
 pal::toml_read("dns_records.toml")$records |>
   purrr::map_dfr(tibble::as_tibble_row) |>
-  yay::netlify_dns_records_set(domain = "my.site",
-                               token  = Sys.getenv("NETLIFY_PAT"))}
+  yay::netlify_dns_records_set(domain = "my.site")}
 }
 \seealso{
 Other Netlify functions:

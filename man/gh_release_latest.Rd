@@ -12,11 +12,11 @@ gh_release_latest(owner, name)
 \item{name}{Repository name. A character scalar.}
 }
 \value{
-A \link[=numeric_version]{numeric version}.
+A \link[base:numeric_version]{numeric version}.
 }
 \description{
 Uses \code{\link[gh:gh]{gh::gh()}} to fetch the latest \href{https://docs.github.com/repositories/releasing-projects-on-github}{GitHub release} of the specified GitHub repository
-via \href{https://docs.github.com/en/rest/releases/releases#get-the-latest-release}{GitHub's REST API} and returns it as a \link[=numeric_version]{numeric version}.
+via \href{https://docs.github.com/en/rest/releases/releases#get-the-latest-release}{GitHub's RESTful API} and returns it as a \link[=numeric_version]{numeric version}.
 }
 \examples{
 yay::gh_release_latest(owner = "jgm",

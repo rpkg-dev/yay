@@ -4,7 +4,12 @@
 \alias{netlify_dns_records_delete}
 \title{Delete Netlify DNS records}
 \usage{
-netlify_dns_records_delete(records, domain, token, max_tries = 3L)
+netlify_dns_records_delete(
+  records,
+  domain,
+  token = pal::pkg_config_val("netlify_token"),
+  max_tries = 3L
+)
 }
 \arguments{
 \item{records}{DNS records to delete. A character vector of record identifiers or a dataframe/tibble with an \code{id} column. Further columns are silently
@@ -20,26 +25,23 @@ ignored.}
 A character vector of deleted record identifiers, invisibly.
 }
 \description{
-Deletes DNS records on Netlify for the specified \code{domain} using the
-\href{https://open-api.netlify.com/#tag/dnsZone/operation/deleteDnsRecord}{\code{deleteDnsRecord}} endpoint of \href{https://docs.netlify.com/api/get-started/}{Netlify's REST API}. DNS \code{records} must be provided as either a character vector of record identifiers or a dataframe/tibble with
-an \code{id} column. Further columns are silently ignored.
+Deletes DNS records on Netlify for the specified \code{domain} using the \href{https://open-api.netlify.com/#tag/dnsZone/operation/deleteDnsRecord}{\code{deleteDnsRecord}}
+endpoint of \href{https://docs.netlify.com/api/get-started/}{Netlify's RESTful API}. DNS \code{records} must be provided as either a character vector of DNS record
+identifiers or a dataframe/tibble with an \code{id} column. Further columns are silently ignored.
 }
 \details{
-Supported are the DNS record types \code{ALIAS}, \code{CAA}, \code{CNAME}, \code{MX}, \code{NS}, \code{SPF}, \code{SRV} and \code{TXT}. \code{A} and \code{AAAA} (or \code{NETLIFY}
-and \code{NETLIFY6}, respectively) cannot be deleted via the API, but must be configured via \href{https://app.netlify.com/}{Netlify's web interface} instead.
+Supported are the DNS record types \code{A}, \code{AAAA}, \code{ALIAS}, \code{CAA}, \code{CNAME}, \code{MX}, \code{NS}, \code{SPF}, \code{SRV} and \code{TXT}. Netlify's own custom record
+types \code{NETLIFY} and \code{NETLIFY6} cannot be altered via the API and must be configured via \href{https://app.netlify.com/}{Netlify's web interface}.
 }
 \examples{
 \dontrun{
 yay::netlify_dns_records_delete(domain = "my.site",
-                                records = "xyz123",
-                                token = Sys.getenv("NETLIFY_PAT"))
+                                records = "xyz123")
 
 # The output of `netlify_dns_records_get()` can directly be fed. To delete all (!) records:
-yay::netlify_dns_records_get(domain = "my.site",
-                             token = Sys.getenv("NETLIFY_PAT")) |>
+yay::netlify_dns_records_get(domain = "my.site") |>
   dplyr::filter(!managed) |>
-  yay::netlify_dns_records_delete(domain = "my.site",
-                                  token = Sys.getenv("NETLIFY_PAT"))}
+  yay::netlify_dns_records_delete(domain = "my.site")}
 }
 \seealso{
 Other Netlify functions:

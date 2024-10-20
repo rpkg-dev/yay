@@ -30,7 +30,7 @@ A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{version_n
 }
 \description{
 Uses \code{\link[gh:gh]{gh::gh()}} to fetch all available \href{https://docs.github.com/repositories/releasing-projects-on-github}{releases} of the specified GitHub repository
-via \href{https://docs.github.com/en/rest/releases/releases#list-releases}{GitHub's REST API} and returns them as a \link[tibble:tbl_df-class]{tibble} containing the
+via \href{https://docs.github.com/en/rest/releases/releases#list-releases}{GitHub's RESTful API} and returns them as a \link[tibble:tbl_df-class]{tibble} containing the
 columns \code{id}, \code{version_nr}, \code{is_pre_release} and \code{is_draft}.
 }
 \examples{

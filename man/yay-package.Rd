@@ -8,6 +8,17 @@
 \description{
 A delightful mix of convenience functions designed to put a smile on your face during typical R workflows.
 }
+\section{Package configuration}{
+
+
+Some of yay's functionality is controlled via package-specific global configuration which can either be set via \href{https://rdrr.io/r/base/options.html}{R options} or \href{https://en.wikipedia.org/wiki/Environment_variable}{environment variables} (the former take precedence). This configuration includes:\tabular{llll}{
+   \strong{Description} \tab \strong{R option} \tab \strong{Environment variable} \tab \strong{Default value} \cr
+   \href{https://docs.netlify.com/api/get-started/#authentication}{Netlify.com personal access token} used for authentication in the \href{https://yay.rpkg.dev/reference/index.html#netlify}{\verb{netlify_*()} functions}. \tab \code{yay.netlify_token} \tab \code{R_YAY_NETLIFY_TOKEN} \tab  \cr
+   \href{https://porkbun.com/api/json/v3/documentation#Authentication}{Porkbun.com API key} used for authentication in the \href{https://yay.rpkg.dev/reference/index.html#porkbun}{\verb{porkbun_*()} functions}. \tab \code{yay.porkbun_api_key} \tab \code{R_YAY_PORKBUN_API_KEY} \tab  \cr
+   \href{https://porkbun.com/api/json/v3/documentation#Authentication}{Porkbun.com secret API key} used for authentication in the \href{https://yay.rpkg.dev/reference/index.html#porkbun}{\verb{porkbun_*()} functions}. \tab \code{yay.porkbun_secret_api_key} \tab \code{R_YAY_PORKBUN_SECRET_API_KEY} \tab  \cr
+}
+}
+
 \seealso{
 Useful links:
 \itemize{
