@@ -122,12 +122,18 @@ reason_pkg_required_gh <- "for yay's `gh_*()` functions, but is not installed."
 unicode_ellipsis <- "\u2026"
 
 as_dns_records <- function(records,
-                           registrar) {
+                           registrar = c("netlify", "porkbun"),
+                           check_record_types = TRUE) {
   
+  registrar <- rlang::arg_match0(arg = registrar,
+                                 values = registrar)
   checkmate::assert_data_frame(records,
                                row.names = "unique")
-  checkmate::assert_subset(records$type,
-                           choices = dns_record_types[[registrar]])
+  
+  if (check_record_types) {
+    checkmate::assert_subset(records$type,
+                             choices = dns_record_types[[registrar]])
+  }
   
   # ensure all required cols are present
   missing_col_names <- setdiff(c("type", "hostname", "value"),
@@ -150,8 +156,7 @@ as_dns_records <- function(records,
   cols_dns_records_registrar <- get(paste0("cols_dns_records_", registrar))
   
   # complement missing optional columns
-  records <-
-    cols_dns_records_registrar |>
+  cols_dns_records_registrar |>
     dplyr::filter(is_standard) %$%
     key |>
     setdiff(colnames(records)) |>
@@ -160,10 +165,8 @@ as_dns_records <- function(records,
     purrr::list_cbind() |>
     pal::when(ncol(.) > 0L ~ dplyr::cross_join(x = records,
                                                y = .),
-              ~ records)
-  
-  # coerce to target types
-  records |>
+              ~ records) |>
+    # coerce to target types
     dplyr::mutate(dplyr::across(.cols = any_of(cols_dns_records_registrar$key),
                                 .fns = \(x) {
                                   .Primitive(paste0("as.", cols_dns_records_registrar$type[cols_dns_records_registrar$key == dplyr::cur_column()]))(x)
@@ -933,7 +936,10 @@ netlify_dns_records_get <- function(domain,
     purrr::map_dfr(tibble::as_tibble_row) |>
     # canonicalize key order
     dplyr::relocate(any_of(cols_dns_records_netlify$key)) |>
-    dplyr::arrange(type, hostname, value)
+    dplyr::arrange(type, hostname, value) |>
+    # check and normalize cols (just in case since Netlify's API should already return the fields in the proper types)
+    as_dns_records(registrar = "netlify",
+                   check_record_types = FALSE)
 }
 
 #' Set Netlify DNS records
@@ -1176,7 +1182,9 @@ porkbun_dns_records_get <- function(domain,
     # canonicalize key order
     dplyr::relocate(any_of(cols_dns_records_porkbun$key)) %>%
     dplyr::arrange(!!!rlang::syms(intersect(c("type", "hostname", "value"),
-                                            colnames(.))))
+                                            colnames(.)))) |>
+    # normalize cols
+    as_dns_records(registrar = "porkbun")
 }
 
 #' Set Porkbun DNS records
