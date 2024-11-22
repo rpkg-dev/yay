@@ -32,8 +32,9 @@ revision expression.}
 A character scalar if \code{path} refers to a text file, otherwise a raw vector.
 }
 \description{
-Downloads the file under the specified path from a GitLab repository via \href{https://docs.gitlab.com/ee/api/rest/}{GitLab's v4 RESTful API} and returns its
-content.
+Downloads the file under the specified path from a GitLab repository via the
+\href{https://docs.gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository}{\code{GET /projects/{id}/repository/files/{path}/raw}} endpoint of GitLab's v4
+RESTful API and returns its content.
 }
 \examples{
 yay::gl_file_raw(path = "DESCRIPTION",

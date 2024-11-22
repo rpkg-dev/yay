@@ -1858,8 +1858,9 @@ gl_file_meta <- function(path,
 
 #' Read in a file from a GitLab repository
 #'
-#' Downloads the file under the specified path from a GitLab repository via [GitLab's v4 RESTful API](https://docs.gitlab.com/ee/api/rest/) and returns its
-#' content.
+#' Downloads the file under the specified path from a GitLab repository via the
+#' [`GET /projects/{id}/repository/files/{path}/raw`](https://docs.gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository) endpoint of GitLab's v4
+#' RESTful API and returns its content.
 #'
 #' @inheritParams pal::req_cached
 #' @param path File path, relative to the repository root. A character scalar.
