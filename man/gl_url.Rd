@@ -9,6 +9,7 @@ gl_url(
   ...,
   ref = gl_branch_default(id_proj = id_proj, base_url = base_url, token = token,
     max_tries = max_tries),
+  force_branch_ref = FALSE,
   base_url = pal::pkg_config_val("gitlab_base_url"),
   token = pal::pkg_config_val("gitlab_token"),
   max_tries = 3L

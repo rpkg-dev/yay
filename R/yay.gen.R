@@ -2101,6 +2101,7 @@ gl_file_write <- function(content,
     link <- gl_url(id_proj = id_proj,
                    path,
                    ref = branch,
+                   force_branch_ref = TRUE,
                    base_url = base_url,
                    token = token,
                    max_tries = max_tries)
@@ -2127,6 +2128,7 @@ gl_file_write <- function(content,
       link <- gl_url(id_proj = id_proj,
                      path,
                      ref = branch,
+                     force_branch_ref = TRUE,
                      base_url = base_url,
                      token = token,
                      max_tries = max_tries)
@@ -2182,18 +2184,22 @@ gl_url <- function(id_proj,
                                            base_url = base_url,
                                            token = token,
                                            max_tries = max_tries),
+                   force_branch_ref = FALSE,
                    base_url = pal::pkg_config_val("gitlab_base_url"),
                    token = pal::pkg_config_val("gitlab_token"),
                    max_tries = 3L) {
   
   checkmate::assert_string(ref)
+  checkmate::assert_flag(force_branch_ref)
   
   gl_project(id_proj = id_proj,
              base_url = base_url,
              token = token,
              max_tries = max_tries) |>
     purrr::chuck("web_url") |>
-    paste0(fs::path("-/tree", ref, ..., "?ref_type=heads"))
+    paste0(fs::path("/-/tree", ref, ..., ifelse(force_branch_ref,
+                                                "?ref_type=heads",
+                                                "")))
 }
 
 #' Replace matched patterns in strings _verbosely_
