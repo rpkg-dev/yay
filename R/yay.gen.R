@@ -1633,6 +1633,569 @@ gh_release_latest <- function(owner,
     gh_release_as_tibble()
 }
 
+gl_api_req <- function(path,
+                       method = c("GET", "CONNECT", "DELETE", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE"),
+                       url_params = NULL,
+                       body_json = NULL,
+                       auto_unbox = TRUE,
+                       base_url = pal::pkg_config_val("gitlab_base_url"),
+                       token = pal::pkg_config_val("gitlab_token"),
+                       max_tries = 3L) {
+  
+  checkmate::assert_string(path)
+  method <- rlang::arg_match(method)
+  checkmate::assert_list(url_params,
+                         null.ok = TRUE,
+                         any.missing = FALSE,
+                         names = "named")
+  checkmate::assert_flag(auto_unbox)
+  checkmate::assert_string(base_url)
+  checkmate::assert_string(token)
+  checkmate::assert_count(max_tries,
+                          positive = TRUE)
+  # tweak path slashes
+  path %<>% stringr::str_replace(pattern = "^/+",
+                                 replacement = "")
+  base_url %<>% stringr::str_replace(pattern = "(/+)?$",
+                                     replacement = "/")
+  req <-
+    httr2::request(base_url = paste0(base_url, path)) |>
+    httr2::req_method(method = method) |>
+    httr2::req_headers(`PRIVATE-TOKEN` = token,
+                       .redact = "PRIVATE-TOKEN") |>
+    httr2::req_retry(max_tries = max_tries) |>
+    httr2::req_error(body = \(resp) {
+      
+      if (httr2::resp_has_body(resp)) {
+        return(httr2::resp_body_json(resp)$message)
+      }
+      
+      NULL
+    })
+  
+  if (length(url_params) > 0L) {
+    # convert non-chr param vals to JSON for convenience (`httr2::req_url_query()` just forwards everything as chr)
+    url_params %<>% purrr::map_if(.p = \(x) !("AsIs" %in% class(x)) && !is.character(x),
+                                  .f = \(x) jsonlite::toJSON(x = x,
+                                                             auto_unbox = TRUE))
+    req %<>% httr2::req_url_query(!!!url_params)
+  }
+  
+  if (length(body_json) > 0L) {
+    checkmate::assert_list(body_json)
+    req %<>% httr2::req_body_json(data = body_json,
+                                  auto_unbox = auto_unbox)
+  }
+  
+  req
+}
+
+gl_branch_default <- function(id_proj,
+                              base_url = pal::pkg_config_val("gitlab_base_url"),
+                              token = pal::pkg_config_val("gitlab_token"),
+                              max_tries = 3L) {
+  
+  gl_project(id_proj = id_proj,
+             base_url = base_url,
+             token = token,
+             max_tries = max_tries) |>
+    purrr::chuck("default_branch")
+}
+
+gl_file <- function(path,
+                    id_proj,
+                    ref = gl_branch_default(id_proj = id_proj,
+                                            base_url = base_url,
+                                            token = token,
+                                            max_tries = max_tries),
+                    base_url = pal::pkg_config_val("gitlab_base_url"),
+                    token = pal::pkg_config_val("gitlab_token"),
+                    max_tries = 3L) {
+  
+  gl_file_req(method = "GET",
+              path = path,
+              id_proj = id_proj,
+              ref = ref,
+              base_url = base_url,
+              token = token,
+              max_tries = max_tries) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
+}
+
+gl_file_content <- function(path,
+                            id_proj,
+                            as_chr = FALSE,
+                            base_url = pal::pkg_config_val("gitlab_base_url"),
+                            token = pal::pkg_config_val("gitlab_token"),
+                            max_tries = 3L) {
+  
+  checkmate::assert_flag(as_chr)
+  
+  gl_file(path = path,
+          id_proj = id_proj,
+          base_url = base_url,
+          token = token,
+          max_tries = max_tries) |>
+    purrr::chuck("content") |>
+    base64enc::base64decode() |>
+    pal::when(as_chr ~ rawToChar(.),
+              ~ .)
+}
+
+gl_file_create <- function(content,
+                           path,
+                           id_proj,
+                           start_branch = gl_branch_default(id_proj = id_proj,
+                                                            base_url = base_url,
+                                                            token = token,
+                                                            max_tries = max_tries),
+                           branch = start_branch,
+                           commit_message = "auto: create file via yay R pkg",
+                           author_email = NULL,
+                           author_name = NULL,
+                           encoding = c("text", "base64"),
+                           execute_filemode = FALSE,
+                           base_url = pal::pkg_config_val("gitlab_base_url"),
+                           token = pal::pkg_config_val("gitlab_token"),
+                           max_tries = 3L) {
+  
+  checkmate::assert_string(content)
+  checkmate::assert_string(start_branch,
+                           null.ok = TRUE)
+  checkmate::assert_string(branch)
+  checkmate::assert_string(commit_message)
+  checkmate::assert_string(author_email,
+                           null.ok = TRUE)
+  checkmate::assert_string(author_name,
+                           null.ok = TRUE)
+  encoding <- rlang::arg_match(encoding)
+  checkmate::assert_flag(execute_filemode)
+  
+  gl_file_req(method = "POST",
+              path = path,
+              id_proj = id_proj,
+              ref = NULL,
+              body_json = purrr::compact(list(branch = branch,
+                                              content = content,
+                                              commit_message = commit_message,
+                                              author_email = author_email,
+                                              author_name = author_name,
+                                              encoding = encoding,
+                                              execute_filemode = execute_filemode,
+                                              start_branch = start_branch)),
+              base_url = base_url,
+              token = token,
+              max_tries = max_tries) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
+}
+
+gl_file_exists <- function(path,
+                           id_proj,
+                           ref = gl_branch_default(id_proj = id_proj,
+                                                   base_url = base_url,
+                                                   token = token,
+                                                   max_tries = max_tries),
+                           base_url = pal::pkg_config_val("gitlab_base_url"),
+                           token = pal::pkg_config_val("gitlab_token"),
+                           max_tries = 3L) {
+  
+  result <- tryCatch(expr = httr2::req_perform(req = gl_file_req(method = "HEAD",
+                                                                 path = path,
+                                                                 id_proj = id_proj,
+                                                                 ref = ref,
+                                                                 base_url = base_url,
+                                                                 token = token,
+                                                                 max_tries = max_tries)),
+                     httr2_http_404 = \(cnd) FALSE)
+  
+  if (!isFALSE(result)) {
+    result <- TRUE
+  }
+  
+  result
+}
+
+gl_file_meta <- function(path,
+                         attribute = c("file_name",
+                                       "file_path",
+                                       "size",
+                                       "encoding",
+                                       "content_sha256",
+                                       "ref",
+                                       "blob_id",
+                                       "commit_id",
+                                       "last_commit_id",
+                                       "execute_filemode"),
+                         id_proj,
+                         ref = gl_branch_default(id_proj = id_proj,
+                                                 base_url = base_url,
+                                                 token = token,
+                                                 max_tries = max_tries),
+                         base_url = pal::pkg_config_val("gitlab_base_url"),
+                         token = pal::pkg_config_val("gitlab_token"),
+                         max_tries = 3L) {
+  
+  attribute <- rlang::arg_match(attribute)
+  
+  result <- tryCatch(expr = httr2::req_perform(req = gl_file_req(method = "HEAD",
+                                                                 path = path,
+                                                                 id_proj = id_proj,
+                                                                 ref = ref,
+                                                                 base_url = base_url,
+                                                                 token = token,
+                                                                 max_tries = max_tries)),
+                     httr2_http_404 = \(cnd) NULL)
+  
+  if (!is.null(result)) {
+    rlang::check_installed("heck", reason = pal::reason_pkg_required())
+    result %<>% httr2::resp_header(header = paste0("X-Gitlab-", heck::to_train_case(attribute)))
+  }
+  
+  result
+}
+
+#' Read in a file from a GitLab repository
+#'
+#' Downloads the file under the specified path from a GitLab repository via [GitLab's v4 RESTful API](https://docs.gitlab.com/ee/api/rest/) and returns its
+#' content.
+#'
+#' @inheritParams pal::req_cached
+#' @param path File path, relative to the repository root. A character scalar.
+#' @param id_proj GitLab project identifier. An integerish number.
+#' @param ref [Git revision expression](https://git-scm.com/docs/revisions#_specifying_revisions) matching the desired Git tree object, e.g. a ref name (branch,
+#'   tag, etc.), a commit identifier, or another symbolic reference like `"HEAD~10"`. A character scalar. Note that the GitLab API doesn't support every type of
+#'   revision expression.
+#' @param base_url Base URL to the GitLab v4 RESTful API root.
+#' @param token [GitLab access token](https://docs.gitlab.com/ee/api/rest/authentication.html) used for authentication
+#'
+#' @return A character scalar if `path` refers to a text file, otherwise a raw vector.
+#' @family gitlabr
+#' @export
+#'
+#' @examples
+#' yay::gl_file_raw(path = "DESCRIPTION",
+#'                  id_proj = 24995012) |>
+#'   cat()
+gl_file_raw <- function(path,
+                        id_proj,
+                        ref = NULL,
+                        base_url = pal::pkg_config_val("gitlab_base_url"),
+                        token = pal::pkg_config_val("gitlab_token"),
+                        max_tries = 3L) {
+  result <-
+    gl_file_req(method = "GET",
+                path = path,
+                id_proj = id_proj,
+                ref = ref,
+                base_url = base_url,
+                token = token,
+                max_tries = max_tries) |>
+    httr2::req_url_path_append("raw") |>
+    httr2::req_perform()
+  
+  if (httr2::resp_content_type(result) == "text/plain") {
+    result %<>% httr2::resp_body_string()
+  } else {
+    result %<>% httr2::resp_body_raw()
+  }
+  
+  result
+}
+
+gl_file_req <- function(method,
+                        path,
+                        id_proj,
+                        ref = NULL,
+                        body_json = NULL,
+                        base_url = pal::pkg_config_val("gitlab_base_url"),
+                        token = pal::pkg_config_val("gitlab_token"),
+                        max_tries = 3L) {
+  
+  checkmate::assert_string(path)
+  checkmate::assert_int(id_proj)
+  checkmate::assert_string(ref,
+                           null.ok = TRUE)
+  
+  gl_api_req(path = glue::glue("/projects/{id_proj}/repository/files/", utils::URLencode(path, reserved = TRUE)),
+             method = method,
+             url_params = purrr::compact(list(ref = ref)),
+             body_json = body_json,
+             base_url = base_url,
+             token = token,
+             max_tries = max_tries)
+}
+
+gl_file_update <- function(content,
+                           path,
+                           id_proj,
+                           start_branch = gl_branch_default(id_proj = id_proj,
+                                                            base_url = base_url,
+                                                            token = token,
+                                                            max_tries = max_tries),
+                           branch = start_branch,
+                           commit_message = "auto: update file via yay R pkg",
+                           author_email = NULL,
+                           author_name = NULL,
+                           encoding = c("text", "base64"),
+                           execute_filemode = FALSE,
+                           last_commit_id = NULL,
+                           base_url = pal::pkg_config_val("gitlab_base_url"),
+                           token = pal::pkg_config_val("gitlab_token"),
+                           max_tries = 3L) {
+  
+  checkmate::assert_string(content)
+  checkmate::assert_string(branch)
+  checkmate::assert_string(commit_message)
+  checkmate::assert_string(author_email,
+                           null.ok = TRUE)
+  checkmate::assert_string(author_name,
+                           null.ok = TRUE)
+  encoding <- rlang::arg_match(encoding)
+  checkmate::assert_flag(execute_filemode)
+  checkmate::assert_string(last_commit_id,
+                           null.ok = TRUE)
+  checkmate::assert_string(start_branch,
+                           null.ok = TRUE)
+  
+  gl_file_req(method = "PUT",
+              path = path,
+              id_proj = id_proj,
+              ref = NULL,
+              body_json = purrr::compact(list(branch = branch,
+                                              content = content,
+                                              commit_message = commit_message,
+                                              author_email = author_email,
+                                              author_name = author_name,
+                                              encoding = encoding,
+                                              execute_filemode = execute_filemode,
+                                              last_commit_id = last_commit_id,
+                                              start_branch = start_branch)),
+              base_url = base_url,
+              token = token,
+              max_tries = max_tries) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
+}
+
+#' Write file to GitLab repository
+#'
+#' Uploads a file to a GitLab repository via [GitLab's v4 RESTful API](https://docs.gitlab.com/ee/api/rest/).
+#'
+#' To save up to two additional `HEAD` requests, set `start_branch` and `last_commit_id` explicitly. Setting `last_commit_id = NULL` is fine as long as file
+#' writes are part of a controlled, single-user process where concurrency is not a concern.
+#'
+#' @inheritParams gl_file_raw
+#' @param content File content, as a character scalar for text files, or a [raw vector][raw] for binary files. Or the path to a local file as a character scalar
+#'   if `from_file = TRUE`.
+#' @param start_branch Name of the base branch to create `branch` from if it doesn't already exist.
+#' @param branch Git branch name to upload the file to.
+#' @param from_file Whether or not `content` indicates the path to a local file instead of the actual file content.
+#' @param overwrite Whether or not to overwrite an already existing file. Unless `force = TRUE`, the file is only overwritten if it is not identical to
+#'   `content`.
+#' @param force Whether or not to overwrite an already existing file even if it is identical to `content`.
+#' @param commit_message Git commit message.
+#' @param author_email Git commit author's email address. `NULL` means to default to the `token` owner.
+#' @param author_name Git commit author's name. `NULL` means to default to the `token` owner.
+#' @param execute_filemode Whether or not to mark the uploaded file as executable,
+#' @param last_commit_id Last known file commit identifier. If provided (and valid), GitLab won't write to the file if a commit made after `last_commit_id` has
+#'   modified the file. Intended to avoid concurrency issues (e.g. from CI pipelines). `NULL` means to skip the check.
+#' @param quiet `r pkgsnip::param_lbl("quiet")`
+#'
+#' @return `path`, invisibly.
+#' @family gitlabr
+#' @export
+gl_file_write <- function(content,
+                          path,
+                          id_proj,
+                          start_branch = gl_branch_default(id_proj = id_proj,
+                                                           base_url = base_url,
+                                                           token = token,
+                                                           max_tries = max_tries),
+                          branch = start_branch,
+                          from_file = FALSE,
+                          overwrite = TRUE,
+                          force = FALSE,
+                          commit_message = "auto: write file via yay R pkg",
+                          author_email = NULL,
+                          author_name = NULL,
+                          execute_filemode = FALSE,
+                          last_commit_id = gl_file_meta(path = path,
+                                                        attribute = "last_commit_id",
+                                                        id_proj = id_proj,
+                                                        ref = branch,
+                                                        base_url = base_url,
+                                                        token = token,
+                                                        max_tries = max_tries),
+                          base_url = pal::pkg_config_val("gitlab_base_url"),
+                          token = pal::pkg_config_val("gitlab_token"),
+                          max_tries = 3L,
+                          quiet = FALSE) {
+  
+  checkmate::assert_flag(from_file)
+  checkmate::assert_flag(overwrite)
+  checkmate::assert_flag(force)
+  checkmate::assert_flag(quiet)
+  
+  if (force && !overwrite) {
+    cli::cli_abort("{.arg overwrite} cannot be {.val FALSE} when {.arg force} is {.val TRUE}.")
+  }
+  
+  is_raw <- is.raw(content)
+  
+  if (is_raw && from_file) {
+    cli::cli_abort("{.arg content} must be a character scalar path when {.arg from_file} is {.val {from_file}}.")
+  }
+  if (!is_raw) {
+    checkmate::assert_string(content)
+  }
+  
+  # return early if file hasn't changed ----
+  exists_file <- gl_file_exists(path = path,
+                                id_proj = id_proj,
+                                ref = branch,
+                                base_url = base_url,
+                                token = token,
+                                max_tries = max_tries)
+  if (!force && exists_file) {
+    rlang::check_installed("digest", reason = pal::reason_pkg_required())
+    hash_new <- ifelse(from_file,
+                       digest::digest(algo = "sha256",
+                                      file = content),
+                       digest::digest(algo = "sha256",
+                                      object = content,
+                                      serialize = FALSE))
+    if (!force && identical(hash_new,
+                            gl_file_meta(path = path,
+                                         attribute = "content_sha256",
+                                         id_proj = id_proj,
+                                         ref = branch,
+                                         base_url = base_url,
+                                         token = token,
+                                         max_tries = max_tries))) {
+      if (!quiet) {
+        cli::cli_alert_info(paste0("The new file contents are identical to the existing file contents and thus no data was uploaded to the GitLab repository. ",
+                                   "Use {.code force = TRUE} to overwrite the file anyway."))
+      }
+      return(invisible(path))
+    }
+  }
+  
+  # read content and set encoding ----
+  if (from_file) {
+    content %<>% brio::read_file_raw()
+    is_raw <- TRUE
+  }
+
+  if (is_raw) {
+    rlang::check_installed("base64enc", reason = pal::reason_pkg_required())
+    content %<>% base64enc::base64encode()
+  }
+  
+  encoding = ifelse(is_raw,
+                    "base64",
+                    "text")
+  # upload file ----
+  if (!quiet) {
+    link <- gl_url(id_proj = id_proj,
+                   path,
+                   ref = branch,
+                   base_url = base_url,
+                   token = token,
+                   max_tries = max_tries)
+    cli_id <- pal::cli_progress_step_quick(msg = paste0("Uploading file to GitLab project {.val {id_proj}} under path {.href [{path}]({link})}."))
+  }
+  
+  if (exists_file) {
+    if (overwrite) {
+      gl_file_update(content = content,
+                     path = path,
+                     id_proj = id_proj,
+                     branch = branch,
+                     commit_message = commit_message,
+                     author_email = author_email,
+                     author_name = author_name,
+                     encoding = encoding,
+                     execute_filemode = execute_filemode,
+                     last_commit_id = last_commit_id,
+                     start_branch = start_branch,
+                     base_url = base_url,
+                     token = token,
+                     max_tries = max_tries)
+    } else {
+      link <- gl_url(id_proj = id_proj,
+                     path,
+                     ref = branch,
+                     base_url = base_url,
+                     token = token,
+                     max_tries = max_tries)
+      cli::cli_alert_info(text = "File {.href [{path}]({link})} already exists on GitLab. Set {.code overwrite = TRUE} in order to overwrite it.")
+    }
+  } else {
+    gl_file_create(content = content,
+                   path = path,
+                   id_proj = id_proj,
+                   branch = branch,
+                   commit_message = commit_message,
+                   author_email = author_email,
+                   author_name = author_name,
+                   encoding = encoding,
+                   execute_filemode = execute_filemode,
+                   start_branch = start_branch,
+                   base_url = base_url,
+                   token = token,
+                   max_tries = max_tries)
+  }
+  
+  if (!quiet) {
+    cli::cli_progress_done(id = cli_id)
+  }
+  
+  invisible(path)
+}
+
+gl_project <- function(id_proj,
+                       base_url = pal::pkg_config_val("gitlab_base_url"),
+                       token = pal::pkg_config_val("gitlab_token"),
+                       max_tries = 3L) {
+  
+  gl_api_req(path = glue::glue("/projects/{id_proj}"),
+             method = "GET",
+             base_url = base_url,
+             token = token,
+             max_tries = max_tries) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
+}
+
+#' Assemble GitLab repository URL
+#'
+#' @param ... Optional path components added to the repository base URL.
+#'
+#' @return A character scalar.
+#' @family gitlabr
+#' @keywords internal
+gl_url <- function(id_proj,
+                   ...,
+                   ref = gl_branch_default(id_proj = id_proj,
+                                           base_url = base_url,
+                                           token = token,
+                                           max_tries = max_tries),
+                   base_url = pal::pkg_config_val("gitlab_base_url"),
+                   token = pal::pkg_config_val("gitlab_token"),
+                   max_tries = 3L) {
+  
+  checkmate::assert_string(ref)
+  
+  gl_project(id_proj = id_proj,
+             base_url = base_url,
+             token = token,
+             max_tries = max_tries) |>
+    purrr::chuck("web_url") |>
+    paste0(fs::path("-/tree", ref, ..., "?ref_type=heads"))
+}
+
 #' Replace matched patterns in strings _verbosely_
 #'
 #' Applies a series of regular-expression-replacement pairs to one or more strings. All performed replacements are displayed on the console by default

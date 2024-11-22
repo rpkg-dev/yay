@@ -27,18 +27,28 @@ pkg_config <-
                  default_value_dynamic = character(),
                  require = logical(),
                  description = character()) |>
+  tibble::add_row(key = "gitlab_base_url",
+                  default_value = list("https://gitlab.com/api/v4"),
+                  require = TRUE,
+                  description = paste0("Base URL of the GitLab v4 RESTful API server to be accessed via the ",
+                                       "[`gl_*()` functions](https://yay.rpkg.dev/reference/index.html#gitlabr).")) |>
+  tibble::add_row(key = "gitlab_token",
+                  default_value_dynamic = 'Sys.getenv("GITLAB_COM_TOKEN")',
+                  require = TRUE,
+                  description = paste0("[GitLab access token](https://docs.gitlab.com/ee/api/rest/authentication.html) used for authentication in the ",
+                                       "[`gl_*()` functions](https://yay.rpkg.dev/reference/index.html#gitlabr).")) |>
   tibble::add_row(key = "netlify_token",
+                  require = TRUE,
                   description = paste0("[Netlify personal access token](https://docs.netlify.com/api/get-started/#authentication) used for authentication ",
-                                       "in the [`netlify_*()` functions](https://yay.rpkg.dev/reference/index.html#netlify)."),
-                  require = TRUE) |>
+                                       "in the [`netlify_*()` functions](https://yay.rpkg.dev/reference/index.html#netlify).")) |>
   tibble::add_row(key = "porkbun_api_key",
+                  require = TRUE,
                   description = paste0("[Porkbun API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in the ",
-                                       "[`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun)."),
-                  require = TRUE) |>
+                                       "[`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun).")) |>
   tibble::add_row(key = "porkbun_secret_api_key",
+                  require = TRUE,
                   description = paste0("[Porkbun secret API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication in ",
-                                       "the [`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun)."),
-                  require = TRUE)
+                                       "the [`porkbun_*()` functions](https://yay.rpkg.dev/reference/index.html#porkbun)."))
 ```
 
 # Write data

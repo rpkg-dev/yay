@@ -39,6 +39,12 @@ reference:
   - gh_text_files
   - gh_releases
   - gh_release_latest
+- subtitle: gitlabr
+  desc: Extending the [**gitlabr**](https://thinkr-open.github.io/gitlabr/) package
+    that implements [GitLab's v4 RESTful API](https://docs.gitlab.com/ee/api/rest/).
+- contents:
+  - gl_file_raw
+  - gl_file_write
 - subtitle: stringr
   desc: |-
     Extending the [**stringr**](https://stringr.tidyverse.org/) package, that in turn is built on top of the [stringi](https://stringi.gagolewski.com/) package,
