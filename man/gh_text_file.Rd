@@ -2,7 +2,7 @@
 % Please edit documentation in R/yay.gen.R
 \name{gh_text_file}
 \alias{gh_text_file}
-\title{Read in a text file from a GitHub repository}
+\title{Read in text file from GitHub repository}
 \usage{
 gh_text_file(owner, name, path, rev = "HEAD")
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/yay.gen.R
 \name{gh_text_files}
 \alias{gh_text_files}
-\title{Read in text files from a GitHub repository}
+\title{Read in text files from GitHub repository}
 \usage{
 gh_text_files(owner, name, path = ".", rev = "HEAD", recurse = FALSE)
 }

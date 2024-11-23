@@ -2,7 +2,7 @@
 % Please edit documentation in R/yay.gen.R
 \name{gh_dir_ls}
 \alias{gh_dir_ls}
-\title{List files and directories in a GitHub repository}
+\title{List files and directories in GitHub repository}
 \usage{
 gh_dir_ls(
   owner,

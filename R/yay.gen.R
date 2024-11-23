@@ -1323,7 +1323,7 @@ porkbun_dns_records_delete <- function(records,
   invisible(records)
 }
 
-#' List files and directories in a GitHub repository
+#' List files and directories in GitHub repository
 #'
 #' Lists file and directory names found under
 #' [`rev:path`](https://git-scm.com/docs/revisions#Documentation/revisions.txt-emltrevgtltpathgtemegemHEADREADMEememmasterREADMEem) in a GitHub repository via
@@ -1437,7 +1437,7 @@ gh_dir_ls <- function(owner,
   sort(result)
 }
 
-#' Read in a text file from a GitHub repository
+#' Read in text file from GitHub repository
 #'
 #' Downloads the text file under the specified path from a GitHub repository via [GitHub's GraphQL
 #' API](https://docs.github.com/en/graphql/overview/about-the-graphql-api) and returns its content as a string.
@@ -1497,7 +1497,7 @@ gh_text_file <- function(owner,
   result
 }
 
-#' Read in text files from a GitHub repository
+#' Read in text files from GitHub repository
 #'
 #' @description
 #' Downloads all text files under the specified path from a GitHub repository via [GitHub's GraphQL
