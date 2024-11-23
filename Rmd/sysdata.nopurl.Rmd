@@ -27,16 +27,6 @@ pkg_config <-
                  default_value_dynamic = character(),
                  require = logical(),
                  description = character()) |>
-  tibble::add_row(key = "gitlab_base_url",
-                  default_value = list("https://gitlab.com/api/v4"),
-                  require = TRUE,
-                  description = paste0("Base URL of the GitLab v4 RESTful API server to be accessed via the ",
-                                       "[`gl_*()` functions](https://yay.rpkg.dev/reference/index.html#gitlabr).")) |>
-  tibble::add_row(key = "gitlab_token",
-                  default_value_dynamic = 'Sys.getenv("GITLAB_COM_TOKEN")',
-                  require = TRUE,
-                  description = paste0("[GitLab access token](https://docs.gitlab.com/ee/api/rest/authentication.html) used for authentication in the ",
-                                       "[`gl_*()` functions](https://yay.rpkg.dev/reference/index.html#gitlabr).")) |>
   tibble::add_row(key = "netlify_token",
                   require = TRUE,
                   description = paste0("[Netlify personal access token](https://docs.netlify.com/api/get-started/#authentication) used for authentication ",
