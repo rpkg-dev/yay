@@ -35,8 +35,6 @@ utils::globalVariables(names = c(".",
                                  "value",
                                  "version_nr"))
 
-this_pkg <- utils::packageName()
-
 ptype_dns_records <- tibble::tibble(type = character(),
                                     hostname = character(),
                                     value = character(),

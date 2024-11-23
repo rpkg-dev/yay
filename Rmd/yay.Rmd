@@ -36,10 +36,6 @@ utils::globalVariables(names = c(".",
 
 ## Constants
 
-```{r}
-this_pkg <- utils::packageName()
-```
-
 ### `ptype_dns_records`
 
 ```{r}
