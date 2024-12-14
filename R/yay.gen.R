@@ -681,7 +681,7 @@ deploy_static_site <- function(from_path,
 #' directory**!
 #' 
 #' @details
-#' `r pkgsnip::md_snip("rstudio_addin_hint")`
+#' `r pkgsnip::md_snip("rstudio_addin")`
 #'
 #' # Setting `to_path` via \R options
 #'

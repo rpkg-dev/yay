@@ -11,19 +11,20 @@ knitr::opts_knit$set(root.dir = getwd())
 
 # `r pal::desc_value("Package")`
 
-`r paste0('[![CRAN Status](https://r-pkg.org/badges/version/', pal::desc_value(key = "Package"), ')](https://cran.r-project.org/package=', pal::desc_value(key = "Package"), '){.pkgdown-release}')`
-
-`r pal::desc_value("Description")`
+```{r}
+#| label: pkg-desc
+#| child: !expr pkgsnip::snip_path("pkg-desc.Rmd")
+```
 
 This is arguably a [*low-cohesion*](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) package.
 
 ```{r}
-#| label: documentation
+#| label: pkg-doc
 #| eval: !expr '!isTRUE(getOption("pal.build_readme.is_pkgdown"))'
 #| results: asis
 #| echo: false
 
-pkgsnip::md_snip(id = "pkgdown_notice") %>%
+pkgsnip::md_snip(id = "pkgdown_site") %>%
   paste0("## Documentation\n\n",
          "[![Netlify Status](https://api.netlify.com/api/v1/badges/d6148c7f-0c73-4b79-9c8d-54a5a25e98f9/deploy-status)]",
          "(https://app.netlify.com/sites/yay-rpkg-dev/deploys)\n\n",
@@ -34,17 +35,17 @@ pkgsnip::md_snip(id = "pkgdown_notice") %>%
 ## Installation
 
 ```{r}
-#| label: install-snippet-dev
-#| child: !expr pkgsnip::snip_path("installation-notice_dev-version_gitlab.Rmd")
+#| label: pkg-instl-dev
+#| child: !expr pkgsnip::snip_path("pkg-instl-dev-gitlab.Rmd")
 ```
 
 ```{r}
-#| label: usage
+#| label: pkg-usage
 #| eval: !expr isTRUE(getOption("pal.build_readme.is_pkgdown"))
 #| results: asis
 #| echo: false
 
-pkgsnip::md_snip(id = "usage_notice") %>%
+pkgsnip::md_snip(id = "pkg_usage") %>%
   paste0("## Usage\n\n", .) %>%
   pal::cat_lines()
 ```
@@ -53,7 +54,7 @@ pkgsnip::md_snip(id = "usage_notice") %>%
 
 ```{r}
 #| label: pkg-config
-#| child: !expr pkgsnip::snip_path("pkg-config-notice.Rmd")
+#| child: !expr pkgsnip::snip_path("pkg-config.Rmd")
 ```
 
 ## Development
@@ -61,13 +62,13 @@ pkgsnip::md_snip(id = "usage_notice") %>%
 ### R Markdown format
 
 ```{r}
-#| label: rmd-format
-#| child: !expr pkgsnip::snip_path("rmd-package-notice.Rmd")
+#| label: pkgpurl
+#| child: !expr pkgsnip::snip_path("pkgpurl.Rmd")
 ```
 
 ### Coding style
 
 ```{r}
-#| label: coding-style
-#| child: !expr pkgsnip::snip_path("coding-style-notice.Rmd")
+#| label: pkg-code-style
+#| child: !expr pkgsnip::snip_path("pkg-code-style.Rmd")
 ```
