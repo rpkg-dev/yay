@@ -35,13 +35,13 @@ Note that nothing is returned in case of a \href{https://en.wikipedia.org/wiki/B
 \code{path}.
 }
 \examples{
-yay::gh_text_files(owner = "salim-b",
+yay::gh_text_files(owner = "rpkg-dev",
                    name = "pal",
                    path = "tests") |>
   str()
 
 # you have to opt-in into directory recursion
-yay::gh_text_files(owner = "salim-b",
+yay::gh_text_files(owner = "rpkg-dev",
                    name = "pal",
                    path = "tests",
                    recurse = TRUE) |>

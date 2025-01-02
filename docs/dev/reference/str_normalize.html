@@ -65,11 +65,10 @@ coercible to one.</p></dd>
 
 
 <dt id="arg-rules">rules<a class="anchor" aria-label="anchor" href="#arg-rules"></a></dt>
-<dd><p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> of regular expression patterns and replacements. It must have the columns <code>pattern</code> and <code>replacement</code>. <code>pattern</code>
-can optionally be a list column condensing multiple patterns to the same replacement rule. Patterns are interpreted as regular expressions as described
-in <code><a href="https://rdrr.io/pkg/stringi/man/about_search_regex.html" class="external-link">stringi::stringi-search-regex()</a></code>. Replacements are interpreted as-is, except that references of the form <code>\1</code>, <code>\2</code>, etc. will be replaced with the
-contents of the respective matched group (created in patterns using <code>()</code>). Pattern-replacement pairs are processed in the order given, meaning that first
-listed pairs are applied before later listed ones.</p></dd>
+<dd><p>A data frame of regular expression <code>pattern</code>s and <code>replacement</code>s. <code>pattern</code> can optionally be a list column condensing multiple patterns to the
+same replacement rule. Patterns are interpreted as regular expressions as described in <code><a href="https://rdrr.io/pkg/stringi/man/about_search_regex.html" class="external-link">stringi::stringi-search-regex()</a></code>. Replacements are interpreted
+as-is, except that references of the form <code>\1</code>, <code>\2</code>, etc. will be replaced with the contents of the respective matched group (created in patterns using
+<code>()</code>). Pattern-replacement pairs are processed in the order given, meaning that first listed pairs are applied before later listed ones.</p></dd>
 
 
 <dt id="arg-n-context-chrs">n_context_chrs<a class="anchor" aria-label="anchor" href="#arg-n-context-chrs"></a></dt>

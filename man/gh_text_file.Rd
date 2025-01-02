@@ -30,7 +30,7 @@ Note that nothing is returned in case of a \href{https://en.wikipedia.org/wiki/B
 \code{path}.
 }
 \examples{
-yay::gh_text_file(owner = "salim-b",
+yay::gh_text_file(owner = "rpkg-dev",
                   name = "pal",
                   path = "pal.Rproj",
                   rev = "HEAD~2") |>

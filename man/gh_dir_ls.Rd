@@ -45,20 +45,20 @@ Note that an empty character vector is returned in case \code{path} is invalid o
 }
 \examples{
 # you can opt-out from directory recursion
-yay::gh_dir_ls(owner = "salim-b",
+yay::gh_dir_ls(owner = "rpkg-dev",
                name = "pal",
                recurse = FALSE) |>
   pal::cat_lines()
 
 # you can list only files in a directory
-yay::gh_dir_ls(owner = "salim-b",
+yay::gh_dir_ls(owner = "rpkg-dev",
                name = "pal",
                path = "tests",
                incl_dirs = FALSE) |>
   pal::cat_lines()
 
 # or you can list only directories in a directory
-yay::gh_dir_ls(owner = "salim-b",
+yay::gh_dir_ls(owner = "rpkg-dev",
                name = "pal",
                path = "tests",
                incl_files = FALSE) |>

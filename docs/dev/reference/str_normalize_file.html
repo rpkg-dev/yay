@@ -66,11 +66,10 @@ modifying any files. Set <code>run_dry = FALSE</code> to apply the changes.</p>
 
 
 <dt id="arg-rules">rules<a class="anchor" aria-label="anchor" href="#arg-rules"></a></dt>
-<dd><p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> of regular expression patterns and replacements. It must have the columns <code>pattern</code> and <code>replacement</code>. <code>pattern</code>
-can optionally be a list column condensing multiple patterns to the same replacement rule. Patterns are interpreted as regular expressions as described
-in <code><a href="https://rdrr.io/pkg/stringi/man/about_search_regex.html" class="external-link">stringi::stringi-search-regex()</a></code>. Replacements are interpreted as-is, except that references of the form <code>\1</code>, <code>\2</code>, etc. will be replaced with the
-contents of the respective matched group (created in patterns using <code>()</code>). Pattern-replacement pairs are processed in the order given, meaning that first
-listed pairs are applied before later listed ones.</p></dd>
+<dd><p>A data frame of regular expression <code>pattern</code>s and <code>replacement</code>s. <code>pattern</code> can optionally be a list column condensing multiple patterns to the
+same replacement rule. Patterns are interpreted as regular expressions as described in <code><a href="https://rdrr.io/pkg/stringi/man/about_search_regex.html" class="external-link">stringi::stringi-search-regex()</a></code>. Replacements are interpreted
+as-is, except that references of the form <code>\1</code>, <code>\2</code>, etc. will be replaced with the contents of the respective matched group (created in patterns using
+<code>()</code>). Pattern-replacement pairs are processed in the order given, meaning that first listed pairs are applied before later listed ones.</p></dd>
 
 
 <dt id="arg-run-dry">run_dry<a class="anchor" aria-label="anchor" href="#arg-run-dry"></a></dt>
@@ -118,10 +117,10 @@ more performant, you probably want the former if you're using <code>"^"</code> o
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">category</span> <span class="op">==</span> <span class="st">"posix"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">yay</span><span class="fu">::</span><span class="fu">str_normalize_file</span><span class="op">(</span>path <span class="op">=</span> <span class="va">temp_file</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running in dry mode. Set `run_dry = FALSE` to actually modify any files.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Processing file <a href="file:///home/salim/Code/own/rpkg.dev/yay/docs/dev/reference/../../../../../../../../../tmp/Rtmp6KlU3U/file982db61d0c332"><span style="color: #0000BB;">../../../../../../../../../tmp/Rtmp6KlU3U/file982db61d0c332</span></a>……</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Processing file <a href="file:///home/salim/Code/own/rpkg.dev/yay/docs/dev/reference/../../../../../../../../../tmp/Rtmp0GM9d7/file2363d772157d8"><span style="color: #0000BB;">../../../../../../../../../tmp/Rtmp0GM9d7/file2363d772157d8</span></a>……</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1× <span style="color: #BB0000;">-</span> <span style="background-color: #000000;">…TINYFORMAT_H_INCLUDE</span><span style="background-color: #5F0000; text-decoration: line-through;">D</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #00BB00;">+</span> <span style="background-color: #000000;">…TINYFORMAT_H_INCLUDE</span><span style="background-color: #005F00;">\1\n</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Processing file <a href="file:///home/salim/Code/own/rpkg.dev/yay/docs/dev/reference/../../../../../../../../../tmp/Rtmp6KlU3U/file982db61d0c332"><span style="color: #0000BB;">../../../../../../../../../tmp/Rtmp6KlU3U/file982db61d0c332</span></a>…… done <span style="color: #B2B2B2;">[42ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Processing file <a href="file:///home/salim/Code/own/rpkg.dev/yay/docs/dev/reference/../../../../../../../../../tmp/Rtmp0GM9d7/file2363d772157d8"><span style="color: #0000BB;">../../../../../../../../../tmp/Rtmp0GM9d7/file2363d772157d8</span></a>…… done <span style="color: #B2B2B2;">[43ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

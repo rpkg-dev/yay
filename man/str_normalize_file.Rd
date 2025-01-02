@@ -16,11 +16,10 @@ str_normalize_file(
 \arguments{
 \item{path}{Paths to the text files. A character vector.}
 
-\item{rules}{A \link[tibble:tibble]{tibble} of regular expression patterns and replacements. It must have the columns \code{pattern} and \code{replacement}. \code{pattern}
-can optionally be a list column condensing multiple patterns to the same replacement rule. Patterns are interpreted as regular expressions as described
-in \code{\link[stringi:about_search_regex]{stringi::stringi-search-regex()}}. Replacements are interpreted as-is, except that references of the form \verb{\\1}, \verb{\\2}, etc. will be replaced with the
-contents of the respective matched group (created in patterns using \verb{()}). Pattern-replacement pairs are processed in the order given, meaning that first
-listed pairs are applied before later listed ones.}
+\item{rules}{A data frame of regular expression \code{pattern}s and \code{replacement}s. \code{pattern} can optionally be a list column condensing multiple patterns to the
+same replacement rule. Patterns are interpreted as regular expressions as described in \code{\link[stringi:about_search_regex]{stringi::stringi-search-regex()}}. Replacements are interpreted
+as-is, except that references of the form \verb{\\1}, \verb{\\2}, etc. will be replaced with the contents of the respective matched group (created in patterns using
+\verb{()}). Pattern-replacement pairs are processed in the order given, meaning that first listed pairs are applied before later listed ones.}
 
 \item{run_dry}{Whether or not to show replacements on the console only, without actually modifying any files. Implies \code{verbose = TRUE}.}
 

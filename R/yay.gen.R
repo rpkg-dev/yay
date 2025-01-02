@@ -2,7 +2,7 @@
 # See `README.md#r-markdown-format` for more information on the literate programming approach used applying the R Markdown format.
 
 # yay: Delightful Convenience Functions
-# Copyright (C) 2024 Salim Brüggemann
+# Copyright (C) 2025 Salim Brüggemann
 # 
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free
 # Software Foundation, either version 3 of the License, or any later version.
@@ -487,7 +487,7 @@ show_diff <- function(x,
 #' Writes an \R object – usually tabular data like a dataframe or [tibble][tibble::tibble()] – to a temporary spreadsheet and subsequently opens that
 #' spreadsheet in the system's default application using [xopen::xopen()]. The latter is usually equivalent to double-clicking on the file in a file browser.
 #'
-#' @param x A dataframe or [tibble][tibble::tibble()], or something coercible to.
+#' @param x A dataframe or something coercible to.
 #' @param format The spreadsheet format to use. One of
 #'   - `"csv"` for a [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values) file written using [readr::write_csv()]. The default.
 #'   - `"xlsx"` for an [Office Open XML](https://en.wikipedia.org/wiki/Office_Open_XML) file commonly used by Microsoft Excel 2007+, written using
@@ -1348,20 +1348,20 @@ porkbun_dns_records_delete <- function(records,
 #'
 #' @examples
 #' # you can opt-out from directory recursion
-#' yay::gh_dir_ls(owner = "salim-b",
+#' yay::gh_dir_ls(owner = "rpkg-dev",
 #'                name = "pal",
 #'                recurse = FALSE) |>
 #'   pal::cat_lines()
 #'
 #' # you can list only files in a directory
-#' yay::gh_dir_ls(owner = "salim-b",
+#' yay::gh_dir_ls(owner = "rpkg-dev",
 #'                name = "pal",
 #'                path = "tests",
 #'                incl_dirs = FALSE) |>
 #'   pal::cat_lines()
 #'
 #' # or you can list only directories in a directory
-#' yay::gh_dir_ls(owner = "salim-b",
+#' yay::gh_dir_ls(owner = "rpkg-dev",
 #'                name = "pal",
 #'                path = "tests",
 #'                incl_files = FALSE) |>
@@ -1457,7 +1457,7 @@ gh_dir_ls <- function(owner,
 #' @export
 #'
 #' @examples
-#' yay::gh_text_file(owner = "salim-b",
+#' yay::gh_text_file(owner = "rpkg-dev",
 #'                   name = "pal",
 #'                   path = "pal.Rproj",
 #'                   rev = "HEAD~2") |>
@@ -1517,13 +1517,13 @@ gh_text_file <- function(owner,
 #' @export
 #'
 #' @examples
-#' yay::gh_text_files(owner = "salim-b",
+#' yay::gh_text_files(owner = "rpkg-dev",
 #'                    name = "pal",
 #'                    path = "tests") |>
 #'   str()
 #' 
 #' # you have to opt-in into directory recursion
-#' yay::gh_text_files(owner = "salim-b",
+#' yay::gh_text_files(owner = "rpkg-dev",
 #'                    name = "pal",
 #'                    path = "tests",
 #'                    recurse = TRUE) |>
@@ -1910,11 +1910,10 @@ str_replace_file <- function(path,
 #' Applies a set of regular-expression-based text normalization rules to one or more strings. All performed replacements are displayed on the console by default
 #' (`verbose = TRUE`).
 #'
-#' @param rules A [tibble][tibble::tibble()] of regular expression patterns and replacements. It must have the columns `pattern` and `replacement`. `pattern`
-#'   can optionally be a list column condensing multiple patterns to the same replacement rule. Patterns are interpreted as regular expressions as described
-#'   in [stringi::stringi-search-regex()]. Replacements are interpreted as-is, except that references of the form `\1`, `\2`, etc. will be replaced with the
-#'   contents of the respective matched group (created in patterns using `()`). Pattern-replacement pairs are processed in the order given, meaning that first
-#'   listed pairs are applied before later listed ones.
+#' @param rules A data frame of regular expression `pattern`s and `replacement`s. `pattern` can optionally be a list column condensing multiple patterns to the
+#'   same replacement rule. Patterns are interpreted as regular expressions as described in [stringi::stringi-search-regex()]. Replacements are interpreted
+#'   as-is, except that references of the form `\1`, `\2`, etc. will be replaced with the contents of the respective matched group (created in patterns using
+#'   `()`). Pattern-replacement pairs are processed in the order given, meaning that first listed pairs are applied before later listed ones.
 #' @inheritParams str_replace_verbose
 #'
 #' @inherit str_replace_file return

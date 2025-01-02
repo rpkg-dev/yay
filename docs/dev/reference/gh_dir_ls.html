@@ -115,7 +115,7 @@ name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># you can opt-out from directory recursion</span></span></span>
-<span class="r-in"><span><span class="fu">yay</span><span class="fu">::</span><span class="fu">gh_dir_ls</span><span class="op">(</span>owner <span class="op">=</span> <span class="st">"salim-b"</span>,</span></span>
+<span class="r-in"><span><span class="fu">yay</span><span class="fu">::</span><span class="fu">gh_dir_ls</span><span class="op">(</span>owner <span class="op">=</span> <span class="st">"rpkg-dev"</span>,</span></span>
 <span class="r-in"><span>               name <span class="op">=</span> <span class="st">"pal"</span>,</span></span>
 <span class="r-in"><span>               recurse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">pal</span><span class="fu">::</span><span class="fu"><a href="https://pal.rpkg.dev/reference/cat_lines.html" class="external-link">cat_lines</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -140,7 +140,7 @@ name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code
 <span class="r-out co"><span class="r-pr">#&gt;</span> tests</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># you can list only files in a directory</span></span></span>
-<span class="r-in"><span><span class="fu">yay</span><span class="fu">::</span><span class="fu">gh_dir_ls</span><span class="op">(</span>owner <span class="op">=</span> <span class="st">"salim-b"</span>,</span></span>
+<span class="r-in"><span><span class="fu">yay</span><span class="fu">::</span><span class="fu">gh_dir_ls</span><span class="op">(</span>owner <span class="op">=</span> <span class="st">"rpkg-dev"</span>,</span></span>
 <span class="r-in"><span>               name <span class="op">=</span> <span class="st">"pal"</span>,</span></span>
 <span class="r-in"><span>               path <span class="op">=</span> <span class="st">"tests"</span>,</span></span>
 <span class="r-in"><span>               incl_dirs <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -159,7 +159,7 @@ name or another symbolic reference like <code>"HEAD@{yesterday}"</code> or <code
 <span class="r-out co"><span class="r-pr">#&gt;</span> tests/testthat/test-tibble.R</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># or you can list only directories in a directory</span></span></span>
-<span class="r-in"><span><span class="fu">yay</span><span class="fu">::</span><span class="fu">gh_dir_ls</span><span class="op">(</span>owner <span class="op">=</span> <span class="st">"salim-b"</span>,</span></span>
+<span class="r-in"><span><span class="fu">yay</span><span class="fu">::</span><span class="fu">gh_dir_ls</span><span class="op">(</span>owner <span class="op">=</span> <span class="st">"rpkg-dev"</span>,</span></span>
 <span class="r-in"><span>               name <span class="op">=</span> <span class="st">"pal"</span>,</span></span>
 <span class="r-in"><span>               path <span class="op">=</span> <span class="st">"tests"</span>,</span></span>
 <span class="r-in"><span>               incl_files <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>

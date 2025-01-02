@@ -7,7 +7,7 @@
 open_as_tmp_spreadsheet(x, format = c("csv", "xlsx"), ..., quiet = TRUE)
 }
 \arguments{
-\item{x}{A dataframe or \link[tibble:tibble]{tibble}, or something coercible to.}
+\item{x}{A dataframe or something coercible to.}
 
 \item{format}{The spreadsheet format to use. One of
 \itemize{
