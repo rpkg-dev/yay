@@ -72,7 +72,7 @@ cols_dns_records_netlify <-
   dplyr::filter(key != "target")
 
 cols_dns_records_porkbun <-
-  cols_dns_records |>
+  cols_dns_records |> # nolint: one_call_pipe_linter
   tibble::add_row(key = "id",
                   type = "character",
                   is_standard = FALSE,
@@ -345,6 +345,8 @@ perform_porkbun_req <- function(url,
 #'   dplyr::mutate(dplyr::across(c(cyl, gear),
 #'                               \(x) dplyr::if_else(x > 4, x * 2, x))) |>
 #'   yay::show_diff(mtcars)}
+
+# nolint start: cyclocomp_linter
 show_diff <- function(x,
                       y,
                       ignore_order = FALSE,
@@ -418,20 +420,20 @@ show_diff <- function(x,
                               ids = ids,
                               ordered = !ignore_order)
   
-  diff <- pal::is_equal_df(x = x,
-                           y = y,
-                           ignore_col_order = ignore_order,
-                           ignore_row_order = ignore_order,
-                           ignore_col_types = ignore_col_types,
-                           quiet = TRUE,
-                           return_waldo_compare = TRUE)
+  waldo_diff <- pal::is_equal_df(x = x,
+                                 y = y,
+                                 ignore_col_order = ignore_order,
+                                 ignore_row_order = ignore_order,
+                                 ignore_col_types = ignore_col_types,
+                                 quiet = TRUE,
+                                 return_waldo_compare = TRUE)
   
-  if (length(diff) > 0L) {
+  if (length(waldo_diff) > 0L) {
     
     if (verbose) {
       cli::cli_alert_info(text = paste0(diff_text, ":"))
       cat("\n")
-      print(diff)
+      print(waldo_diff)
       
     } else {
       cli::cli_alert_info(text = paste0(diff_text, "."))
@@ -481,6 +483,7 @@ show_diff <- function(x,
   
   invisible(daff_obj)
 }
+# nolint end
 
 #' Open as temporary spreadsheet
 #'
@@ -1624,7 +1627,7 @@ gh_release_latest <- function(owner,
   rlang::check_installed("gh",
                          reason = pal::reason_pkg_required())
   
-  gh::gh(endpoint = "/repos/{owner}/{name}/releases/latest", # nolint
+  gh::gh(endpoint = "/repos/{owner}/{name}/releases/latest", # nolint: absolute_path_linter
          owner = owner,
          name = name,
          .method = "GET") |>
@@ -1894,8 +1897,8 @@ str_replace_file <- function(path,
                 
                 if (!run_dry && !identical(input, output)) {
                   
-                  brio::write_file(text = paste0(output,
-                                                 collapse = eol),
+                  brio::write_file(text = paste(output,
+                                                collapse = eol),
                                    path = path)
                 }
                 
