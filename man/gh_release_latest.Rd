@@ -12,11 +12,12 @@ gh_release_latest(owner, name)
 \item{name}{Repository name. A character scalar.}
 }
 \value{
-A \link[base:numeric_version]{numeric version}.
+A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{version_nr}, \code{is_pre_release}, and \code{is_draft}.
 }
 \description{
 Uses \code{\link[gh:gh]{gh::gh()}} to fetch the latest \href{https://docs.github.com/repositories/releasing-projects-on-github}{GitHub release} of the specified GitHub repository
-via \href{https://docs.github.com/en/rest/releases/releases#get-the-latest-release}{GitHub's RESTful API} and returns it as a \link[=numeric_version]{numeric version}.
+via \href{https://docs.github.com/en/rest/releases/releases#get-the-latest-release}{GitHub's RESTful API} and returns its metadata as a single-row
+\link[tibble:tbl_df-class]{tibble} containing the columns \code{id}, \code{version_nr}, \code{is_pre_release} and \code{is_draft}.
 }
 \examples{
 yay::gh_release_latest(owner = "jgm",

@@ -1607,12 +1607,12 @@ gh_releases <- function(owner,
 #' Get latest release from GitHub repository
 #'
 #' Uses [gh::gh()] to fetch the latest [GitHub release](https://docs.github.com/repositories/releasing-projects-on-github) of the specified GitHub repository
-#' via [GitHub's RESTful API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release) and returns it as a [numeric
-#' version][numeric_version()].
+#' via [GitHub's RESTful API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release) and returns its metadata as a single-row
+#' [tibble][tibble::tbl_df] containing the columns `r pal::enum_str(cols_gh_releases, wrap = "\x60")`.
 #'
 #' @inheritParams gh_releases
 #'
-#' @return `r pkgsnip::param_lbl("num_vrsn")`
+#' @inherit gh_releases return
 #' @family gh
 #' @export
 #'
