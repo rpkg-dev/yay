@@ -8,7 +8,7 @@ Description: A delightful mix of convenience functions designed to put a
     smile on your face during typical R workflows.
 License: AGPL (>= 3)
 URL: https://yay.rpkg.dev, https://gitlab.com/rpkg.dev/yay
-BugReports: https://gitlab.com/rpkg.dev/yay/issues
+BugReports: https://gitlab.com/rpkg.dev/yay/-/issues
 Depends: 
     R (>= 4.4)
 Imports: 
