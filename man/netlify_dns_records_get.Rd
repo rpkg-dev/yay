@@ -15,7 +15,7 @@ netlify_dns_records_get(
 
 \item{token}{\href{https://docs.netlify.com/api/get-started/#authentication}{Netlify personal access token} used for authentication. A character scalar.}
 
-\item{max_tries}{Maximum number of attempts to retry in case of an HTTP error. An integerish scalar.}
+\item{max_tries}{Maximum number of request attempts in case of an HTTP error. An integerish scalar. Retries are performed using exponential backoff and jitter, see \code{\link[httr2:req_retry]{httr2::req_retry()}} for details.}
 }
 \value{
 A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{dns_zone_id}, \code{site_id}, \code{managed}, \code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, and \code{tag}.

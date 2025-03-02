@@ -19,7 +19,7 @@ ignored.}
 
 \item{token}{\href{https://docs.netlify.com/api/get-started/#authentication}{Netlify personal access token} used for authentication. A character scalar.}
 
-\item{max_tries}{Maximum number of attempts to retry in case of an HTTP error. An integerish scalar.}
+\item{max_tries}{Maximum number of request attempts in case of an HTTP error. An integerish scalar. Retries are performed using exponential backoff and jitter, see \code{\link[httr2:req_retry]{httr2::req_retry()}} for details.}
 }
 \value{
 A character vector of deleted record identifiers, invisibly.

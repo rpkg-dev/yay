@@ -23,7 +23,7 @@ listed here are silently ignored.}
 
 \item{secret_api_key}{\href{https://porkbun.com/api/json/v3/documentation#Authentication}{Porkbun secret API key} used for authentication. A character scalar.}
 
-\item{max_tries}{Maximum number of attempts to retry in case of an HTTP error. An integerish scalar.}
+\item{max_tries}{Maximum number of request attempts in case of an HTTP error. An integerish scalar. Retries are performed using exponential backoff and jitter, see \code{\link[httr2:req_retry]{httr2::req_retry()}} for details.}
 }
 \value{
 A character vector of created record identifiers, invisibly.

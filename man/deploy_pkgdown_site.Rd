@@ -62,7 +62,7 @@ Use this function with \strong{caution} since by default it – except for the p
 directory}!
 }
 \details{
-This function is registered as an \href{https://rstudio.github.io/rstudioaddins/}{RStudio add-in}, allowing RStudio users to assign a \href{https://support.rstudio.com/hc/en-us/articles/206382178-Customizing-Keyboard-Shortcuts-in-the-RStudio-IDE}{custom shortcut} to it and to invoke it from the \href{https://www.rstudio.com/blog/rstudio-1-4-a-quick-tour/#command-palette--shortcuts}{command palette}.
+This function is registered as an \href{https://rstudio.github.io/rstudioaddins/}{RStudio add-in}, allowing RStudio users to assign a \href{https://support.posit.co/hc/en-us/articles/206382178-Customizing-Keyboard-Shortcuts-in-the-RStudio-IDE}{custom shortcut} to it and to invoke it from the \href{https://posit.co/blog/rstudio-1-4-a-quick-tour/#command-palette-shortcuts}{command palette}.
 }
 \section{Setting \code{to_path} via \R options}{
 Instead of directly providing a valid \code{to_path} argument, you can also set \code{to_path = NULL} and provide
