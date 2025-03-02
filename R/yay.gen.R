@@ -219,6 +219,21 @@ clean_git_dir <- function(path,
     gert::git_add(repo = repo)
 }
 
+error_gh_gql <- function(resp,
+                         call = rlang::caller_env()) {
+  
+  if (length(resp$errors) > 0L) {
+    
+    resp$errors |>
+      purrr::map_depth(.depth = 1L,
+                       .f = \(x) c("x" = x$message)) |>
+      purrr::list_c(ptype = character()) |>
+      cli::cli_abort(call = call)
+  }
+  
+  invisible(resp)
+}
+
 extract_vrsn_nr <- function(x) {
   
   pattern_vrsn <- "\\d+(\\.\\d+)*"
@@ -1405,6 +1420,7 @@ gh_dir_ls <- function(owner,
                variables = list(name = name,
                                 owner = owner,
                                 expression = glue::glue("{rev}:{path_norm}"))) |>
+    error_gh_gql() |>
     purrr::pluck("data", "repository", "object", "entries") %||%
     list()
   
@@ -1491,6 +1507,7 @@ gh_text_file <- function(owner,
                       variables = list(name = name,
                                        owner = owner,
                                        expression = glue::glue("{rev}:{path}"))) |>
+    error_gh_gql() |>
     purrr::pluck("data", "repository", "object", "text")
   
   if (is.null(result)) {
