@@ -266,8 +266,8 @@ normalize_tree_path <- function(path) {
 
 perform_porkbun_req <- function(url,
                                 data = NULL,
-                                api_key = pal::pkg_config_val("porkbun_api_key"),
-                                secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+                                api_key = funky::config_val("porkbun_api_key"),
+                                secret_api_key = funky::config_val("porkbun_secret_api_key"),
                                 max_tries = 3L) {
   checkmate::assert_list(data,
                          any.missing = FALSE,
@@ -930,7 +930,7 @@ deploy_pkgdown_site <- function(pkg_path = ".",
 #'   # write TOML to file
 #'   brio::write_lines(path = "dns_records.toml")}
 netlify_dns_records_get <- function(domain,
-                                    token = pal::pkg_config_val("netlify_token"),
+                                    token = funky::config_val("netlify_token"),
                                     max_tries = 3L) {
   assert_domain(domain)
   checkmate::assert_string(token)
@@ -997,7 +997,7 @@ netlify_dns_records_get <- function(domain,
 #'   yay::netlify_dns_records_set(domain = "my.site")}
 netlify_dns_records_set <- function(records,
                                     domain,
-                                    token = pal::pkg_config_val("netlify_token"),
+                                    token = funky::config_val("netlify_token"),
                                     max_tries = 3L) {
   
   records %<>% as_dns_records(registrar = "netlify")
@@ -1081,7 +1081,7 @@ netlify_dns_records_set <- function(records,
 #'   yay::netlify_dns_records_delete(domain = "my.site")}
 netlify_dns_records_delete <- function(records,
                                        domain,
-                                       token = pal::pkg_config_val("netlify_token"),
+                                       token = funky::config_val("netlify_token"),
                                        max_tries = 3L) {
   records %<>% as_dns_record_ids()
   checkmate::assert_string(domain,
@@ -1148,8 +1148,8 @@ netlify_dns_records_delete <- function(records,
 #'   # write TOML to file
 #'   brio::write_lines(path = "dns_records.toml")}
 porkbun_dns_records_get <- function(domain,
-                                    api_key = pal::pkg_config_val("porkbun_api_key"),
-                                    secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+                                    api_key = funky::config_val("porkbun_api_key"),
+                                    secret_api_key = funky::config_val("porkbun_secret_api_key"),
                                     max_tries = 3L) {
   assert_domain(domain)
   
@@ -1242,8 +1242,8 @@ porkbun_dns_records_get <- function(domain,
 #'   yay::porkbun_dns_records_set(domain = "my.site")}
 porkbun_dns_records_set <- function(records,
                                     domain,
-                                    api_key = pal::pkg_config_val("porkbun_api_key"),
-                                    secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+                                    api_key = funky::config_val("porkbun_api_key"),
+                                    secret_api_key = funky::config_val("porkbun_secret_api_key"),
                                     max_tries = 3L) {
   
   records %<>% as_dns_records(registrar = "porkbun")
@@ -1321,8 +1321,8 @@ porkbun_dns_records_set <- function(records,
 #'   yay::porkbun_dns_records_delete(domain = "my.site")}
 porkbun_dns_records_delete <- function(records,
                                        domain,
-                                       api_key = pal::pkg_config_val("porkbun_api_key"),
-                                       secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+                                       api_key = funky::config_val("porkbun_api_key"),
+                                       secret_api_key = funky::config_val("porkbun_secret_api_key"),
                                        max_tries = 3L) {
   records %<>% as_dns_record_ids()
   

@@ -6,8 +6,8 @@
 \usage{
 porkbun_dns_records_get(
   domain,
-  api_key = pal::pkg_config_val("porkbun_api_key"),
-  secret_api_key = pal::pkg_config_val("porkbun_secret_api_key"),
+  api_key = funky::config_val("porkbun_api_key"),
+  secret_api_key = funky::config_val("porkbun_secret_api_key"),
   max_tries = 3L
 )
 }

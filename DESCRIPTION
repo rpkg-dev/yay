@@ -16,6 +16,7 @@ Imports:
     cli (>= 3.0.0),
     dplyr (>= 1.1.1),
     fs (>= 1.5.0),
+    funky (>= 0.0.9000),
     glue (>= 1.4.2),
     httr2 (>= 1.0.5),
     magrittr (>= 2.0.1),
@@ -47,6 +48,7 @@ Remotes:
     github::edwindj/daff,
     github::salim-b/zoterro@interim-merge,
     gitlab::rpkg.dev/pal,
+    gitlab::rpkg.dev/funky,
     gitlab::rpkg.dev/pkgdown.tpl,
     gitlab::rpkg.dev/pkgsnip
 Config/testthat/edition: 3

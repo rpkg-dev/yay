@@ -6,7 +6,7 @@
 \usage{
 netlify_dns_records_get(
   domain,
-  token = pal::pkg_config_val("netlify_token"),
+  token = funky::config_val("netlify_token"),
   max_tries = 3L
 )
 }

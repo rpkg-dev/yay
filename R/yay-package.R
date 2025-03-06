@@ -1,9 +1,9 @@
 #' @section Package configuration:
 #'
-#' `r pkgsnip::md_snip(id = "pkg_config", pkg = utils::packageName())`
+#' `r pkgsnip::md_snip(id = "funky_config")`
 #'
 #' ```{r, echo = FALSE}
-#' pal::print_pkg_config(utils::packageName())
+#' funky::print_config()
 #' ```
 #'
 #' @keywords internal
