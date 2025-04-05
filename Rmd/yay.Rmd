@@ -14,6 +14,7 @@ utils::globalVariables(names = c(".",
                                  # tidyselect fns
                                  "any_of",
                                  "everything",
+                                 "where",
                                  # other
                                  "content",
                                  "end",
@@ -36,7 +37,7 @@ utils::globalVariables(names = c(".",
 
 ## Constants
 
-### `ptype_dns_records`
+### `ptype_dns_records*`
 
 ```{r}
 ptype_dns_records <- tibble::tibble(type = character(),
@@ -49,6 +50,19 @@ ptype_dns_records <- tibble::tibble(type = character(),
                                     flag = integer(),
                                     tag = character(),
                                     target = character())
+
+ptype_dns_records_netlify <-
+  ptype_dns_records |>
+  # Netlify does not support `HTTPS` and `SVCB` record types
+  dplyr::select(-target) |>
+  tibble::add_column(id = character(),
+                     dns_zone_id = character(),
+                     site_id = character(),
+                     managed = logical())
+
+ptype_dns_records_porkbun <-
+  ptype_dns_records |>
+  tibble::add_column(id = character())
 ```
 
 ### `cols_*`
@@ -58,33 +72,6 @@ cols_gh_releases <- c("id",
                       "version_nr",
                       "is_pre_release",
                       "is_draft")
-cols_dns_records <-
-  ptype_dns_records |>
-  purrr::imap(\(val, key) tibble::tibble(key = key,
-                                         is_standard = TRUE,
-                                         type = ifelse(key %in% c("ttl", "priority", "weight", "port", "flag"),
-                                                       "integer",
-                                                       "character"))) |>
-  purrr::list_rbind()
-
-cols_dns_records_netlify <-
-  tibble::tribble(
-    ~key,          ~type,       ~is_standard,
-    "id",          "character", FALSE,
-    "dns_zone_id", "character", FALSE,
-    "site_id",     "character", FALSE,
-    "managed",     "logical",   FALSE
-  ) %>%
-  dplyr::bind_rows(cols_dns_records) |>
-  # Netlify does not support `HTTPS` and `SVCB` record types
-  dplyr::filter(key != "target")
-
-cols_dns_records_porkbun <-
-  cols_dns_records |> # nolint: one_call_pipe_linter
-  tibble::add_row(key = "id",
-                  type = "character",
-                  is_standard = FALSE,
-                  .before = 1L)
 ```
 
 ### `md_*`
@@ -168,18 +155,17 @@ as_dns_records <- function(records,
   checkmate::assert_data_frame(records,
                                row.names = "unique")
   
-  if (check_record_types) {
-    checkmate::assert_subset(records$type,
-                             choices = dns_record_types[[registrar]])
-  }
+  ptype_dns_records_registrar <- get(paste0("ptype_dns_records_", registrar))
   
   # ensure all required cols are present
-  missing_col_names <- setdiff(c("type", "hostname", "value"),
-                               colnames(records))
+  present_cols <- intersect(colnames(records),
+                            colnames(ptype_dns_records_registrar))
   
-  if (length(missing_col_names) > 0L) {
-    cli::cli_abort("{.arg records} is missing the following required columns: {.var {missing_col_names}}",
-                   .frame = parent.frame(2L))
+  if (length(present_cols) > 0L) {
+    records %<>% dplyr::left_join(y = ptype_dns_records_registrar,
+                                  by = present_cols)
+  } else {
+    records %<>% dplyr::cross_join(y = ptype_dns_records_registrar)
   }
   
   # ensure no required fields are missing
@@ -191,24 +177,15 @@ as_dns_records <- function(records,
                 }
               })
   
-  cols_dns_records_registrar <- get(paste0("cols_dns_records_", registrar))
+  if (check_record_types) {
+    checkmate::assert_subset(records$type,
+                             choices = dns_record_types[[registrar]])
+  }
   
-  # complement missing optional columns
-  cols_dns_records_registrar |>
-    dplyr::filter(is_standard) %$%
-    key |>
-    setdiff(colnames(records)) |>
-    purrr::map(\(x) tibble::as_tibble_col(x = NA,
-                                          column_name = x)) |>
-    purrr::list_cbind() |>
-    pal::when(ncol(.) > 0L ~ dplyr::cross_join(x = records,
-                                               y = .),
-              ~ records) |>
-    # coerce to target types
-    dplyr::mutate(dplyr::across(.cols = any_of(cols_dns_records_registrar$key),
-                                .fns = \(x) {
-                                  .Primitive(paste0("as.", cols_dns_records_registrar$type[cols_dns_records_registrar$key == dplyr::cur_column()]))(x)
-                                }))
+  tibble::as_tibble(records) |>
+    dplyr::arrange(type, hostname, value) |>
+    # canonicalize key order
+    dplyr::relocate(any_of(colnames(ptype_dns_records_registrar)))
 }
 ```
 
@@ -1054,7 +1031,7 @@ Functions to work with [Netlify's RESTful API](https://docs.netlify.com/api/get-
 #' @inheritParams netlify_dns_records_set
 #' @param domain Domain name to retrieve DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.
 #'
-#' @return `r pkgsnip::param_lbl("tibble_cols", cols = cols_dns_records_netlify$key)`
+#' @return `r pkgsnip::param_lbl("tibble_cols", cols = colnames(ptype_dns_records_netlify))`
 #' @family netlify
 #' @export
 #'
@@ -1068,7 +1045,7 @@ Functions to work with [Netlify's RESTful API](https://docs.netlify.com/api/get-
 #'   # remove records which can't be handled via API
 #'   dplyr::filter(!managed) |>
 #'   # remove Netlify-specific cols
-#'   dplyr::select(any_of(yay:::cols_dns_records$key)) |>
+#'   dplyr::select(any_of(colnames(yay:::ptype_dns_records))) |>
 #'   # convert to target list structure
 #'   list(records = _) |>
 #'   # convert to JSON
@@ -1103,9 +1080,6 @@ netlify_dns_records_get <- function(domain,
     # remove empty keys
     purrr::map(purrr::compact) |>
     purrr::map_dfr(tibble::as_tibble_row) |>
-    # canonicalize key order
-    dplyr::relocate(any_of(cols_dns_records_netlify$key)) |>
-    dplyr::arrange(type, hostname, value) |>
     # check and normalize cols (just in case since Netlify's API should already return the fields in the proper types)
     as_dns_records(registrar = "netlify",
                    check_record_types = FALSE)
@@ -1120,20 +1094,20 @@ netlify_dns_records_get <- function(domain,
 #' Sets DNS records on Netlify for the specified `domain` using the
 #' [`createDnsRecord`](https://open-api.netlify.com/#tag/dnsZone/operation/createDnsRecord) endpoint of [Netlify's RESTful
 #' API](https://docs.netlify.com/api/get-started/). DNS `records` must be provided as a dataframe/tibble with the columns
-#' `r cols_dns_records_netlify |> dplyr::filter(is_standard) %$% key |> pal::enum_str(wrap = "\x60")`. Further columns are silently ignored.
+#' `r colnames(ptype_dns_records_netlify) |> intersect(colnames(ptype_dns_records)) |> pal::enum_str(wrap = "\x60")`. Further columns are silently ignored.
 #'
 #' Supported are the DNS record types `r dns_record_types$netlify |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. Netlify's own custom record
 #' types `NETLIFY` and `NETLIFY6` cannot be altered via the API and must be configured via [Netlify's web interface](https://app.netlify.com/).
 #'
 #' @inheritParams pal::req_cached
 #' @param records DNS records. A dataframe/tibble with the columns
-#'   `r cols_dns_records_netlify |> dplyr::filter(is_standard) %$% key |> pal::enum_str(wrap = "\x60")`. The first three columns are mandatory, columns not
-#'   listed here are silently ignored.
+#'   `r colnames(ptype_dns_records_netlify) |> intersect(colnames(ptype_dns_records)) |> pal::enum_str(wrap = "\x60")`. The first three columns are mandatory,
+#'   columns not listed here are silently ignored.
 #' @param domain Domain name to set DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.
 #' @param token [Netlify personal access token](https://docs.netlify.com/api/get-started/#authentication) used for authentication. A character scalar.
 #'
 #' @return The newly set DNS records.
-#' `r pkgsnip::param_lbl("tibble_cols", cols = cols_dns_records_netlify$key, as_sentence = FALSE) |> pal::capitalize_first()`, invisibly.
+#' `r pkgsnip::param_lbl("tibble_cols", cols = colnames(ptype_dns_records_netlify), as_sentence = FALSE) |> pal::capitalize_first()`, invisibly.
 #' @family netlify
 #' @export
 #'
@@ -1203,7 +1177,7 @@ netlify_dns_records_set <- function(records,
                     purrr::compact() |>
                     tibble::as_tibble_row() |>
                     # canonicalize key order
-                    dplyr::relocate(any_of(cols_dns_records_netlify$key)) |>
+                    dplyr::relocate(any_of(colnames(ptype_dns_records_netlify))) |>
                     dplyr::arrange(type, hostname, value)
                 }) |>
     purrr::list_rbind() |>
@@ -1296,7 +1270,7 @@ NOTES:
 #' @param api_key [Porkbun API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication. A character scalar.
 #' @param secret_api_key [Porkbun secret API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication. A character scalar.
 #'
-#' @return  `r pkgsnip::param_lbl("tibble_cols", cols = cols_dns_records_porkbun$key)`
+#' @return  `r pkgsnip::param_lbl("tibble_cols", cols = colnames(ptype_dns_records_porkbun))`
 #' @family porkbun
 #' @export
 #'
@@ -1308,7 +1282,7 @@ NOTES:
 #' # NOTE that the CLI tool `jsontoml` is required for this: https://github.com/pelletier/go-toml/
 #' yay::porkbun_dns_records_get(domain = "my.site") |>
 #'   # remove Porkbun-specific cols
-#'   dplyr::select(any_of(yay:::cols_dns_records$key)) |>
+#'   dplyr::select(any_of(colnames(yay:::ptype_dns_records))) |>
 #'   # convert to target list structure
 #'   list(records = _) |>
 #'   # convert to JSON
@@ -1369,12 +1343,12 @@ porkbun_dns_records_get <- function(domain,
                        .fn = \(x) dplyr::case_match(x,
                                                     "name" ~ "hostname",
                                                     "prio" ~ "priority",
-                                                    .default = x)) |>
-    # canonicalize key order
-    dplyr::relocate(any_of(cols_dns_records_porkbun$key)) %>%
-    dplyr::arrange(!!!rlang::syms(intersect(c("type", "hostname", "value"),
-                                            colnames(.)))) |>
+                                                    .default = x)) %>%
     # normalize cols
+    dplyr::mutate(dplyr::across(.cols = any_of(intersect(colnames(dplyr::select(.data = ptype_dns_records_porkbun,
+                                                                                where(is.integer))),
+                                                         colnames(.))),
+                                .fns = as.integer)) |>
     as_dns_records(registrar = "porkbun")
 }
 ```
@@ -1387,8 +1361,8 @@ porkbun_dns_records_get <- function(domain,
 #' @description
 #' Sets DNS records on Porkbun for the specified `domain` using the
 #' [`/api/json/v3/dns/create/{domain}`](https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record) endpoint of Porkbun's API. DNS `records` must be
-#' provided as a dataframe/tibble with the columns `r cols_dns_records_porkbun |> dplyr::filter(is_standard) %$% key |> pal::enum_str(wrap = "\x60")`. Further
-#' columns are silently ignored.
+#' provided as a dataframe/tibble with the columns
+#' `r colnames(ptype_dns_records_porkbun) |> intersect(colnames(ptype_dns_records)) |> pal::enum_str(wrap = "\x60")`. Further columns are silently ignored.
 #'
 #' @details
 #' Supported are the DNS record types `r dns_record_types$porkbun |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`.
@@ -1396,8 +1370,8 @@ porkbun_dns_records_get <- function(domain,
 #' @inheritParams porkbun_dns_records_get
 #' @inheritParams netlify_dns_records_set
 #' @param records DNS records. A dataframe/tibble with the columns
-#'   `r cols_dns_records_porkbun |> dplyr::filter(is_standard) %$% key |> pal::enum_str(wrap = "\x60")`. The first three columns are mandatory, columns not
-#'   listed here are silently ignored.
+#'   `r colnames(ptype_dns_records_porkbun) |> intersect(colnames(ptype_dns_records)) |> pal::enum_str(wrap = "\x60")`. The first three columns are mandatory,
+#'   columns not listed here are silently ignored.
 #' @param domain Domain name to set DNS records for. A character scalar.
 #'
 #' @return A character vector of created record identifiers, invisibly.

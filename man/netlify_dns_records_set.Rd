@@ -13,8 +13,8 @@ netlify_dns_records_set(
 }
 \arguments{
 \item{records}{DNS records. A dataframe/tibble with the columns
-\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag} and \code{tag}. The first three columns are mandatory, columns not
-listed here are silently ignored.}
+\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag} and \code{tag}. The first three columns are mandatory,
+columns not listed here are silently ignored.}
 
 \item{domain}{Domain name to set DNS records for. This is translated into the corresponding Netlify DNS Zone. A character scalar.}
 
@@ -24,7 +24,7 @@ listed here are silently ignored.}
 }
 \value{
 The newly set DNS records.
-A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{dns_zone_id}, \code{site_id}, \code{managed}, \code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, and \code{tag}, invisibly.
+A \link[tibble:tbl_df-class]{tibble} with the columns \code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag}, \code{id}, \code{dns_zone_id}, \code{site_id}, and \code{managed}, invisibly.
 }
 \description{
 Sets DNS records on Netlify for the specified \code{domain} using the

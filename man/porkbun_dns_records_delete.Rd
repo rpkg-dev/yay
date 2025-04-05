@@ -14,8 +14,8 @@ porkbun_dns_records_delete(
 }
 \arguments{
 \item{records}{DNS records. A dataframe/tibble with the columns
-\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag} and \code{target}. The first three columns are mandatory, columns not
-listed here are silently ignored.}
+\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag} and \code{target}. The first three columns are mandatory,
+columns not listed here are silently ignored.}
 
 \item{domain}{Domain name to delete DNS records for. A character scalar.}
 

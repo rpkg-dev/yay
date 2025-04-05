@@ -21,7 +21,7 @@ porkbun_dns_records_get(
 \item{max_tries}{Maximum number of request attempts in case of an HTTP error. An integerish scalar. Retries are performed using exponential backoff and jitter, see \code{\link[httr2:req_retry]{httr2::req_retry()}} for details.}
 }
 \value{
-A \link[tibble:tbl_df-class]{tibble} with the columns \code{id}, \code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag}, and \code{target}.
+A \link[tibble:tbl_df-class]{tibble} with the columns \code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag}, \code{target}, and \code{id}.
 }
 \description{
 Retrieves DNS records from Porkbun for the specified \code{domain} using the
@@ -36,7 +36,7 @@ yay::porkbun_dns_records_get(domain = "my.site")
 # NOTE that the CLI tool `jsontoml` is required for this: https://github.com/pelletier/go-toml/
 yay::porkbun_dns_records_get(domain = "my.site") |>
   # remove Porkbun-specific cols
-  dplyr::select(any_of(yay:::cols_dns_records$key)) |>
+  dplyr::select(any_of(colnames(yay:::ptype_dns_records))) |>
   # convert to target list structure
   list(records = _) |>
   # convert to JSON

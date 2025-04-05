@@ -14,8 +14,8 @@ porkbun_dns_records_set(
 }
 \arguments{
 \item{records}{DNS records. A dataframe/tibble with the columns
-\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag} and \code{target}. The first three columns are mandatory, columns not
-listed here are silently ignored.}
+\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag} and \code{target}. The first three columns are mandatory,
+columns not listed here are silently ignored.}
 
 \item{domain}{Domain name to set DNS records for. A character scalar.}
 
@@ -31,8 +31,8 @@ A character vector of created record identifiers, invisibly.
 \description{
 Sets DNS records on Porkbun for the specified \code{domain} using the
 \href{https://porkbun.com/api/json/v3/documentation#DNS\%20Create\%20Record}{\verb{/api/json/v3/dns/create/\{domain\}}} endpoint of Porkbun's API. DNS \code{records} must be
-provided as a dataframe/tibble with the columns \code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag} and \code{target}. Further
-columns are silently ignored.
+provided as a dataframe/tibble with the columns
+\code{type}, \code{hostname}, \code{value}, \code{ttl}, \code{priority}, \code{weight}, \code{port}, \code{flag}, \code{tag} and \code{target}. Further columns are silently ignored.
 }
 \details{
 Supported are the DNS record types \code{A}, \code{AAAA}, \code{ALIAS}, \code{CAA}, \code{CNAME}, \code{HTTPS}, \code{MX}, \code{NS}, \code{SRV}, \code{SVCB}, \code{TLSA} and \code{TXT}.
