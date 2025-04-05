@@ -49,31 +49,31 @@ All the `.gen.R` suffixed R source code found under [`R/`](https://gitlab.com/rp
 
 This package borrows a lot of the [Tidyverse](https://www.tidyverse.org/) design philosophies. The R code is guided by the [Tidy design principles](https://design.tidyverse.org/) and is formatted according to the [Tidyverse Style Guide](https://style.tidyverse.org/) (TSG) with the following exceptions:
 
--   Line width is limited to **160 characters**, double the [limit proposed by the TSG](https://style.tidyverse.org/syntax.html#long-lines) (80 characters is ridiculously little given today’s high-resolution wide screen monitors).
+- Line width is limited to **160 characters**, double the [limit proposed by the TSG](https://style.tidyverse.org/syntax.html#long-lines) (80 characters is ridiculously little given today’s high-resolution wide screen monitors).
 
-    Furthermore, the preferred style for breaking long lines differs. Instead of wrapping directly after an expression’s opening bracket as [suggested by the TSG](https://style.tidyverse.org/syntax.html#long-lines), we prefer two fewer line breaks and indent subsequent lines within the expression by its opening bracket:
+  Furthermore, the preferred style for breaking long lines differs. Instead of wrapping directly after an expression’s opening bracket as [suggested by the TSG](https://style.tidyverse.org/syntax.html#long-lines), we prefer two fewer line breaks and indent subsequent lines within the expression by its opening bracket:
 
-    ``` r
-    # TSG proposes this
-    do_something_very_complicated(
-      something = "that",
-      requires = many,
-      arguments = "some of which may be long"
-    )
+  ``` r
+  # TSG proposes this
+  do_something_very_complicated(
+    something = "that",
+    requires = many,
+    arguments = "some of which may be long"
+  )
 
-    # we prefer this
-    do_something_very_complicated(something = "that",
-                                  requires = many,
-                                  arguments = "some of which may be long")
-    ```
+  # we prefer this
+  do_something_very_complicated(something = "that",
+                                requires = many,
+                                arguments = "some of which may be long")
+  ```
 
-    This results in less vertical and more horizontal spread of the code and better readability in pipes.
+  This results in less vertical and more horizontal spread of the code and better readability in pipes.
 
--   Usage of [magrittr’s compound assignment pipe-operator `%<>%`](https://magrittr.tidyverse.org/reference/compound.html) is desirable[^2].
+- Usage of [magrittr’s compound assignment pipe-operator `%<>%`](https://magrittr.tidyverse.org/reference/compound.html) is desirable[^2].
 
--   Usage of [R’s right-hand assignment operator `->`](https://rdrr.io/r/base/assignOps.html) is not allowed[^3].
+- Usage of [R’s right-hand assignment operator `->`](https://rdrr.io/r/base/assignOps.html) is not allowed[^3].
 
--   R source code is *not* split over several files as [suggested by the TSG](https://style.tidyverse.org/package-files.html) but instead is (as far as possible) kept in the single file [`Rmd/yay.Rmd`](https://gitlab.com/rpkg.dev/yay/-/tree/master/Rmd/yay.Rmd) which is well-structured thanks to its [Markdown support](#r-markdown-format).
+- R source code is *not* split over several files as [suggested by the TSG](https://style.tidyverse.org/package-files.html) but instead is (as far as possible) kept in the single file [`Rmd/yay.Rmd`](https://gitlab.com/rpkg.dev/yay/-/tree/master/Rmd/yay.Rmd) which is well-structured thanks to its [Markdown support](#r-markdown-format).
 
 As far as possible, these deviations from the TSG plus some additional restrictions are formally specified in [`pkgpurl::default_linters`](https://pkgpurl.rpkg.dev/reference/default_linters), which is (by default) used in [`pkgpurl::lint_rmd()`](https://pkgpurl.rpkg.dev/reference/lint_rmd), which in turn is the recommended way to lint this package.
 

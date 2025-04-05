@@ -72,7 +72,7 @@ getDnsRecords endpoint of Netlify's RESTful API."><meta name="twitter:card" cont
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <a href="https://tibble.tidyverse.org/reference/tbl_df-class.html" class="external-link">tibble</a> with the columns <code>id</code>, <code>dns_zone_id</code>, <code>site_id</code>, <code>managed</code>, <code>type</code>, <code>hostname</code>, <code>value</code>, <code>ttl</code>, <code>priority</code>, <code>weight</code>, <code>port</code>, <code>flag</code>, and <code>tag</code>.</p>
+    <p>A <a href="https://tibble.tidyverse.org/reference/tbl_df-class.html" class="external-link">tibble</a> with the columns <code>type</code>, <code>hostname</code>, <code>value</code>, <code>ttl</code>, <code>priority</code>, <code>weight</code>, <code>port</code>, <code>flag</code>, <code>tag</code>, <code>id</code>, <code>dns_zone_id</code>, <code>site_id</code>, and <code>managed</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -92,7 +92,7 @@ getDnsRecords endpoint of Netlify's RESTful API."><meta name="twitter:card" cont
 <span class="r-in"><span>  <span class="co"># remove records which can't be handled via API</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">managed</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="co"># remove Netlify-specific cols</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">any_of</span><span class="op">(</span><span class="fu">yay</span><span class="fu">:::</span><span class="va">cols_dns_records</span><span class="op">$</span><span class="va">key</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">any_of</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu">yay</span><span class="fu">:::</span><span class="va">ptype_dns_records</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="co"># convert to target list structure</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>records <span class="op">=</span> <span class="va">_</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="co"># convert to JSON</span></span></span>
