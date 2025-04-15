@@ -942,7 +942,7 @@ netlify_dns_records_get <- function(domain,
 #' Supported are the DNS record types `r dns_record_types$netlify |> pal::wrap_chr("\x60") |> cli::ansi_collapse( last = " and ")`. Netlify's own custom record
 #' types `NETLIFY` and `NETLIFY6` cannot be altered via the API and must be configured via [Netlify's web interface](https://app.netlify.com/).
 #'
-#' @inheritParams pal::req_cached
+#' @inheritParams pal::http_get_cached
 #' @param records DNS records. A dataframe/tibble with the columns
 #'   `r colnames(ptype_dns_records_netlify) |> intersect(colnames(ptype_dns_records)) |> pal::enum_str(wrap = "\x60")`. The first three columns are mandatory,
 #'   columns not listed here are silently ignored.
@@ -1090,7 +1090,7 @@ netlify_dns_records_delete <- function(records,
 #' [`/api/json/v3/dns/retrieve/{domain}`](https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain%20or%20ID) endpoint of Porkbun's
 #' API.
 #'
-#' @inheritParams pal::req_cached
+#' @inheritParams pal::http_get_cached
 #' @param domain Domain name to retrieve DNS records for. A character scalar.
 #' @param api_key [Porkbun API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication. A character scalar.
 #' @param secret_api_key [Porkbun secret API key](https://porkbun.com/api/json/v3/documentation#Authentication) used for authentication. A character scalar.
