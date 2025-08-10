@@ -46,7 +46,6 @@ ptype_dns_records <- tibble::tibble(type = character(),
                                     flag = integer(),
                                     tag = character(),
                                     target = character())
-
 ptype_dns_records_netlify <-
   ptype_dns_records |>
   # Netlify does not support `HTTPS` and `SVCB` record types
